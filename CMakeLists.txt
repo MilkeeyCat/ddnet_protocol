@@ -4,16 +4,21 @@ project(ddnet_protocol)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-add_executable(ddnet_protocol
-    src/main.c
+add_library(ddnet_protocol
+    src/token.c
     src/packet.c
+    src/control_packet.c
 )
 
 if(CMAKE_TESTING_ENABLED)
     set(TARGET_TESTRUNNER testrunner)
 
     add_executable(${TARGET_TESTRUNNER} EXCLUDE_FROM_ALL
-        # put test files here
+        test/control_packet.cc
+    )
+
+    target_link_libraries(${TARGET_TESTRUNNER}
+        ddnet_protocol
     )
 
     include(FetchContent)

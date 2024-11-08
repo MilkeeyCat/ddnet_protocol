@@ -1,0 +1,25 @@
+name: Check style
+
+on:
+  push:
+  pull_request:
+  merge_group:
+
+jobs:
+  check-style:
+    runs-on: ubuntu-20.04
+    strategy:
+      fail-fast: false
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        submodules: true
+    - name: Prepare
+      run: |
+        sudo apt-get update -y
+        sudo apt-get install -y pkg-config cmake cmake build-essential shellcheck clang-format
+    - name: Check clang format version
+      run: |
+        clang-format -version # expect 10
+    - name: Check fix_style
+      run: scripts/fix_style.sh --dry-run

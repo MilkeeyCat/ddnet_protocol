@@ -5,9 +5,6 @@
 
 #include "common.h"
 #include "control_packet.h"
-#include "errors.h"
-#include "packet.h"
-#include "token.h"
 
 PacketControl *decode_control(uint8_t *buf, size_t len, Error *err) {
 	ControlMessageKind kind = buf[0];

@@ -3,8 +3,6 @@
 #include <stdio.h>
 
 #include "control_packet.h"
-#include "errors.h"
-#include "packet.h"
 
 PacketKind *decode(uint8_t *buf, size_t len, Error *err) {
 	if(len < PACKET_MIN_HEADER_SIZE || len > PACKET_MAX_HEADER_SIZE) {

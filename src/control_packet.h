@@ -2,7 +2,6 @@
 
 #include <stdint.h>
 
-#include "errors.h"
 #include "packet.h"
 #include "token.h"
 

@@ -1,7 +1,5 @@
 #pragma once
 
-#include <stdint.h>
-
 #include "packet.h"
 #include "token.h"
 

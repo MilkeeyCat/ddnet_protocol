@@ -1,8 +1,6 @@
 #pragma once
 
-#include <stddef.h>
-#include <stdint.h>
-
+#include "common.h"
 #include "errors.h"
 
 #define PACKET_MIN_HEADER_SIZE 3

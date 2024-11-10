@@ -1,9 +1,3 @@
-#include <stdint.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
-#include "common.h"
 #include "control_packet.h"
 
 PacketControl *decode_control(uint8_t *buf, size_t len, Error *err) {

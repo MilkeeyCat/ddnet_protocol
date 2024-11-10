@@ -10,6 +10,12 @@ add_library(ddnet_protocol
     src/control_packet.c
 )
 
+option(BLOAT "Whether to use C standard library" ON)
+
+if (BLOAT)
+    add_definitions(-DBLOAT)
+endif()
+
 if(CMAKE_TESTING_ENABLED)
     set(TARGET_TESTRUNNER testrunner)
 

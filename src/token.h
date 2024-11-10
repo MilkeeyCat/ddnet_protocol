@@ -1,6 +1,6 @@
 #pragma once
 
-#include "stdint.h"
+#include "common.h"
 
 typedef uint32_t Token;
 

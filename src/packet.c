@@ -1,7 +1,3 @@
-#include <stddef.h>
-#include <stdint.h>
-#include <stdio.h>
-
 #include "control_packet.h"
 
 PacketKind *decode(uint8_t *buf, size_t len, Error *err) {

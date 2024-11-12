@@ -10,11 +10,11 @@ TEST(ControlPacket, Keepalive) {
 	Error err = Error::ERR_NONE;
 	PacketControl *packet = (PacketControl *)decode(bytes, sizeof(bytes), &err);
 
-	EXPECT_TRUE(packet != NULL);
+	EXPECT_TRUE(packet != nullptr);
 	EXPECT_EQ(err, Error::ERR_NONE);
 	EXPECT_EQ(packet->_, PacketKind::PACKET_CONTROL);
 	EXPECT_EQ((packet)->kind, ControlMessageKind::CTRL_MSG_KEEPALIVE);
-	EXPECT_TRUE(packet->reason == NULL);
+	EXPECT_TRUE(packet->reason == nullptr);
 	EXPECT_EQ(packet->token, 0x4ec73b04);
 }
 
@@ -23,11 +23,11 @@ TEST(ControlPacket, Connect) {
 	Error err = Error::ERR_NONE;
 	PacketControl *packet = (PacketControl *)decode(bytes, sizeof(bytes), &err);
 
-	EXPECT_TRUE(packet != NULL);
+	EXPECT_TRUE(packet != nullptr);
 	EXPECT_EQ(err, Error::ERR_NONE);
 	EXPECT_EQ(packet->_, PacketKind::PACKET_CONTROL);
 	EXPECT_EQ((packet)->kind, ControlMessageKind::CTRL_MSG_CONNECT);
-	EXPECT_TRUE(packet->reason == NULL);
+	EXPECT_TRUE(packet->reason == nullptr);
 	EXPECT_EQ(packet->token, 0xffffffff);
 }
 
@@ -36,11 +36,11 @@ TEST(ControlPacket, ConnectAccept) {
 	Error err = Error::ERR_NONE;
 	PacketControl *packet = (PacketControl *)decode(bytes, sizeof(bytes), &err);
 
-	EXPECT_TRUE(packet != NULL);
+	EXPECT_TRUE(packet != nullptr);
 	EXPECT_EQ(err, Error::ERR_NONE);
 	EXPECT_EQ(packet->_, PacketKind::PACKET_CONTROL);
 	EXPECT_EQ((packet)->kind, ControlMessageKind::CTRL_MSG_CONNECTACCEPT);
-	EXPECT_TRUE(packet->reason == NULL);
+	EXPECT_TRUE(packet->reason == nullptr);
 	EXPECT_EQ(packet->token, 0x4ec73b04);
 }
 
@@ -49,11 +49,11 @@ TEST(ControlPacket, Accept) {
 	Error err = Error::ERR_NONE;
 	PacketControl *packet = (PacketControl *)decode(bytes, sizeof(bytes), &err);
 
-	EXPECT_TRUE(packet != NULL);
+	EXPECT_TRUE(packet != nullptr);
 	EXPECT_EQ(err, Error::ERR_NONE);
 	EXPECT_EQ(packet->_, PacketKind::PACKET_CONTROL);
 	EXPECT_EQ((packet)->kind, ControlMessageKind::CTRL_MSG_ACCEPT);
-	EXPECT_TRUE(packet->reason == NULL);
+	EXPECT_TRUE(packet->reason == nullptr);
 	EXPECT_EQ(packet->token, 0x4ec73b04);
 }
 
@@ -62,11 +62,11 @@ TEST(ControlPacket, Close) {
 	Error err = Error::ERR_NONE;
 	PacketControl *packet = (PacketControl *)decode(bytes, sizeof(bytes), &err);
 
-	EXPECT_TRUE(packet != NULL);
+	EXPECT_TRUE(packet != nullptr);
 	EXPECT_EQ(err, Error::ERR_NONE);
 	EXPECT_EQ(packet->_, PacketKind::PACKET_CONTROL);
 	EXPECT_EQ((packet)->kind, ControlMessageKind::CTRL_MSG_CLOSE);
-	EXPECT_TRUE(packet->reason == NULL);
+	EXPECT_TRUE(packet->reason == nullptr);
 	EXPECT_EQ(packet->token, 0x4ec73b04);
 }
 
@@ -75,7 +75,7 @@ TEST(ControlPacket, CloseWithReason) {
 	Error err = Error::ERR_NONE;
 	PacketControl *packet = (PacketControl *)decode(bytes, sizeof(bytes), &err);
 
-	EXPECT_TRUE(packet != NULL);
+	EXPECT_TRUE(packet != nullptr);
 	EXPECT_EQ(err, Error::ERR_NONE);
 	EXPECT_EQ(packet->_, PacketKind::PACKET_CONTROL);
 	EXPECT_EQ((packet)->kind, ControlMessageKind::CTRL_MSG_CLOSE);

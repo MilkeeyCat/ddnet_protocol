@@ -17,6 +17,13 @@ typedef enum {
 	PACKET_FLAG_CONNLESS = 1 << 3,
 	PACKET_FLAG_RESEND = 1 << 4,
 	PACKET_FLAG_COMPRESSION = 1 << 5,
-} PacketFlagKind;
+} PacketFlag;
 
+typedef struct {
+	uint16_t flags;
+	uint16_t ack;
+	uint8_t num_chunks;
+} PacketHeader;
+
+PacketHeader decode_packet_header(uint8_t *buf);
 PacketKind *decode(uint8_t *buf, size_t len, Error *err);

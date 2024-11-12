@@ -12,6 +12,7 @@ add_library(ddnet_protocol
     src/token.c
     src/packet.c
     src/control_packet.c
+    src/chunk.c
 )
 
 option(BLOAT "Whether to use C standard library" ON)
@@ -25,6 +26,8 @@ if(CMAKE_TESTING_ENABLED)
 
     add_executable(${TARGET_TESTRUNNER} EXCLUDE_FROM_ALL
         test/control_packet.cc
+        test/packet.cc
+        test/chunk.cc
     )
 
     target_link_libraries(${TARGET_TESTRUNNER}

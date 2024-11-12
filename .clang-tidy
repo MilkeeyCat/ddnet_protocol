@@ -3,6 +3,7 @@ Checks: >
   bugprone-*,
   -bugprone-suspicious-include,
   clang-analyzer-*,
+  -clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling,
   misc-*,
   modernize-*,
   -modernize-use-trailing-return-type,
@@ -11,4 +12,5 @@ Checks: >
   performance-*,
   portability-*,
   readability-*,
-  -readability-magic-numbers
+  -readability-magic-numbers,
+  -readability-else-after-return

@@ -10,6 +10,7 @@ endif()
 
 add_library(ddnet_protocol
     src/token.c
+    src/packer.c
     src/packet.c
     src/control_packet.c
     src/chunk.c
@@ -26,6 +27,7 @@ if(CMAKE_TESTING_ENABLED)
 
     add_executable(${TARGET_TESTRUNNER} EXCLUDE_FROM_ALL
         test/control_packet.cc
+        test/packer.cc
         test/packet.cc
         test/chunk.cc
     )

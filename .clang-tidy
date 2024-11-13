@@ -5,6 +5,7 @@ Checks: >
   clang-analyzer-*,
   -clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling,
   misc-*,
+  -misc-no-recursion,
   modernize-*,
   -modernize-use-trailing-return-type,
   -modernize-use-auto,
@@ -13,4 +14,5 @@ Checks: >
   portability-*,
   readability-*,
   -readability-magic-numbers,
-  -readability-else-after-return
+  -readability-else-after-return,
+  -readability-function-cognitive-complexity

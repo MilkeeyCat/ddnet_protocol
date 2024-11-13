@@ -8,13 +8,8 @@ if (CMAKE_VERSION VERSION_GREATER_EQUAL "3.24.0")
     cmake_policy(SET CMP0135 NEW)
 endif()
 
-add_library(ddnet_protocol
-    src/token.c
-    src/packer.c
-    src/packet.c
-    src/control_packet.c
-    src/chunk.c
-)
+FILE(GLOB LIB_SOURCES src/*.c)
+add_library(ddnet_protocol ${LIB_SOURCES})
 
 option(BLOAT "Whether to use C standard library" ON)
 
@@ -25,12 +20,8 @@ endif()
 if(CMAKE_TESTING_ENABLED)
     set(TARGET_TESTRUNNER testrunner)
 
-    add_executable(${TARGET_TESTRUNNER} EXCLUDE_FROM_ALL
-        test/control_packet.cc
-        test/packer.cc
-        test/packet.cc
-        test/chunk.cc
-    )
+    FILE(GLOB TEST_SOURCES test/*.cc)
+    add_executable(${TARGET_TESTRUNNER} EXCLUDE_FROM_ALL ${TEST_SOURCES})
 
     target_link_libraries(${TARGET_TESTRUNNER}
         ddnet_protocol

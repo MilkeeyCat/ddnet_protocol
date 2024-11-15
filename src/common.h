@@ -8,9 +8,11 @@
 #else
 typedef unsigned char uint8_t;
 typedef unsigned short int uint16_t;
+typedef int int32_t;
 typedef unsigned int uint32_t;
 typedef long unsigned int size_t;
 
+extern void *memset(void *s, int c, size_t n);
 extern void *malloc(size_t size);
 extern char *strncpy(char *dest, const char *src, size_t len);
 #ifndef strlen

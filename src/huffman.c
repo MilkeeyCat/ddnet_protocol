@@ -47,6 +47,7 @@ static Node nodes[HUFFMAN_MAX_NODES];
 static Node *decode_luts[HUFFMAN_LUTSIZE];
 static Node *start_node;
 static int32_t num_nodes;
+uint8_t huffman_initialized = 0;
 
 static void bubble_sort_nodes(HuffmanConstructNode **list, int32_t size) {
 	uint8_t changed = 1;
@@ -124,7 +125,11 @@ static void construct_tree(const uint32_t *frequencies) {
 	setbits_r(start_node, 0, 0);
 }
 
-void huffman_init() {
+static void huffman_init() {
+	if(huffman_initialized) {
+		return;
+	}
+	huffman_initialized = 1;
 	const uint32_t *frequencies = FREQUENCY_TABLE;
 
 	// make sure to cleanout every thing
@@ -163,6 +168,7 @@ void huffman_init() {
 }
 
 int32_t huffman_compress(const uint8_t *input, size_t input_len, uint8_t *output, size_t output_len) {
+	huffman_init();
 	// this macro loads a symbol for a byte into bits and bitcount
 #define HUFFMAN_MACRO_LOADSYMBOL(sym) \
 	bits |= nodes[sym].bits << bitcount; \
@@ -225,6 +231,7 @@ int32_t huffman_compress(const uint8_t *input, size_t input_len, uint8_t *output
 }
 
 int32_t huffman_decompress(const uint8_t *input, size_t input_len, uint8_t *output, size_t output_len) {
+	huffman_init();
 	// setup buffer pointers
 	uint8_t *dst = output;
 	const uint8_t *src = input;

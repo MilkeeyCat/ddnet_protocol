@@ -43,10 +43,10 @@ enum {
 	HUFFMAN_LUTMASK = (HUFFMAN_LUTSIZE - 1)
 };
 
-Node nodes[HUFFMAN_MAX_NODES];
-Node *decode_luts[HUFFMAN_LUTSIZE];
-Node *start_node;
-int32_t num_nodes;
+static Node nodes[HUFFMAN_MAX_NODES];
+static Node *decode_luts[HUFFMAN_LUTSIZE];
+static Node *start_node;
+static int32_t num_nodes;
 
 static void bubble_sort_nodes(HuffmanConstructNode **list, int32_t size) {
 	uint8_t changed = 1;
@@ -66,7 +66,7 @@ static void bubble_sort_nodes(HuffmanConstructNode **list, int32_t size) {
 	}
 }
 
-void setbits_r(Node *node, int32_t bits, uint32_t depth) {
+static void setbits_r(Node *node, int32_t bits, uint32_t depth) {
 	if(node->leafs[1] != 0xffff) {
 		setbits_r(&nodes[node->leafs[1]], bits | (1 << depth), depth + 1);
 	}
@@ -80,7 +80,7 @@ void setbits_r(Node *node, int32_t bits, uint32_t depth) {
 	}
 }
 
-void construct_tree(const uint32_t *frequencies) {
+static void construct_tree(const uint32_t *frequencies) {
 	HuffmanConstructNode aNodesLeftStorage[HUFFMAN_MAX_SYMBOLS];
 	HuffmanConstructNode *apNodesLeft[HUFFMAN_MAX_SYMBOLS];
 	int32_t num_nodes_left = HUFFMAN_MAX_SYMBOLS;

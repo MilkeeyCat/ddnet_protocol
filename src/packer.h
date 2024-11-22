@@ -11,3 +11,4 @@ typedef struct {
 
 Unpacker unpacker_new(uint8_t *buf, size_t len);
 int32_t unpacker_get_int(Unpacker *state);
+const uint8_t *unpacker_get_raw(Unpacker *state, size_t len);

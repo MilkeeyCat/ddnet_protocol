@@ -48,3 +48,11 @@ int32_t unpacker_get_int(Unpacker *state) {
 	value ^= -sign;
 	return value;
 }
+
+const uint8_t *unpacker_get_raw(Unpacker *state, size_t len) {
+	const uint8_t *ptr = state->buf;
+
+	state->buf += len;
+
+	return ptr;
+}

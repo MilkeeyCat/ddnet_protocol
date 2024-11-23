@@ -20,34 +20,21 @@ class BaseDoc
   def valid?
     !@comment.empty? && !@signature.empty?
   end
-end
 
-class StructDoc < BaseDoc
-  def initialize(comment)
-    super
+  def self.is_func?(line)
+    !line.match(/(const )?(u?int(32|8)_t|Unpacker) \*?\w+\(/).nil?
   end
 
-  def name
-    @signature.split("\n").last.match(/ (\w+)/)[1]
+  def self.is_struct?(line)
+    line.strip == "typedef struct {"
   end
 
-  def to_markdown
-    return "invalid" unless valid?
-
-    markdown = ""
-    markdown << "# #{name}\n\n"
-    markdown << "## Syntax\n\n"
-    markdown << "```C\n"
-    markdown << @signature
-    markdown << "```\n\n"
-    markdown << comment_as_markdown
-    markdown
+  def self.is_enum?(line)
+    line.strip == "typedef enum {"
   end
 end
 
 class FuncDoc < BaseDoc
-  attr_accessor :comment
-
   def initialize(comment, signature)
     super(comment)
 
@@ -74,12 +61,31 @@ class FuncDoc < BaseDoc
   end
 end
 
-def is_func?(line)
-  !line.match(/(const )?(u?int(32|8)_t|Unpacker) \*?\w+\(/).nil?
+class StructDoc < BaseDoc
+  def initialize(comment)
+    super
+  end
+
+  def name
+    @signature.split("\n").last.match(/ (\w+)/)[1]
+  end
+
+  def to_markdown
+    return "invalid" unless valid?
+
+    markdown = ""
+    markdown << "# #{name}\n\n"
+    markdown << "## Syntax\n\n"
+    markdown << "```C\n"
+    markdown << @signature
+    markdown << "```\n\n"
+    markdown << comment_as_markdown
+    markdown
+  end
 end
 
-def is_struct?(line)
-  line.strip == "typedef struct {"
+class EnumDoc < StructDoc
+  # OOPs where is the code
 end
 
 # @param filepath String
@@ -87,18 +93,18 @@ end
 def parse_docs(filepath)
   docs = []
   comment = ""
-  struct = nil
+  struct_or_enum = nil
 
   IO.foreach(filepath) do |line|
     next if line.strip.empty?
     next if line[0] == '#'
 
     # seek till struct end if we got one
-    if struct
-      struct.signature += line
+    if struct_or_enum
+      struct_or_enum.signature += line
       if line.start_with? "} "
-        docs << struct
-        struct = nil
+        docs << struct_or_enum
+        struct_or_enum = nil
       end
       next
     end
@@ -115,13 +121,18 @@ def parse_docs(filepath)
     # if its not a comment or a filtered line
     # we assume we hit the C type that is being document
     # so either a struct or function signature
-    if is_func? line
+    if BaseDoc.is_func? line
       docs << FuncDoc.new(comment, line)
-    elsif is_struct? line
+    elsif BaseDoc.is_struct? line
       # we have to seek to the end of the struct before
       # we can store the instance
-      struct = StructDoc.new(comment)
-      struct.signature += line
+      struct_or_enum = StructDoc.new(comment)
+      struct_or_enum.signature += line
+    elsif BaseDoc.is_enum? line
+      # we have to seek to the end of the enum before
+      # we can store the instance
+      struct_or_enum = EnumDoc.new(comment)
+      struct_or_enum.signature += line
     else
       raise "Expected function or struct got unknown: #{line}"
     end
@@ -139,7 +150,7 @@ def header_to_markdown(header_path, markdown_path)
   File.write(markdown_path, markdown)
 end
 
-%w(packer huffman).each do |component|
+%w(packer huffman errors).each do |component|
   header_to_markdown("src/#{component}.h", "docs/#{component}.md")
 end
 

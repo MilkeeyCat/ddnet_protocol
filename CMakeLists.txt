@@ -18,6 +18,7 @@ if (BLOAT)
 endif()
 
 if(CMAKE_TESTING_ENABLED)
+    set(INSTALL_GTEST OFF)
     set(TARGET_TESTRUNNER testrunner)
 
     FILE(GLOB TEST_SOURCES test/*.cc)

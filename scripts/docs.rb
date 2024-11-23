@@ -3,6 +3,8 @@
 class BaseDoc
   attr_accessor :comment, :signature
 
+  DEFINE_VALUE_REGEX = /#define ([A-Z][A-Z_0-9]+) (0x)?[0-9]+$/
+
   def initialize(comment)
     # documentation comment above the function
     @comment = comment
@@ -21,8 +23,23 @@ class BaseDoc
     !@comment.empty? && !@signature.empty?
   end
 
+  def errors
+    messages = []
+    if @comment.empty?
+      messages << "comment is empty"
+    end
+    if @signature.empty?
+      messages << "signature is empty"
+    end
+    messages
+  end
+
+  def valid_or_throw(class_name)
+    raise "#{class_name}: #{errors.join(", ")}" unless valid?
+  end
+
   def self.is_func?(line)
-    !line.match(/(const )?(u?int(32|8)_t|Unpacker|Token) \*?\w+\(/).nil?
+    !line.match(/(const )?(u?int(32|8)_t|Unpacker|Token|PacketHeader|PacketKind) \*?\w+\(/).nil?
   end
 
   def self.is_typedef?(line)
@@ -34,6 +51,10 @@ class BaseDoc
 
   def self.is_global_constant?(line)
     line.start_with? "extern const "
+  end
+
+  def self.is_define_value?(line)
+     line.match?(DEFINE_VALUE_REGEX)
   end
 
   def self.is_struct?(line)
@@ -58,7 +79,7 @@ class FuncDoc < BaseDoc
   end
 
   def to_markdown
-    return "invalid" unless valid?
+    valid_or_throw(self.class.name)
 
     markdown = ""
     markdown << "# #{name}\n\n"
@@ -74,13 +95,18 @@ end
 
 class TypedefDoc < FuncDoc
   def name
-    p @signature
     @signature.match(/ (\w+);$/)[1]
   end
 end
 
 class GlobalConstantDoc < TypedefDoc
   # OOPs where is the code
+end
+
+class DefineValueDoc < TypedefDoc
+  def name
+    @signature.match(DEFINE_VALUE_REGEX)[1]
+  end
 end
 
 class StructDoc < BaseDoc
@@ -93,7 +119,7 @@ class StructDoc < BaseDoc
   end
 
   def to_markdown
-    return "invalid" unless valid?
+    valid_or_throw(self.class.name)
 
     markdown = ""
     markdown << "# #{name}\n\n"
@@ -121,7 +147,7 @@ def parse_docs(filepath)
   IO.foreach(filepath) do |line|
     line_num += 1
     next if line.strip.empty?
-    next if line[0] == '#'
+    next if line[0] == '#' && !BaseDoc.is_define_value?(line)
 
     # seek till struct end if we got one
     if struct_or_enum
@@ -151,6 +177,8 @@ def parse_docs(filepath)
       docs << TypedefDoc.new(comment, line)
     elsif BaseDoc.is_global_constant? line
       docs << GlobalConstantDoc.new(comment, line)
+    elsif BaseDoc.is_define_value? line
+      docs << DefineValueDoc.new(comment, line)
     elsif BaseDoc.is_struct? line
       # we have to seek to the end of the struct before
       # we can store the instance
@@ -178,7 +206,7 @@ def header_to_markdown(header_path, markdown_path)
   File.write(markdown_path, markdown)
 end
 
-%w(packer huffman errors token).each do |component|
+%w(packer huffman errors token packet).each do |component|
   header_to_markdown("src/#{component}.h", "docs/#{component}.md")
 end
 

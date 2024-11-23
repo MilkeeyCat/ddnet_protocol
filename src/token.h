@@ -12,8 +12,10 @@ typedef uint32_t Token;
 // that holds the magic value "TKEN"
 // when interpreted as ASCII
 //
+// ```
 // 0x544b454e
 //   T K E N
+// ```
 //
 // it is used to inform the peer that we support
 // the security token protocol extension

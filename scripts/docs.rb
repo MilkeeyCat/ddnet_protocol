@@ -22,7 +22,18 @@ class BaseDoc
   end
 
   def self.is_func?(line)
-    !line.match(/(const )?(u?int(32|8)_t|Unpacker) \*?\w+\(/).nil?
+    !line.match(/(const )?(u?int(32|8)_t|Unpacker|Token) \*?\w+\(/).nil?
+  end
+
+  def self.is_typedef?(line)
+    return false if is_struct? line
+    return false if is_enum? line
+
+    !line.match(/^typedef /).nil?
+  end
+
+  def self.is_global_constant?(line)
+    line.start_with? "extern const "
   end
 
   def self.is_struct?(line)
@@ -61,6 +72,17 @@ class FuncDoc < BaseDoc
   end
 end
 
+class TypedefDoc < FuncDoc
+  def name
+    p @signature
+    @signature.match(/ (\w+);$/)[1]
+  end
+end
+
+class GlobalConstantDoc < TypedefDoc
+  # OOPs where is the code
+end
+
 class StructDoc < BaseDoc
   def initialize(comment)
     super
@@ -94,8 +116,10 @@ def parse_docs(filepath)
   docs = []
   comment = ""
   struct_or_enum = nil
+  line_num = 0
 
   IO.foreach(filepath) do |line|
+    line_num += 1
     next if line.strip.empty?
     next if line[0] == '#'
 
@@ -123,6 +147,10 @@ def parse_docs(filepath)
     # so either a struct or function signature
     if BaseDoc.is_func? line
       docs << FuncDoc.new(comment, line)
+    elsif BaseDoc.is_typedef? line
+      docs << TypedefDoc.new(comment, line)
+    elsif BaseDoc.is_global_constant? line
+      docs << GlobalConstantDoc.new(comment, line)
     elsif BaseDoc.is_struct? line
       # we have to seek to the end of the struct before
       # we can store the instance
@@ -134,7 +162,7 @@ def parse_docs(filepath)
       struct_or_enum = EnumDoc.new(comment)
       struct_or_enum.signature += line
     else
-      raise "Expected function or struct got unknown: #{line}"
+      raise "#{filepath}:#{line_num} Expected function or struct got unknown: #{line}"
     end
 
     # create a empty doc comment for next entry
@@ -150,7 +178,7 @@ def header_to_markdown(header_path, markdown_path)
   File.write(markdown_path, markdown)
 end
 
-%w(packer huffman errors).each do |component|
+%w(packer huffman errors token).each do |component|
   header_to_markdown("src/#{component}.h", "docs/#{component}.md")
 end
 

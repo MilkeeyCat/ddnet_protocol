@@ -1,6 +1,7 @@
 #pragma once
 
 #ifdef BLOAT
+#include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
 #include <stdlib.h>
@@ -13,6 +14,8 @@ typedef unsigned int uint32_t;
 #ifndef _MSC_VER
 typedef long unsigned int size_t;
 #endif
+typedef enum { false,
+	true } bool;
 
 extern void *memset(void *s, int c, size_t n);
 extern void *malloc(size_t size);

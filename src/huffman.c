@@ -47,7 +47,7 @@ static Node nodes[HUFFMAN_MAX_NODES];
 static Node *decode_luts[HUFFMAN_LUTSIZE];
 static Node *start_node;
 static int32_t num_nodes;
-uint8_t huffman_initialized = 0;
+bool huffman_initialized = false;
 
 static void bubble_sort_nodes(HuffmanConstructNode **list, int32_t size) {
 	uint8_t changed = 1;

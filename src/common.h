@@ -14,8 +14,10 @@ typedef unsigned int uint32_t;
 #ifndef _MSC_VER
 typedef long unsigned int size_t;
 #endif
+#ifndef __cplusplus
 typedef enum { false,
 	true } bool;
+#endif
 
 extern void *memset(void *s, int c, size_t n);
 extern void *malloc(size_t size);

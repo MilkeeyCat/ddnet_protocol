@@ -51,6 +51,7 @@ TEST(Unpacker, Raw) {
 	uint8_t bytes[] = {0x7f, 0x69, 0x04, 0x20};
 	Unpacker unpacker = unpacker_new(bytes, sizeof(bytes));
 
+	unpacker_get_int(&unpacker);
 	EXPECT_TRUE(std::memcmp(unpacker_get_raw(&unpacker, 3), &bytes[1], 3) == 0);
 	EXPECT_EQ(unpacker.err, Error::ERR_NONE);
 }

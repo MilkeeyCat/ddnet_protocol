@@ -1,8 +1,8 @@
-#pragma once
+# Error
 
-// generic error enum
-// holds all kind of errors returned
-// by different functions
+## Syntax
+
+```C
 typedef enum {
 	ERR_NONE,
 	ERR_INVALID_PACKET,
@@ -10,3 +10,9 @@ typedef enum {
 	ERR_INVALID_TOKEN_MAGIC,
 	ERR_EMPTY_BUFFER,
 } Error;
+```
+
+generic error enum
+holds all kind of errors returned
+by different functions
+

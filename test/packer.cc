@@ -47,6 +47,18 @@ TEST(Unpacker, NegativeIntsMutliByte) {
 	EXPECT_EQ(unpacker.err, Error::ERR_NONE);
 }
 
+TEST(Unpacker, Booleans) {
+	uint8_t bytes[] = {0x00, 0x01, 0xcc};
+	Unpacker unpacker = unpacker_new(bytes, sizeof(bytes));
+
+	EXPECT_EQ(unpacker_get_bool(&unpacker), false);
+	EXPECT_EQ(unpacker.err, Error::ERR_NONE);
+	EXPECT_EQ(unpacker_get_bool(&unpacker), true);
+	EXPECT_EQ(unpacker.err, Error::ERR_NONE);
+	EXPECT_EQ(unpacker_get_bool(&unpacker), false);
+	EXPECT_EQ(unpacker.err, Error::ERR_INVALID_BOOL);
+}
+
 TEST(Unpacker, Raw) {
 	uint8_t bytes[] = {0x7f, 0x69, 0x04, 0x20};
 	Unpacker unpacker = unpacker_new(bytes, sizeof(bytes));

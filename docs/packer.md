@@ -56,6 +56,30 @@ unpacker_get_int(&unpacker); // => 5
 unpacker.err; // => Error::ERR_NONE
 ```
 
+# unpacker_get_bool
+
+## Syntax
+
+```C
+bool unpacker_get_bool(Unpacker *state);
+```
+
+Use `unpacker_new` to get the value for `Unpacker *state`
+it returns the next boolean in the unpacker data
+and also progresses the internal unpacker state to point to the next element
+
+Might set the state->err to `ERR_INVALID_BOOL`
+
+```C
+uint8_t bytes[] = {0x00, 0x01, 0xcc};
+Unpacker unpacker = unpacker_new(bytes, sizeof(bytes));
+
+unpacker_get_bool(&unpacker) // => false
+unpacker_get_bool(&unpacker) // => true
+unpacker_get_bool(&unpacker) // => false (invalid boolean)
+unpacker.err; // => Error::ERR_INVALID_BOOL
+```
+
 # unpacker_get_raw
 
 ## Syntax

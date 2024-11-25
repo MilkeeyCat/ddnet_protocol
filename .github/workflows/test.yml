@@ -21,6 +21,7 @@ jobs:
           cmake-path: /usr/bin/
           cmake-init-env: CXXFLAGS=-Werror
         - os: macOS-latest
+          cmake-args: -DCMAKE_TESTING_ENABLED=ON
           cmake-init-env: CXXFLAGS=-Werror
 
     steps:

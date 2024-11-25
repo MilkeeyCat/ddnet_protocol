@@ -39,7 +39,7 @@ class BaseDoc
   end
 
   def self.is_func?(line)
-    !line.match(/(const )?(u?int(32|8)_t|Unpacker|Token|PacketHeader|PacketKind) \*?\w+\(/).nil?
+    !line.match(/(const )?(u?int(32|8)_t|bool|Unpacker|Token|PacketHeader|PacketKind) \*?\w+\(/).nil?
   end
 
   def self.is_typedef?(line)

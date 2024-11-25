@@ -49,6 +49,14 @@ int32_t unpacker_get_int(Unpacker *state) {
 	return value;
 }
 
+bool unpacker_get_bool(Unpacker *state) {
+	int32_t val = unpacker_get_int(state);
+	if(val != 0 && val != 1) {
+		state->err = ERR_INVALID_BOOL;
+	}
+	return val == 1;
+}
+
 const uint8_t *unpacker_get_raw(Unpacker *state, size_t len) {
 	const uint8_t *ptr = state->buf;
 

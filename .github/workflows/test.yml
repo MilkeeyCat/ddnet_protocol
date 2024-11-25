@@ -1,0 +1,67 @@
+name: Test
+
+on:
+  push:
+  pull_request:
+  merge_group:
+
+jobs:
+  build-cmake:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macOS-latest, windows-latest, ubuntu-20.04]
+        include:
+        - os: ubuntu-latest
+          cmake-args: -DCMAKE_TESTING_ENABLED=ON
+          cmake-init-env: CXXFLAGS=-Werror
+        - os: ubuntu-20.04
+          cmake-args: -DCMAKE_TESTING_ENABLED=ON
+          cmake-path: /usr/bin/
+          cmake-init-env: CXXFLAGS=-Werror
+        - os: macOS-latest
+          cmake-init-env: CXXFLAGS=-Werror
+        - os: windows-latest
+          cmake-args: -A x64 -DCMAKE_TESTING_ENABLED=ON
+          cmake-init-env: CXXFLAGS=/WX LDFLAGS=/WX
+
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        submodules: true
+
+    - name: Prepare Linux
+      if: contains(matrix.os, 'ubuntu')
+      run: |
+        sudo apt-get update -y
+        sudo apt-get install -y pkg-config cmake cmake build-essential
+
+    - name: Prepare macOS
+      if: contains(matrix.os, 'macOS')
+      run: |
+        brew update || true
+        brew install pkg-config cmake || true
+        sudo rm -rf /Library/Developer/CommandLineTools
+
+    - name: Test in debug mode
+      run: |
+        mkdir debug
+        cd debug
+        ${{ matrix.cmake-path }}cmake -E env ${{ matrix.cmake-init-env }} ${{ matrix.cmake-path }}cmake ${{ matrix.cmake-args }} -DCMAKE_BUILD_TYPE=Debug -Werror=dev ..
+        ${{ matrix.cmake-path }}cmake --build . --config Debug --target run_tests ${{ matrix.build-args }}
+
+    - name: Test in release mode
+      run: |
+        mkdir release
+        cd release
+        ${{ matrix.cmake-path }}cmake -E env ${{ matrix.cmake-init-env }} ${{ matrix.cmake-path }}cmake ${{ matrix.cmake-args }} -DCMAKE_BUILD_TYPE=Release -Werror=dev ..
+        ${{ matrix.cmake-path }}cmake --build . --config Release --target run_tests ${{ matrix.build-args }}
+
+    - name: Test with bloat off
+      run: |
+        mkdir bloat
+        cd bloat
+        ${{ matrix.cmake-path }}cmake -E env ${{ matrix.cmake-init-env }} ${{ matrix.cmake-path }}cmake ${{ matrix.cmake-args }} -DCMAKE_BUILD_TYPE=Debug -Werror=dev -DBLOAT=OFF ..
+        ${{ matrix.cmake-path }}cmake --build . --config Debug --target run_tests ${{ matrix.build-args }}
+

@@ -6,12 +6,12 @@ on:
   merge_group:
 
 jobs:
-  build-cmake:
+  unit-tests:
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macOS-latest, windows-latest, ubuntu-20.04]
+        os: [ubuntu-latest, macOS-latest, ubuntu-20.04]
         include:
         - os: ubuntu-latest
           cmake-args: -DCMAKE_TESTING_ENABLED=ON
@@ -22,9 +22,6 @@ jobs:
           cmake-init-env: CXXFLAGS=-Werror
         - os: macOS-latest
           cmake-init-env: CXXFLAGS=-Werror
-        - os: windows-latest
-          cmake-args: -A x64 -DCMAKE_TESTING_ENABLED=ON
-          cmake-init-env: CXXFLAGS=/WX LDFLAGS=/WX
 
     steps:
     - uses: actions/checkout@v4

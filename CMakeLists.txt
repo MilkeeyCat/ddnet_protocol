@@ -11,7 +11,16 @@ endif()
 FILE(GLOB LIB_SOURCES src/*.c)
 add_library(ddnet_protocol ${LIB_SOURCES})
 
-set_target_properties(ddnet_protocol PROPERTIES PUBLIC_HEADER include/ddnet_protocol.h)
+set_target_properties(
+    ddnet_protocol PROPERTIES PUBLIC_HEADER
+"include/ddnet_protocol/common.h;\
+include/ddnet_protocol/errors.h;\
+include/ddnet_protocol/token.h;\
+include/ddnet_protocol/chunk.h;\
+include/ddnet_protocol/packet.h;\
+include/ddnet_protocol/packer.h;\
+include/ddnet_protocol/huffman.h"
+)
 
 option(BLOAT "Whether to use C standard library" ON)
 
@@ -63,7 +72,7 @@ endif()
 include(GNUInstallDirs)
 install(TARGETS ddnet_protocol
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+    PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/ddnet_protocol)
 
 ### uninstall
 

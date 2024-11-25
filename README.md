@@ -17,7 +17,7 @@ sudo cmake --install build/
 #include <stdint.h>
 #include <stdio.h>
 
-#include <ddnet_protocol.h>
+#include <ddnet_protocol/huffman.h>
 
 int main() {
 	uint8_t decompressed[512];

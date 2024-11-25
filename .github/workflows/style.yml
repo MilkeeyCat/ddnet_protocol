@@ -23,5 +23,7 @@ jobs:
         clang-format -version # expect 10
     - name: Check fix_style
       run: scripts/fix_style.sh --dry-run
+    - name: Check missing include generation
+      run: scripts/genarate_public_includes.sh --dry-run
     - name: Check raw C types
       run: scripts/check_types.sh

@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 
 extern "C" {
-#include "../src/packet.h"
+#include <ddnet_protocol/packet.h>
 }
 
 TEST(Packet, Header) {

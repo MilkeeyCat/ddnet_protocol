@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 
 extern "C" {
-#include "../src/chunk.h"
+#include <ddnet_protocol/chunk.h>
 }
 
 TEST(PacketHeader, Vital) {

@@ -1,19 +1,3 @@
-## DDNet networking library
-![Build](https://github.com/MilkeeyCat/ddnet_protocol/actions/workflows/build.yml/badge.svg)
-
-written in C btw
-
-## installing
-
-```
-cmake -B build/
-cmake --build build/
-sudo cmake --install build/
-```
-
-```C
-// sample.c
-
 #include <stdint.h>
 #include <stdio.h>
 
@@ -25,10 +9,3 @@ int main() {
 	huffman_decompress(compressed, sizeof(compressed), decompressed, sizeof(decompressed));
 	puts((const char *)decompressed); // foo
 }
-```
-
-```
-gcc sample.c -o sample -lddnet_protocol
-./sample
-```
-

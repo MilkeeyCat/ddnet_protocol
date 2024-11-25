@@ -30,7 +30,7 @@ if(CMAKE_TESTING_ENABLED)
     include(FetchContent)
         FetchContent_Declare(
         googletest
-        URL https://github.com/google/googletest/archive/35d0c365609296fa4730d62057c487e3cfa030ff.zip
+        URL https://github.com/google/googletest/archive/3d73dee972d0db344bda9b659836612aba6a3564.zip
     )
 
     # For Windows: Prevent overriding the parent project's compiler/linker settings

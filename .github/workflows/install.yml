@@ -44,6 +44,13 @@ jobs:
         ./huffman
         [ "$(./huffman)" = foo ] || { printf 'Error: expected "foo" but got ^\n'; exit 1; }
 
+    - name: Build example snippet in README.md
+      run: |
+          mkdir -p ~/.local/bin/
+          wget -O ~/.local/bin/lintdown.sh https://raw.githubusercontent.com/ChillerDragon/lintdown.sh/master/lintdown.sh
+          chmod +x ~/.local/bin/lintdown.sh
+          LDLIBS=-lddnet_protocol lintdown.sh README.md
+
     - name: Uninstall
       run: |
         cd build

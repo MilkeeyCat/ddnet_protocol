@@ -28,7 +28,7 @@ int main() {
 ```
 
 ```
-g++ sample.c -o sample -lddnet_protocol
+gcc sample.c -o sample -lddnet_protocol
 ./sample
 ```
 

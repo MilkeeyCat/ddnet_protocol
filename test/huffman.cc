@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 
 extern "C" {
-#include "../src/huffman.h"
+#include <ddnet_protocol/huffman.h>
 }
 
 TEST(Huffman, Decompress) {

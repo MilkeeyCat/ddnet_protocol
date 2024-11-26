@@ -2,8 +2,8 @@
 #include <gtest/gtest.h>
 
 extern "C" {
-#include "../src/errors.h"
-#include "../src/packer.h"
+#include <ddnet_protocol/errors.h>
+#include <ddnet_protocol/packer.h>
 }
 
 TEST(Unpacker, SingleByteInts) {

@@ -9,18 +9,12 @@ if (CMAKE_VERSION VERSION_GREATER_EQUAL "3.24.0")
 endif()
 
 FILE(GLOB LIB_SOURCES src/*.c)
+FILE(GLOB LIB_PUBLIC_HEADERS include/ddnet_protocol/*.h)
 add_library(ddnet_protocol ${LIB_SOURCES})
 
-set_target_properties(
-    ddnet_protocol PROPERTIES PUBLIC_HEADER
-"include/ddnet_protocol/common.h;\
-include/ddnet_protocol/errors.h;\
-include/ddnet_protocol/token.h;\
-include/ddnet_protocol/chunk.h;\
-include/ddnet_protocol/packet.h;\
-include/ddnet_protocol/packer.h;\
-include/ddnet_protocol/huffman.h"
-)
+target_include_directories(ddnet_protocol PRIVATE include/ddnet_protocol)
+
+set_target_properties(ddnet_protocol PROPERTIES PUBLIC_HEADER "${LIB_PUBLIC_HEADERS}")
 
 option(BLOAT "Whether to use C standard library" ON)
 
@@ -36,6 +30,8 @@ if(CMAKE_TESTING_ENABLED)
 
     FILE(GLOB TEST_SOURCES test/*.cc)
     add_executable(${TARGET_TESTRUNNER} EXCLUDE_FROM_ALL ${TEST_SOURCES})
+
+    target_include_directories(${TARGET_TESTRUNNER} PRIVATE include)
 
     target_link_libraries(${TARGET_TESTRUNNER}
         ddnet_protocol

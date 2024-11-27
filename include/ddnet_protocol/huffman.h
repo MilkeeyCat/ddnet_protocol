@@ -8,7 +8,7 @@
 // returns the size of the compressed `output`
 //
 // See also https://chillerdragon.github.io/teeworlds-protocol/06/fundamentals.html#huffman
-int32_t huffman_compress(const uint8_t *input, size_t input_len, uint8_t *output, size_t output_len);
+size_t huffman_compress(const uint8_t *input, size_t input_len, uint8_t *output, size_t output_len);
 
 // applies huffman decompression to the given `input`
 // and stores the result in `output`
@@ -16,4 +16,4 @@ int32_t huffman_compress(const uint8_t *input, size_t input_len, uint8_t *output
 // returns the size of the decompressed `output`
 //
 // See also https://chillerdragon.github.io/teeworlds-protocol/06/fundamentals.html#huffman
-int32_t huffman_decompress(const uint8_t *input, size_t input_len, uint8_t *output, size_t output_len);
+size_t huffman_decompress(const uint8_t *input, size_t input_len, uint8_t *output, size_t output_len);

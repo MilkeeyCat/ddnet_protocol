@@ -3,9 +3,9 @@
 
 written in C btw
 
-## installing
+## Installing
 
-```
+```sh
 cmake -B build/
 cmake --build build/
 sudo cmake --install build/
@@ -32,3 +32,26 @@ gcc sample.c -o sample -lddnet_protocol
 ./sample
 ```
 
+# Linking the library using CMake
+
+Example's file structure:
+```
+.
+├── libs
+│   └── ddnet_protocol
+├── main.c
+└── CMakeLists.txt
+```
+```cmake
+# CMakeLists.txt
+
+cmake_minimum_required(VERSION 3.16)
+project(crocks)
+
+add_executable(crocks
+    main.c
+)
+
+add_subdirectory(libs/ddnet_protocol)
+target_link_libraries(crocks ddnet_protocol)
+```

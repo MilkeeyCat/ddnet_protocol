@@ -28,7 +28,7 @@ jobs:
       if: contains(matrix.os, 'macOS')
       run: |
         brew update || true
-        brew install pkg-config cmake || true
+        brew install pkg-config cmake shellcheck || true
         sudo rm -rf /Library/Developer/CommandLineTools
 
     - name: Install

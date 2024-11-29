@@ -199,14 +199,48 @@ def parse_docs(filepath)
   docs
 end
 
-def header_to_markdown(header_path, markdown_path)
+def expect_file_content(filepath, content)
+  unless File.exist? filepath
+    puts "Expected file to exist '#{filepath}' please regenerate the documentation"
+    exit 1
+  end
+  got = File.read filepath
+  return if got == content
+
+  puts "Outdated documentation for '#{filepath}' please regenerate the documentation"
+  exit 1
+end
+
+def header_to_markdown(header_path, markdown_path, dry_run)
   markdown = parse_docs(header_path).map do |doc|
     doc.to_markdown + "\n"
   end.inject(:+)
-  File.write(markdown_path, markdown)
+  if dry_run
+    expect_file_content(markdown_path, markdown)
+  else
+    File.write(markdown_path, markdown)
+  end
 end
 
-%w(packer huffman errors token packet).each do |component|
-  header_to_markdown("include/ddnet_protocol/#{component}.h", "docs/#{component}.md")
+def main
+  dry_run = false
+  ARGV.each do |arg|
+    if arg == '--dry-run'
+      dry_run = true
+    else
+      puts "Unknown argument '#{arg}'"
+      exit 1
+    end
+  end
+
+  %w(packer huffman errors token packet).each do |component|
+    header_to_markdown(
+      "include/ddnet_protocol/#{component}.h",
+      "docs/#{component}.md",
+      dry_run
+    )
+  end
 end
+
+main
 

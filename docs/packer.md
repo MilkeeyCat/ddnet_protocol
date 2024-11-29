@@ -54,9 +54,9 @@ See also `unpacker_new` and `unpacker_get_int`
 ```C
 typedef enum {
 	STRING_SANITIZE_NONE = 0,
-	STRING_SANITIZE = 1,
-	STRING_SANITIZE_CC = 2,
-	STRING_SKIP_START_WHITESPACES = 4,
+	STRING_SANITIZE = 1 << 0,
+	STRING_SANITIZE_CC = 1 << 1,
+	STRING_SKIP_START_WHITESPACES = 1 << 2,
 } StringSanitize;
 ```
 

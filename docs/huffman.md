@@ -3,7 +3,7 @@
 ## Syntax
 
 ```C
-int32_t huffman_compress(const uint8_t *input, size_t input_len, uint8_t *output, size_t output_len);
+size_t huffman_compress(const uint8_t *input, size_t input_len, uint8_t *output, size_t output_len);
 ```
 
 applies huffman compression to the given `input`
@@ -18,7 +18,7 @@ See also https://chillerdragon.github.io/teeworlds-protocol/06/fundamentals.html
 ## Syntax
 
 ```C
-int32_t huffman_decompress(const uint8_t *input, size_t input_len, uint8_t *output, size_t output_len);
+size_t huffman_decompress(const uint8_t *input, size_t input_len, uint8_t *output, size_t output_len);
 ```
 
 applies huffman decompression to the given `input`

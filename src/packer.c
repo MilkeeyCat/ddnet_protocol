@@ -1,9 +1,10 @@
 #include "packer.h"
 #include "errors.h"
-#include <stdio.h>
+
+#include "common.h"
 
 void str_sanitize_cc(char *string) {
-	unsigned char *str = (unsigned char *)string;
+	uint8_t *str = (uint8_t *)string;
 	while(*str) {
 		if(*str < 32) {
 			*str = ' ';
@@ -13,7 +14,7 @@ void str_sanitize_cc(char *string) {
 }
 
 void str_sanitize(char *string) {
-	unsigned char *str = (unsigned char *)string;
+	uint8_t *str = (uint8_t *)string;
 	while(*str) {
 		if(*str < 32 && !(*str == '\r') && !(*str == '\n') && !(*str == '\t')) {
 			*str = ' ';

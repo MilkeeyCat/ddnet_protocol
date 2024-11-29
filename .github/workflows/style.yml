@@ -25,3 +25,5 @@ jobs:
       run: scripts/fix_style.sh --dry-run
     - name: Check raw C types
       run: scripts/check_types.sh
+    - name: Check raw stdlib includes
+      run: scripts/check_standard_headers.sh

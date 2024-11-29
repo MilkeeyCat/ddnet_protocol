@@ -47,6 +47,32 @@ TEST(Unpacker, NegativeIntsMutliByte) {
 	EXPECT_EQ(unpacker.err, Error::ERR_NONE);
 }
 
+TEST(Unpacker, Strings) {
+	uint8_t bytes[] = {'f', 'o', 'o', 0x00, 'b', 'a', 'r', 0x00, 'A', 0x02, 0x02, 0x00, 'x'};
+	Unpacker unpacker = unpacker_new(bytes, sizeof(bytes));
+
+	EXPECT_STREQ(unpacker_get_string(&unpacker), "foo");
+	EXPECT_EQ(unpacker.err, Error::ERR_NONE);
+	EXPECT_STREQ(unpacker_get_string(&unpacker), "bar");
+	EXPECT_EQ(unpacker.err, Error::ERR_NONE);
+	EXPECT_STREQ(unpacker_get_string(&unpacker), "A  "); // expect sanitize by default
+	EXPECT_EQ(unpacker.err, Error::ERR_NONE);
+	EXPECT_STREQ(unpacker_get_string(&unpacker), "");
+	EXPECT_EQ(unpacker.err, Error::ERR_STR_UNEXPECTED_EOF);
+}
+
+TEST(Unpacker, StringsSanitized) {
+	uint8_t bytes[] = {'f', 'o', 'o', 0x00, 'b', 'a', 0x02, 0x03, 0x03, 'r', 0x00, ' ', ' ', 'x', 0x00};
+	Unpacker unpacker = unpacker_new(bytes, sizeof(bytes));
+
+	EXPECT_STREQ(unpacker_get_string_sanitized(&unpacker, STRING_SANITIZE_NONE), "foo");
+	EXPECT_EQ(unpacker.err, Error::ERR_NONE);
+	EXPECT_STREQ(unpacker_get_string_sanitized(&unpacker, STRING_SANITIZE_CC), "ba   r");
+	EXPECT_EQ(unpacker.err, Error::ERR_NONE);
+	EXPECT_STREQ(unpacker_get_string_sanitized(&unpacker, STRING_SKIP_START_WHITESPACES), "x");
+	EXPECT_EQ(unpacker.err, Error::ERR_NONE);
+}
+
 TEST(Unpacker, Booleans) {
 	uint8_t bytes[] = {0x00, 0x01, 0xcc};
 	Unpacker unpacker = unpacker_new(bytes, sizeof(bytes));

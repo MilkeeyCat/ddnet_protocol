@@ -3,6 +3,15 @@
 #include "common.h"
 #include "errors.h"
 
+// Replaces all characters below 32 with whitespace.
+void str_sanitize_cc(char *string);
+
+// Replaces all characters below 32 with whitespace with
+void str_sanitize(char *string);
+
+// Removes leading and trailing spaces and limits the use of multiple spaces.
+void str_clean_whitespaces(char *string);
+
 // State for the unpacker
 // holds the data to be unpacked
 // and keeps track of how much data was unpacked
@@ -14,6 +23,16 @@ typedef struct {
 	uint8_t *buf_end;
 	uint8_t *buf;
 } Unpacker;
+
+// used by `unpacker_get_string_sanitized()`
+// to strip unwanted characters from the strings
+// received from the peer
+typedef enum {
+	STRING_SANITIZE_NONE = 0,
+	STRING_SANITIZE = 1,
+	STRING_SANITIZE_CC = 2,
+	STRING_SKIP_START_WHITESPACES = 4,
+} StringSanitize;
 
 // returns a new `Unpacker` instance
 // it keeps track of how much data was already unpacked
@@ -39,6 +58,31 @@ Unpacker unpacker_new(uint8_t *buf, size_t len);
 // unpacker.err; // => Error::ERR_NONE
 // ```
 int32_t unpacker_get_int(Unpacker *state);
+
+// Use `unpacker_new` to get the value for `Unpacker *state`
+// it returns the next null terminated string in the unpacker data
+// and also progresses the internal unpacker state to point to the next element
+//
+// applies `STRING_SANITIZE` by default
+// if you want a string without sanitization use
+//
+// ```C
+// unpacker_get_string_sanitized(state, STRING_SANITIZE_NONE);
+// ```
+const char *unpacker_get_string(Unpacker *state);
+
+// Use `unpacker_new` to get the value for `Unpacker *state`
+// it returns the next null terminated string in the unpacker data
+// and also progresses the internal unpacker state to point to the next element
+//
+// ```C
+// uint8_t bytes[] = {'f', 'o', 'o', 0x00};
+// Unpacker unpacker = unpacker_new(bytes, sizeof(bytes));
+//
+// unpacker_get_string_sanitized(&unpacker, STRING_SANITIZE_CC); // => foo
+// unpacker.err; // =>  Error::ERR_NONE
+// ```
+const char *unpacker_get_string_sanitized(Unpacker *state, StringSanitize sanitize);
 
 // Use `unpacker_new` to get the value for `Unpacker *state`
 // it returns the next boolean in the unpacker data

@@ -59,62 +59,62 @@ Unpacker unpacker_new(uint8_t *buf, size_t len) {
 		.buf_end = buf + len};
 }
 
-int32_t unpacker_get_int(Unpacker *state) {
-	size_t len = state->buf_end - state->buf;
+int32_t unpacker_get_int(Unpacker *unpacker) {
+	size_t len = unpacker->buf_end - unpacker->buf;
 	if(len < 1) {
-		state->err = ERR_EMPTY_BUFFER;
+		unpacker->err = ERR_EMPTY_BUFFER;
 		return 0;
 	}
 
-	const int32_t sign = (*state->buf >> 6) & 1;
-	int32_t value = *state->buf & 0x3f;
+	const int32_t sign = (*unpacker->buf >> 6) & 1;
+	int32_t value = *unpacker->buf & 0x3f;
 
 	do {
-		if(!(*state->buf & 0x80)) {
+		if(!(*unpacker->buf & 0x80)) {
 			break;
 		}
-		state->buf++;
-		value |= (*state->buf & 0x7f) << 6;
+		unpacker->buf++;
+		value |= (*unpacker->buf & 0x7f) << 6;
 
-		if(!(*state->buf & 0x80)) {
+		if(!(*unpacker->buf & 0x80)) {
 			break;
 		}
-		state->buf++;
-		value |= (*state->buf & 0x7f) << (6 + 7);
+		unpacker->buf++;
+		value |= (*unpacker->buf & 0x7f) << (6 + 7);
 
-		if(!(*state->buf & 0x80)) {
+		if(!(*unpacker->buf & 0x80)) {
 			break;
 		}
-		state->buf++;
-		value |= (*state->buf & 0x7f) << (6 + 7 + 7);
+		unpacker->buf++;
+		value |= (*unpacker->buf & 0x7f) << (6 + 7 + 7);
 
-		if(!(*state->buf & 0x80)) {
+		if(!(*unpacker->buf & 0x80)) {
 			break;
 		}
-		state->buf++;
-		value |= (*state->buf & 0x0f) << (6 + 7 + 7 + 7);
+		unpacker->buf++;
+		value |= (*unpacker->buf & 0x0f) << (6 + 7 + 7 + 7);
 	} while(0);
 
-	state->buf++;
+	unpacker->buf++;
 	value ^= -sign;
 	return value;
 }
 
-const char *unpacker_get_string_sanitized(Unpacker *state, StringSanitize sanitize) {
-	if(state->err != ERR_NONE) {
+const char *unpacker_get_string_sanitized(Unpacker *unpacker, StringSanitize sanitize) {
+	if(unpacker->err != ERR_NONE) {
 		return "";
 	}
 
-	char *str = (char *)state->buf;
-	while(*state->buf) // skip the string
+	char *str = (char *)unpacker->buf;
+	while(*unpacker->buf) // skip the string
 	{
-		state->buf++;
-		if(state->buf == state->buf_end) {
-			state->err = ERR_STR_UNEXPECTED_EOF;
+		unpacker->buf++;
+		if(unpacker->buf == unpacker->buf_end) {
+			unpacker->err = ERR_STR_UNEXPECTED_EOF;
 			return "";
 		}
 	}
-	state->buf++;
+	unpacker->buf++;
 
 	if(sanitize & STRING_SANITIZE) {
 		str_sanitize(str);
@@ -127,22 +127,22 @@ const char *unpacker_get_string_sanitized(Unpacker *state, StringSanitize saniti
 	return str;
 }
 
-const char *unpacker_get_string(Unpacker *state) {
-	return unpacker_get_string_sanitized(state, STRING_SANITIZE);
+const char *unpacker_get_string(Unpacker *unpacker) {
+	return unpacker_get_string_sanitized(unpacker, STRING_SANITIZE);
 }
 
-bool unpacker_get_bool(Unpacker *state) {
-	int32_t val = unpacker_get_int(state);
+bool unpacker_get_bool(Unpacker *unpacker) {
+	int32_t val = unpacker_get_int(unpacker);
 	if(val != 0 && val != 1) {
-		state->err = ERR_INVALID_BOOL;
+		unpacker->err = ERR_INVALID_BOOL;
 	}
 	return val == 1;
 }
 
-const uint8_t *unpacker_get_raw(Unpacker *state, size_t len) {
-	const uint8_t *ptr = state->buf;
+const uint8_t *unpacker_get_raw(Unpacker *unpacker, size_t len) {
+	const uint8_t *ptr = unpacker->buf;
 
-	state->buf += len;
+	unpacker->buf += len;
 
 	return ptr;
 }

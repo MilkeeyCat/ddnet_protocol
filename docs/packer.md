@@ -89,10 +89,10 @@ unpacker.err; // => Error::ERR_NONE
 ## Syntax
 
 ```C
-int32_t unpacker_get_int(Unpacker *state);
+int32_t unpacker_get_int(Unpacker *unpacker);
 ```
 
-Use `unpacker_new` to get the value for `Unpacker *state`
+Use `unpacker_new` to get the value for `Unpacker *unpacker`
 it returns the next integer in the unpacker data
 and also progresses the internal unpacker state to point to the next element
 
@@ -108,10 +108,10 @@ unpacker.err; // => Error::ERR_NONE
 ## Syntax
 
 ```C
-const char *unpacker_get_string(Unpacker *state);
+const char *unpacker_get_string(Unpacker *unpacker);
 ```
 
-Use `unpacker_new` to get the value for `Unpacker *state`
+Use `unpacker_new` to get the value for `Unpacker *unpacker`
 it returns the next null terminated string in the unpacker data
 and also progresses the internal unpacker state to point to the next element
 
@@ -119,7 +119,7 @@ applies `STRING_SANITIZE` by default
 if you want a string without sanitization use
 
 ```C
-unpacker_get_string_sanitized(state, STRING_SANITIZE_NONE);
+unpacker_get_string_sanitized(unpacker, STRING_SANITIZE_NONE);
 ```
 
 # unpacker_get_string_sanitized
@@ -127,10 +127,10 @@ unpacker_get_string_sanitized(state, STRING_SANITIZE_NONE);
 ## Syntax
 
 ```C
-const char *unpacker_get_string_sanitized(Unpacker *state, StringSanitize sanitize);
+const char *unpacker_get_string_sanitized(Unpacker *unpacker, StringSanitize sanitize);
 ```
 
-Use `unpacker_new` to get the value for `Unpacker *state`
+Use `unpacker_new` to get the value for `Unpacker *unpacker`
 it returns the next null terminated string in the unpacker data
 and also progresses the internal unpacker state to point to the next element
 
@@ -147,14 +147,14 @@ unpacker.err; // =>  Error::ERR_NONE
 ## Syntax
 
 ```C
-bool unpacker_get_bool(Unpacker *state);
+bool unpacker_get_bool(Unpacker *unpacker);
 ```
 
-Use `unpacker_new` to get the value for `Unpacker *state`
+Use `unpacker_new` to get the value for `Unpacker *unpacker`
 it returns the next boolean in the unpacker data
 and also progresses the internal unpacker state to point to the next element
 
-Might set the state->err to `ERR_INVALID_BOOL`
+Might set the unpacker->err to `ERR_INVALID_BOOL`
 
 ```C
 uint8_t bytes[] = {0x00, 0x01, 0xcc};
@@ -171,10 +171,10 @@ unpacker.err; // => Error::ERR_INVALID_BOOL
 ## Syntax
 
 ```C
-const uint8_t *unpacker_get_raw(Unpacker *state, size_t len);
+const uint8_t *unpacker_get_raw(Unpacker *unpacker, size_t len);
 ```
 
-Use `unpacker_new` to get the value for `Unpacker *state`
+Use `unpacker_new` to get the value for `Unpacker *unpacker`
 it returns the next `len` amount of bytes in the unpacker data
 and also progresses the internal unpacker state to point to the next element
 

@@ -52,6 +52,66 @@ void str_clean_whitespaces(char *string) {
 	}
 }
 
+void packer_init(Packer *packer) {
+	packer->err = ERR_NONE;
+	packer->current = packer->buf;
+	packer->end = packer->buf + (size_t)PACKER_BUFFER_SIZE;
+}
+
+size_t packer_size(Packer *packer) {
+	return packer->current - packer->buf;
+}
+
+size_t packer_remaining_size(Packer *packer) {
+	return packer->end - packer->current;
+}
+
+uint8_t *packer_data(Packer *packer) {
+	return packer->buf;
+}
+
+bool packer_add_int(Packer *packer, int32_t value) {
+	size_t space = packer_remaining_size(packer);
+	if(space <= 0) {
+		packer->err = ERR_BUFFER_FULL;
+		return false;
+	}
+
+	space--;
+
+	*packer->current = 0;
+	if(value < 0) {
+		// set sign bit
+		*packer->current |= 0x40;
+		value = ~value;
+	}
+
+	// pack 6 bits into destination
+	*packer->current |= value & 0x3f;
+	// discard 6 bits
+	value >>= 6;
+
+	*packer->current |= value & 0x3f;
+
+	while(value) {
+		if(space <= 0) {
+			packer->err = ERR_BUFFER_FULL;
+			return false;
+		}
+		// set extend bit
+		*packer->current |= 0x80;
+		space--;
+		packer->current++;
+		// pack 7 bits
+		*packer->current = value & 0x7f;
+		// discard 7 bits
+		value >>= 7;
+	}
+
+	packer->current++;
+	return true;
+}
+
 Unpacker unpacker_new(uint8_t *buf, size_t len) {
 	return (Unpacker){
 		.err = 0,

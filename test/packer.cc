@@ -6,6 +6,26 @@ extern "C" {
 #include <ddnet_protocol/packer.h>
 }
 
+TEST(Packer, SingleByteInts) {
+	Packer packer;
+	packer_init(&packer);
+
+	EXPECT_EQ(packer_remaining_size(&packer), PACKER_BUFFER_SIZE);
+	EXPECT_EQ(packer_size(&packer), 0);
+
+	packer_add_int(&packer, 0);
+	EXPECT_EQ(packer.err, Error::ERR_NONE);
+
+	packer_add_int(&packer, 1);
+	EXPECT_EQ(packer.err, Error::ERR_NONE);
+
+	uint8_t bytes[] = {0x00, 0x01};
+	EXPECT_TRUE(std::memcmp(packer_data(&packer), bytes, packer_size(&packer)) == 0);
+
+	EXPECT_EQ(packer_size(&packer), 2);
+	EXPECT_EQ(packer.err, Error::ERR_NONE);
+}
+
 TEST(Unpacker, SingleByteInts) {
 	uint8_t bytes[] = {0x05, 0x01, 0x02};
 	Unpacker unpacker = unpacker_new(bytes, sizeof(bytes));

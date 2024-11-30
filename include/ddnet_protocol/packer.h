@@ -12,6 +12,16 @@ void str_sanitize(char *string);
 // Removes leading and trailing spaces and limits the use of multiple spaces.
 void str_clean_whitespaces(char *string);
 
+// used by `unpacker_get_string_sanitized()`
+// to strip unwanted characters from the strings
+// received from the peer
+typedef enum {
+	STRING_SANITIZE_NONE = 0,
+	STRING_SANITIZE = 1 << 0,
+	STRING_SANITIZE_CC = 1 << 1,
+	STRING_SKIP_START_WHITESPACES = 1 << 2,
+} StringSanitize;
+
 // State for the unpacker
 // holds the data to be unpacked
 // and keeps track of how much data was unpacked
@@ -24,15 +34,38 @@ typedef struct {
 	uint8_t *buf;
 } Unpacker;
 
-// used by `unpacker_get_string_sanitized()`
-// to strip unwanted characters from the strings
-// received from the peer
-typedef enum {
-	STRING_SANITIZE_NONE = 0,
-	STRING_SANITIZE = 1 << 0,
-	STRING_SANITIZE_CC = 1 << 1,
-	STRING_SKIP_START_WHITESPACES = 1 << 2,
-} StringSanitize;
+// maximum output and storage size in bytes
+// used by the `Packer`
+#define PACKER_BUFFER_SIZE (1024 * 2)
+
+// State for the packer
+// holds the currently packed data
+// and also tracks errors
+typedef struct {
+	Error err;
+	uint8_t *current;
+	uint8_t *end;
+	uint8_t buf[PACKER_BUFFER_SIZE];
+} Packer;
+
+// initializes a new packer struct
+void packer_init(Packer *packer);
+
+// get the size in bytes of the currently packed data
+// see also `packer_data()`
+size_t packer_size(Packer *packer);
+
+// amount of free bytes in the output buffer
+// the packer can pack a maximum of `PACKER_BUFFER_SIZE` bytes
+size_t packer_remaining_size(Packer *packer);
+
+// use in combination with `packer_size()`
+uint8_t *packer_data(Packer *packer);
+
+// Packs `value` as teeworlds varint
+// call `packer_data()` to receive the full packed data
+// returns true on success
+bool packer_add_int(Packer *packer, int32_t value);
 
 // returns a new `Unpacker` instance
 // it keeps track of how much data was already unpacked

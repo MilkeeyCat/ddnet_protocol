@@ -88,7 +88,7 @@ static void construct_tree(const uint32_t *frequencies) {
 
 	// add the symbols
 	for(int32_t i = 0; i < HUFFMAN_MAX_SYMBOLS; i++) {
-		nodes[i].num_bits = 0xFFFFFFFF;
+		nodes[i].num_bits = 0xffffffff;
 		nodes[i].symbol = i;
 		nodes[i].leafs[0] = 0xffff;
 		nodes[i].leafs[1] = 0xffff;

@@ -9,6 +9,7 @@ extern "C" {
 TEST(Unpacker, SingleByteInts) {
 	uint8_t bytes[] = {0x05, 0x01, 0x02};
 	Unpacker unpacker = unpacker_new(bytes, sizeof(bytes));
+	EXPECT_EQ(unpacker_remaining_size(&unpacker), 3);
 	EXPECT_EQ(unpacker_get_int(&unpacker), 5);
 	EXPECT_EQ(unpacker.err, Error::ERR_NONE);
 	EXPECT_EQ(unpacker_get_int(&unpacker), 1);
@@ -26,6 +27,17 @@ TEST(Unpacker, MultiByteInts) {
 
 	EXPECT_EQ(unpacker_get_int(&unpacker), 65);
 	EXPECT_EQ(unpacker.err, Error::ERR_NONE);
+}
+
+TEST(Unpacker, InvalidMultiByteInts) {
+	uint8_t bytes[] = {0x80, 0x01, 0x81};
+	Unpacker unpacker = unpacker_new(bytes, sizeof(bytes));
+
+	EXPECT_EQ(unpacker_get_int(&unpacker), 64);
+	EXPECT_EQ(unpacker.err, Error::ERR_NONE);
+
+	EXPECT_EQ(unpacker_get_int(&unpacker), 0);
+	EXPECT_EQ(unpacker.err, Error::ERR_END_OF_BUFFER);
 }
 
 TEST(Unpacker, NegativeIntsSingleByte) {
@@ -74,7 +86,7 @@ TEST(Unpacker, StringsSanitized) {
 }
 
 TEST(Unpacker, Booleans) {
-	uint8_t bytes[] = {0x00, 0x01, 0xcc};
+	uint8_t bytes[] = {0x00, 0x01, 0x02, 0xcc};
 	Unpacker unpacker = unpacker_new(bytes, sizeof(bytes));
 
 	EXPECT_EQ(unpacker_get_bool(&unpacker), false);
@@ -82,7 +94,9 @@ TEST(Unpacker, Booleans) {
 	EXPECT_EQ(unpacker_get_bool(&unpacker), true);
 	EXPECT_EQ(unpacker.err, Error::ERR_NONE);
 	EXPECT_EQ(unpacker_get_bool(&unpacker), false);
-	EXPECT_EQ(unpacker.err, Error::ERR_INVALID_BOOL);
+	EXPECT_EQ(unpacker.err, Error::ERR_INVALID_BOOL); // 2 is out of range for bool
+	EXPECT_EQ(unpacker_get_bool(&unpacker), false);
+	EXPECT_EQ(unpacker.err, Error::ERR_END_OF_BUFFER); // 0xcc has extension bit set for int
 }
 
 TEST(Unpacker, Raw) {
@@ -92,4 +106,7 @@ TEST(Unpacker, Raw) {
 	unpacker_get_int(&unpacker);
 	EXPECT_TRUE(std::memcmp(unpacker_get_raw(&unpacker, 3), &bytes[1], 3) == 0);
 	EXPECT_EQ(unpacker.err, Error::ERR_NONE);
+
+	EXPECT_EQ(unpacker_get_raw(&unpacker, 10), nullptr);
+	EXPECT_EQ(unpacker.err, Error::ERR_END_OF_BUFFER);
 }

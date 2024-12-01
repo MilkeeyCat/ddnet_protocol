@@ -47,6 +47,9 @@ typedef enum {
 // ```
 Unpacker unpacker_new(uint8_t *buf, size_t len);
 
+// amount of bytes that have not yet been unpacked
+size_t unpacker_remaining_size(Unpacker *unpacker);
+
 // Use `unpacker_new` to get the value for `Unpacker *unpacker`
 // it returns the next integer in the unpacker data
 // and also progresses the internal unpacker state to point to the next element

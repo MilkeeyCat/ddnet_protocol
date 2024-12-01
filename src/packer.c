@@ -59,9 +59,13 @@ Unpacker unpacker_new(uint8_t *buf, size_t len) {
 		.buf_end = buf + len};
 }
 
+size_t unpacker_remaining_size(Unpacker *unpacker) {
+	return unpacker->buf_end - unpacker->buf;
+}
+
 int32_t unpacker_get_int(Unpacker *unpacker) {
-	size_t len = unpacker->buf_end - unpacker->buf;
-	if(len < 1) {
+	size_t space = unpacker_remaining_size(unpacker);
+	if(space < 1) {
 		unpacker->err = ERR_EMPTY_BUFFER;
 		return 0;
 	}
@@ -73,11 +77,19 @@ int32_t unpacker_get_int(Unpacker *unpacker) {
 		if(!(*unpacker->buf & 0x80)) {
 			break;
 		}
+		if(--space <= 0) {
+			unpacker->err = ERR_END_OF_BUFFER;
+			return 0;
+		}
 		unpacker->buf++;
 		value |= (*unpacker->buf & 0x7f) << 6;
 
 		if(!(*unpacker->buf & 0x80)) {
 			break;
+		}
+		if(--space <= 0) {
+			unpacker->err = ERR_END_OF_BUFFER;
+			return 0;
 		}
 		unpacker->buf++;
 		value |= (*unpacker->buf & 0x7f) << (6 + 7);
@@ -85,11 +97,19 @@ int32_t unpacker_get_int(Unpacker *unpacker) {
 		if(!(*unpacker->buf & 0x80)) {
 			break;
 		}
+		if(--space <= 0) {
+			unpacker->err = ERR_END_OF_BUFFER;
+			return 0;
+		}
 		unpacker->buf++;
 		value |= (*unpacker->buf & 0x7f) << (6 + 7 + 7);
 
 		if(!(*unpacker->buf & 0x80)) {
 			break;
+		}
+		if(--space <= 0) {
+			unpacker->err = ERR_END_OF_BUFFER;
+			return 0;
 		}
 		unpacker->buf++;
 		value |= (*unpacker->buf & 0x0f) << (6 + 7 + 7 + 7);
@@ -140,6 +160,11 @@ bool unpacker_get_bool(Unpacker *unpacker) {
 }
 
 const uint8_t *unpacker_get_raw(Unpacker *unpacker, size_t len) {
+	if(unpacker_remaining_size(unpacker) < len) {
+		unpacker->err = ERR_END_OF_BUFFER;
+		return NULL;
+	}
+
 	const uint8_t *ptr = unpacker->buf;
 
 	unpacker->buf += len;

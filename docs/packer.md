@@ -84,6 +84,16 @@ unpacker_get_int(&unpacker); // => 2
 unpacker.err; // => Error::ERR_NONE
 ```
 
+# unpacker_remaining_size
+
+## Syntax
+
+```C
+size_t unpacker_remaining_size(Unpacker *unpacker);
+```
+
+amount of bytes that have not yet been unpacked
+
 # unpacker_get_int
 
 ## Syntax

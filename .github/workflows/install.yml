@@ -31,6 +31,12 @@ jobs:
         brew install pkg-config cmake shellcheck || true
         sudo rm -rf /Library/Developer/CommandLineTools
 
+    - name: Prepare
+      run: |
+          mkdir -p ~/.local/bin/
+          wget -O ~/.local/bin/lintdown.sh https://raw.githubusercontent.com/ChillerDragon/lintdown.sh/master/lintdown.sh
+          chmod +x ~/.local/bin/lintdown.sh
+
     - name: Install
       run: |
         mkdir build
@@ -46,10 +52,13 @@ jobs:
 
     - name: Build example snippet in README.md
       run: |
-          mkdir -p ~/.local/bin/
-          wget -O ~/.local/bin/lintdown.sh https://raw.githubusercontent.com/ChillerDragon/lintdown.sh/master/lintdown.sh
-          chmod +x ~/.local/bin/lintdown.sh
           LDLIBS=-lddnet_protocol lintdown.sh README.md
+
+    - name: Build all code snippets in documentation
+      run: |
+          export C_INCLUDES="$(ls include/ddnet_protocol/ | awk '{ print "ddnet_protocol/" $0 }' | tr '\n' ',')"
+          C_INCLUDES+=stdint.h,stddef.h,stdbool.h
+          CFLAGS="-DBLOAT" LDLIBS=-lddnet_protocol lintdown.sh docs/*.md --skip-pattern 'typedef (enum|struct) {' --wrap-main
 
     - name: Uninstall
       run: |

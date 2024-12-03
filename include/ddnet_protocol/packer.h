@@ -70,7 +70,9 @@ int32_t unpacker_get_int(Unpacker *unpacker);
 // if you want a string without sanitization use
 //
 // ```C
-// unpacker_get_string_sanitized(unpacker, STRING_SANITIZE_NONE);
+// uint8_t bytes[] = {'f', 'o', 0x03, 'o', 0x00};
+// Unpacker unpacker = unpacker_new(bytes, sizeof(bytes));
+// unpacker_get_string_sanitized(&unpacker, STRING_SANITIZE_NONE);
 // ```
 const char *unpacker_get_string(Unpacker *unpacker);
 
@@ -97,9 +99,9 @@ const char *unpacker_get_string_sanitized(Unpacker *unpacker, StringSanitize san
 // uint8_t bytes[] = {0x00, 0x01, 0xcc};
 // Unpacker unpacker = unpacker_new(bytes, sizeof(bytes));
 //
-// unpacker_get_bool(&unpacker) // => false
-// unpacker_get_bool(&unpacker) // => true
-// unpacker_get_bool(&unpacker) // => false (invalid boolean)
+// unpacker_get_bool(&unpacker); // => false
+// unpacker_get_bool(&unpacker); // => true
+// unpacker_get_bool(&unpacker); // => false (invalid boolean)
 // unpacker.err; // => Error::ERR_INVALID_BOOL
 // ```
 bool unpacker_get_bool(Unpacker *unpacker);

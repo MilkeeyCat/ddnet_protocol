@@ -112,11 +112,10 @@ bool packer_add_int(Packer *packer, int32_t value) {
 	return true;
 }
 
-Unpacker unpacker_new(uint8_t *buf, size_t len) {
-	return (Unpacker){
-		.err = 0,
-		.buf = buf,
-		.buf_end = buf + len};
+void unpacker_init(Unpacker *unpacker, uint8_t *buf, size_t len) {
+	unpacker->err = ERR_NONE;
+	unpacker->buf = buf;
+	unpacker->buf_end = buf + len;
 }
 
 size_t unpacker_remaining_size(Unpacker *unpacker) {

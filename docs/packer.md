@@ -205,7 +205,8 @@ if you want a string without sanitization use
 
 ```C
 uint8_t bytes[] = {'f', 'o', 0x03, 'o', 0x00};
-Unpacker unpacker = unpacker_new(bytes, sizeof(bytes));
+Unpacker unpacker;
+unpacker_init(&unpacker, bytes, sizeof(bytes));
 unpacker_get_string_sanitized(&unpacker, STRING_SANITIZE_NONE);
 ```
 

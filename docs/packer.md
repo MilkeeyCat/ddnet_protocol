@@ -204,7 +204,9 @@ applies `STRING_SANITIZE` by default
 if you want a string without sanitization use
 
 ```C
-unpacker_get_string_sanitized(unpacker, STRING_SANITIZE_NONE);
+uint8_t bytes[] = {'f', 'o', 0x03, 'o', 0x00};
+Unpacker unpacker = unpacker_new(bytes, sizeof(bytes));
+unpacker_get_string_sanitized(&unpacker, STRING_SANITIZE_NONE);
 ```
 
 # unpacker_get_string_sanitized
@@ -247,9 +249,9 @@ uint8_t bytes[] = {0x00, 0x01, 0xcc};
 Unpacker unpacker;
 unpacker_init(&unpacker, bytes, sizeof(bytes));
 
-unpacker_get_bool(&unpacker) // => false
-unpacker_get_bool(&unpacker) // => true
-unpacker_get_bool(&unpacker) // => false (invalid boolean)
+unpacker_get_bool(&unpacker); // => false
+unpacker_get_bool(&unpacker); // => true
+unpacker_get_bool(&unpacker); // => false (invalid boolean)
 unpacker.err; // => Error::ERR_INVALID_BOOL
 ```
 

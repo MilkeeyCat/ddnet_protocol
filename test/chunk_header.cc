@@ -4,7 +4,7 @@ extern "C" {
 #include <ddnet_protocol/chunk.h>
 }
 
-TEST(PacketHeader, Vital) {
+TEST(ChunkHeader, Vital) {
 	uint8_t bytes[] = {0x44, 0x04, 0x01, 0x00};
 	uint8_t *buf = &bytes[0];
 	ChunkHeader header = decode_chunk_header(&buf);
@@ -15,7 +15,7 @@ TEST(PacketHeader, Vital) {
 	EXPECT_EQ(&bytes[sizeof(bytes) - 1], buf);
 }
 
-TEST(PacketHeader, NotVital) {
+TEST(ChunkHeader, NotVital) {
 	uint8_t bytes[] = {0x44, 0x04, 0x01, 0x00};
 	uint8_t *buf = &bytes[0];
 	ChunkHeader header = decode_chunk_header(&buf);

@@ -1,3 +1,5 @@
+#pragma once
+
 #include "common.h"
 
 // These flags are used by the chunk header.

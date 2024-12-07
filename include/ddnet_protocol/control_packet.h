@@ -13,9 +13,10 @@ typedef enum {
 
 typedef struct {
 	PacketKind _;
+	PacketHeader header;
 	ControlMessageKind kind;
 	Token token;
 	char *reason; // Can be set if msg_kind == CTRL_MSG_CLOSE
 } PacketControl;
 
-PacketControl *decode_control(uint8_t *buf, size_t len, Error *err);
+PacketControl *decode_control(uint8_t *buf, size_t len, PacketHeader header, Error *err);

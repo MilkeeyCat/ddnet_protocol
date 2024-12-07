@@ -1,5 +1,6 @@
 #include "packet.h"
 #include "control_packet.h"
+#include "packet_normal.h"
 
 PacketHeader decode_packet_header(uint8_t *buf) {
 	return (PacketHeader){
@@ -22,8 +23,8 @@ PacketKind *decode(uint8_t *buf, size_t len, Error *err) {
 
 	if(header.flags & PACKET_FLAG_CONTROL) {
 		return (PacketKind *)decode_control(&buf[3], len - 3, header, err);
-	} else if(err) {
-		*err = ERR_INVALID_PACKET;
+	} else {
+		return (PacketKind *)decode_normal(&buf[3], len - 3, header, err);
 	}
 
 	return NULL;

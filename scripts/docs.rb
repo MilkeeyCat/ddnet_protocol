@@ -39,7 +39,7 @@ class BaseDoc
   end
 
   def self.is_func?(line)
-    !line.match(/(const )?(u?int(32|8)_t|size_t|bool|void|char|Unpacker|Token|PacketHeader|PacketKind) \*?\w+\(/).nil?
+    !line.match(/(const )?(u?int(32|8)_t|size_t|bool|void|char|Unpacker|Token|PacketHeader|PacketKind|ChunkHeader) \*?\w+\(/).nil?
   end
 
   def self.is_typedef?(line)
@@ -233,7 +233,7 @@ def main
     end
   end
 
-  %w(packer huffman errors token packet).each do |component|
+  %w(packer huffman errors token packet chunk).each do |component|
     header_to_markdown(
       "include/ddnet_protocol/#{component}.h",
       "docs/#{component}.md",

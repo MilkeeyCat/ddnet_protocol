@@ -24,12 +24,8 @@ PacketControl *decode_control(uint8_t *buf, size_t len, PacketHeader header, Err
 	}
 	case CTRL_MSG_CLOSE: {
 		if(len - 1 > sizeof(Token)) {
-			size_t len = MIN(strlen((char *)&buf[1]) + 1, 256);
-			reason = malloc(len);
-
-			strncpy(reason, (const char *)&buf[1], len);
-
-			buf += len;
+			reason = (char *)&buf[1];
+			buf += strlen(reason) + 1;
 		}
 
 		break;

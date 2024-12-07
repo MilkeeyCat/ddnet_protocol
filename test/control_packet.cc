@@ -13,6 +13,9 @@ TEST(ControlPacket, Keepalive) {
 	EXPECT_TRUE(packet != nullptr);
 	EXPECT_EQ(err, Error::ERR_NONE);
 	EXPECT_EQ(packet->_, PacketKind::PACKET_CONTROL);
+	EXPECT_EQ(packet->header.flags, PacketFlag::PACKET_FLAG_CONTROL);
+	EXPECT_EQ(packet->header.num_chunks, 0);
+	EXPECT_EQ(packet->header.ack, 0);
 	EXPECT_EQ((packet)->kind, ControlMessageKind::CTRL_MSG_KEEPALIVE);
 	EXPECT_TRUE(packet->reason == nullptr);
 	EXPECT_EQ(packet->token, 0x4ec73b04);

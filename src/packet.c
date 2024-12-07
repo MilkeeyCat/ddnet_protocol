@@ -18,10 +18,10 @@ PacketKind *decode(uint8_t *buf, size_t len, Error *err) {
 		return NULL;
 	}
 
-	uint8_t flags = buf[0] >> 2;
+	PacketHeader header = decode_packet_header(buf);
 
-	if(flags & PACKET_FLAG_CONTROL) {
-		return (PacketKind *)decode_control(&buf[3], len - 3, err);
+	if(header.flags & PACKET_FLAG_CONTROL) {
+		return (PacketKind *)decode_control(&buf[3], len - 3, header, err);
 	} else if(err) {
 		*err = ERR_INVALID_PACKET;
 	}

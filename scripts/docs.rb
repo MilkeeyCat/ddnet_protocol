@@ -3,7 +3,8 @@
 class BaseDoc
   attr_accessor :comment, :signature
 
-  DEFINE_VALUE_REGEX = /#define ([A-Z][A-Z_0-9]+) (0x)?[0-9]+$/
+  NUMERIC_REGEX = /^[\s+-]*(0x)?[0-9]+([\s+*\/<>-]*(0x)?[0-9]+)*$/
+  DEFINE_REGEX = /#define (?<name>[A-Z][A-Z_0-9]+) (?<value>.+)$/
 
   def initialize(comment)
     # documentation comment above the function
@@ -53,8 +54,13 @@ class BaseDoc
     line.start_with? "extern const "
   end
 
+  # true for defining numeric constants
+  # but not for macros or strings
   def self.is_define_value?(line)
-     line.match?(DEFINE_VALUE_REGEX)
+     defined = line.match(DEFINE_REGEX)
+     return false unless defined
+
+     defined["value"].match?(NUMERIC_REGEX)
   end
 
   def self.is_struct?(line)
@@ -105,7 +111,7 @@ end
 
 class DefineValueDoc < TypedefDoc
   def name
-    @signature.match(DEFINE_VALUE_REGEX)[1]
+    @signature.match(DEFINE_REGEX)["name"]
   end
 end
 

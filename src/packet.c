@@ -1,5 +1,5 @@
 #include "packet.h"
-#include "control_packet.h"
+#include "packet_control.h"
 #include "packet_normal.h"
 
 PacketHeader decode_packet_header(uint8_t *buf) {

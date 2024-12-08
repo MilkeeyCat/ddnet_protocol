@@ -1,4 +1,4 @@
-#include "control_packet.h"
+#include "packet_control.h"
 #include "packet.h"
 
 PacketControl *decode_control(uint8_t *buf, size_t len, PacketHeader header, Error *err) {

@@ -1,8 +1,8 @@
 #include <gtest/gtest.h>
 
 extern "C" {
-#include <ddnet_protocol/control_packet.h>
 #include <ddnet_protocol/packet.h>
+#include <ddnet_protocol/packet_control.h>
 }
 
 TEST(ControlPacket, Keepalive) {

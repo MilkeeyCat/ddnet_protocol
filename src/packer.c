@@ -70,11 +70,10 @@ uint8_t *packer_data(Packer *packer) {
 	return packer->buf;
 }
 
-bool packer_add_int(Packer *packer, int32_t value) {
+Error packer_add_int(Packer *packer, int32_t value) {
 	size_t space = packer_remaining_size(packer);
 	if(space <= 0) {
-		packer->err = ERR_BUFFER_FULL;
-		return false;
+		return packer->err = ERR_BUFFER_FULL;
 	}
 
 	space--;
@@ -93,8 +92,7 @@ bool packer_add_int(Packer *packer, int32_t value) {
 
 	while(value) {
 		if(space <= 0) {
-			packer->err = ERR_BUFFER_FULL;
-			return false;
+			return packer->err = ERR_BUFFER_FULL;
 		}
 		// set extend bit
 		*packer->current |= 0x80;
@@ -107,7 +105,7 @@ bool packer_add_int(Packer *packer, int32_t value) {
 	}
 
 	packer->current++;
-	return true;
+	return ERR_NONE;
 }
 
 void unpacker_init(Unpacker *unpacker, uint8_t *buf, size_t len) {

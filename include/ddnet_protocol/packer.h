@@ -64,8 +64,7 @@ uint8_t *packer_data(Packer *packer);
 
 // Packs `value` as teeworlds varint
 // call `packer_data()` to receive the full packed data
-// returns true on success
-bool packer_add_int(Packer *packer, int32_t value);
+Error packer_add_int(Packer *packer, int32_t value);
 
 // returns a new `Unpacker` instance
 // it keeps track of how much data was already unpacked

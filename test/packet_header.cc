@@ -11,4 +11,3 @@ TEST(PacketHeader, NormalNoFlags) {
 	EXPECT_EQ(header.ack, 6);
 	EXPECT_EQ(header.num_chunks, 2);
 }
-

@@ -15,7 +15,6 @@ typedef struct {
 	PacketKind _;
 	PacketHeader header;
 	ControlMessageKind kind;
-	Token token;
 	char *reason; // Can be set if msg_kind == CTRL_MSG_CLOSE
 } PacketControl;
 

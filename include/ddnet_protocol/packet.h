@@ -2,6 +2,7 @@
 
 #include "common.h"
 #include "errors.h"
+#include "token.h"
 
 // minimum size in bytes required for a valid packet header
 #define PACKET_MIN_HEADER_SIZE 3
@@ -36,9 +37,15 @@ typedef struct {
 	uint16_t flags;
 	uint16_t ack;
 	uint8_t num_chunks;
+	Token token;
 } PacketHeader;
 
-// unpack packet header
+// Unpacks packet header and fills the `PacketHeader` struct.
+//
+// Warning it does not set the `token` because this one is at the end of
+// the payload.
+// So it is the responsibility of the payload unpacker to parse the token.
+// https://github.com/MilkeeyCat/ddnet_protocol/issues/54
 PacketHeader decode_packet_header(uint8_t *buf);
 
 // Given a pointer to the beginning of a udp payload

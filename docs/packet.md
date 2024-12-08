@@ -61,6 +61,7 @@ typedef struct {
 	uint16_t flags;
 	uint16_t ack;
 	uint8_t num_chunks;
+	Token token;
 } PacketHeader;
 ```
 
@@ -76,7 +77,12 @@ the udp payload
 PacketHeader decode_packet_header(uint8_t *buf);
 ```
 
-unpack packet header
+Unpacks packet header and fills the `PacketHeader` struct.
+
+Warning it does not set the `token` because this one is at the end of
+the payload.
+So it is the responsibility of the payload unpacker to parse the token.
+https://github.com/MilkeeyCat/ddnet_protocol/issues/54
 
 # decode
 

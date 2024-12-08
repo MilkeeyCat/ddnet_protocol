@@ -45,9 +45,9 @@ PacketControl *decode_control(uint8_t *buf, size_t len, PacketHeader header, Err
 
 	packet->_ = PACKET_CONTROL;
 	packet->header = header;
+	packet->header.token = read_token(&buf[1]);
 	packet->kind = kind;
 	packet->reason = reason;
-	packet->token = read_token(&buf[1]);
 
 	return packet;
 }

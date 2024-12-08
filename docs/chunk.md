@@ -1,10 +1,26 @@
+# MAX_SEQUENCE
+
+## Syntax
+
+```C
+#define MAX_SEQUENCE 1 << 10
+```
+
+The sequence and acknowledge number can never
+be higher than 1024
+
 # ChunkFlag
 
 ## Syntax
 
 ```C
 typedef enum {
+	// Vital chunks are reliable.
+	// They contain a sequence number and will be resend
+	// if the peer did not acknowledge that sequence number.
 	CHUNK_FLAG_VITAL = 1,
+	// If this exact message was already sent the resend flag is set.
+	// This can happen if there is lag or packet loss.
 	CHUNK_FLAG_RESEND,
 } ChunkFlag;
 ```
@@ -21,9 +37,15 @@ the chunk is resend with the resend flag set.
 
 ```C
 typedef struct {
+	// Bit flags that can be any combination of the `ChunkFlag` enum.
 	uint8_t flags;
+	// Size in bytes of the chunk payload.
+	// Excluding the chunk headers size.
 	uint16_t size;
-	uint16_t sequence; // Set only if flags & CHUNK_FLAG_VITAL
+	// Set only if flags & CHUNK_FLAG_VITAL
+	// Is the amount of vital chunks that were already sent.
+	// But the number flips back to 0 when `MAX_SEQUENCE` is reached.
+	uint16_t sequence;
 } ChunkHeader;
 ```
 

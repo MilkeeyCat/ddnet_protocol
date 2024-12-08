@@ -91,8 +91,6 @@ bool packer_add_int(Packer *packer, int32_t value) {
 	// discard 6 bits
 	value >>= 6;
 
-	*packer->current |= value & 0x3f;
-
 	while(value) {
 		if(space <= 0) {
 			packer->err = ERR_BUFFER_FULL;

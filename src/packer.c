@@ -58,6 +58,17 @@ void packer_init(Packer *packer) {
 	packer->end = packer->buf + (size_t)PACKER_BUFFER_SIZE;
 }
 
+void packer_init_msg(Packer *packer, MessageId msg_id, MessageKind kind) {
+	packer_init(packer);
+
+	if(msg_id < 0 || msg_id > 0x3fffffff) {
+		packer->err = ERR_MESSAGE_ID_OUT_OF_BOUNDS;
+		return;
+	}
+
+	packer_add_int(packer, (int32_t)((msg_id << 1) | kind));
+}
+
 size_t packer_size(Packer *packer) {
 	return packer->current - packer->buf;
 }
@@ -70,11 +81,10 @@ uint8_t *packer_data(Packer *packer) {
 	return packer->buf;
 }
 
-bool packer_add_int(Packer *packer, int32_t value) {
+Error packer_add_int(Packer *packer, int32_t value) {
 	size_t space = packer_remaining_size(packer);
 	if(space <= 0) {
-		packer->err = ERR_BUFFER_FULL;
-		return false;
+		return packer->err = ERR_BUFFER_FULL;
 	}
 
 	space--;
@@ -93,8 +103,7 @@ bool packer_add_int(Packer *packer, int32_t value) {
 
 	while(value) {
 		if(space <= 0) {
-			packer->err = ERR_BUFFER_FULL;
-			return false;
+			return packer->err = ERR_BUFFER_FULL;
 		}
 		// set extend bit
 		*packer->current |= 0x80;
@@ -107,7 +116,16 @@ bool packer_add_int(Packer *packer, int32_t value) {
 	}
 
 	packer->current++;
-	return true;
+	return ERR_NONE;
+}
+
+Error packer_add_string(Packer *packer, const char *value) {
+	size_t len = strlen(value) + 1;
+	if(packer_remaining_size(packer) < len) {
+		return packer->err = ERR_BUFFER_FULL;
+	}
+	strncpy((char *)packer->current, value, len);
+	packer->current += len;
 }
 
 void unpacker_init(Unpacker *unpacker, uint8_t *buf, size_t len) {

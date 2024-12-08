@@ -108,6 +108,15 @@ Error packer_add_int(Packer *packer, int32_t value) {
 	return ERR_NONE;
 }
 
+Error packer_add_string(Packer *packer, const char *value) {
+	size_t len = strlen(value) + 1;
+	if(packer_remaining_size(packer) < len) {
+		return packer->err = ERR_BUFFER_FULL;
+	}
+	strncpy((char *)packer->current, value, len);
+	packer->current += len;
+}
+
 void unpacker_init(Unpacker *unpacker, uint8_t *buf, size_t len) {
 	unpacker->err = ERR_NONE;
 	unpacker->buf = buf;

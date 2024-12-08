@@ -66,6 +66,10 @@ uint8_t *packer_data(Packer *packer);
 // call `packer_data()` to receive the full packed data
 Error packer_add_int(Packer *packer, int32_t value);
 
+// Packs `value` as plain null terminated C string
+// call `packer_data()` to receive the full packed data
+Error packer_add_string(Packer *packer, const char *value);
+
 // returns a new `Unpacker` instance
 // it keeps track of how much data was already unpacked
 //

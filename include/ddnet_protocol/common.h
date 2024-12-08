@@ -21,6 +21,7 @@ typedef enum { false,
 
 extern void *memset(void *s, int c, size_t n);
 extern void *malloc(size_t size);
+extern void free(void *ptr);
 extern char *strncpy(char *dest, const char *src, size_t len);
 #ifndef strlen
 extern size_t strlen(const char *str);

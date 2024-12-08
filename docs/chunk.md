@@ -45,3 +45,41 @@ Given a pointer to a byte buffer it will parse it as a chunk header.
 The pointer is then incremented by 2 or 3 depending on how many bytes
 where consumed.
 
+# ChunkKind
+
+## Syntax
+
+```C
+typedef enum {
+	CHUNK_KIND_RCON_CMD,
+	CHUNK_KIND_CL_STARTINFO,
+} ChunkKind;
+```
+
+Holds the type of `msg` in a `Chunk` struct
+
+Be careful this is not the message id
+that is sent over the network!
+
+# Chunk
+
+## Syntax
+
+```C
+typedef struct {
+	ChunkKind kind;
+	ChunkHeader header;
+	union {
+		MsgRconCmd rcon_cmd;
+	} msg;
+} Chunk;
+```
+
+A chunk is the container of a net message.
+One chunk contains of a chunk header.
+And a chunk payload. The payload contains
+exactly one net message of either type game or system.
+
+To access the net message struct check the `kind`
+and access the `msg` union accordingly.
+

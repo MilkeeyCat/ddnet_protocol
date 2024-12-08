@@ -6,6 +6,7 @@ Checks: >
   -clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling,
   misc-*,
   -misc-no-recursion,
+  -misc-include-cleaner,
   modernize-*,
   -modernize-use-trailing-return-type,
   -modernize-use-auto,

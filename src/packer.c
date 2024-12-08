@@ -58,6 +58,17 @@ void packer_init(Packer *packer) {
 	packer->end = packer->buf + (size_t)PACKER_BUFFER_SIZE;
 }
 
+void packer_init_msg(Packer *packer, MessageId msg_id, MessageKind kind) {
+	packer_init(packer);
+
+	if(msg_id < 0 || msg_id > 0x3fffffff) {
+		packer->err = ERR_MESSAGE_ID_OUT_OF_BOUNDS;
+		return;
+	}
+
+	packer_add_int(packer, (int32_t)((msg_id << 1) | kind));
+}
+
 size_t packer_size(Packer *packer) {
 	return packer->current - packer->buf;
 }

@@ -3,16 +3,14 @@
 #include "message.h"
 #include "packet.h"
 
-PacketNormal *decode_normal(uint8_t *buf, size_t len, PacketHeader header, Error *err) {
+PacketNormal *decode_normal(uint8_t *buf, size_t len, PacketHeader *header, Error *err) {
 	PacketNormal *packet = malloc(sizeof(PacketNormal));
-	packet->_ = PACKET_NORMAL;
-	packet->header = header;
 
 	uint8_t *end = buf + len;
 	uint8_t num_chunks = 0;
 
 	while(true) {
-		if(num_chunks == header.num_chunks) {
+		if(num_chunks == header->num_chunks) {
 			break;
 		}
 
@@ -52,7 +50,7 @@ PacketNormal *decode_normal(uint8_t *buf, size_t len, PacketHeader header, Error
 		buf += chunk_header.size;
 	}
 
-	if(num_chunks < header.num_chunks) {
+	if(num_chunks < header->num_chunks) {
 		*err = ERR_END_OF_BUFFER;
 		free(packet);
 		return NULL;
@@ -79,6 +77,6 @@ PacketNormal *decode_normal(uint8_t *buf, size_t len, PacketHeader header, Error
 		return NULL;
 	}
 
-	packet->token = read_token(buf);
+	header->token = read_token(buf);
 	return packet;
 }

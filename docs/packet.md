@@ -108,6 +108,76 @@ header.num_chunks = 0; // control packets have no chunks
 header.token = TOKEN_MAGIC;
 ```
 
+# ControlMessageKind
+
+## Syntax
+
+```C
+typedef enum {
+	CTRL_MSG_KEEPALIVE,
+	CTRL_MSG_CONNECT,
+	CTRL_MSG_CONNECTACCEPT,
+	CTRL_MSG_ACCEPT,
+	CTRL_MSG_CLOSE,
+} ControlMessageKind;
+```
+
+Type of control packet
+
+# PacketControl
+
+## Syntax
+
+```C
+typedef struct {
+	ControlMessageKind kind;
+	char *reason; // Can be set if msg_kind == CTRL_MSG_CLOSE
+} PacketControl;
+```
+
+Control packet
+
+# MAX_CHUNKS
+
+## Syntax
+
+```C
+#define MAX_CHUNKS 512
+```
+
+allow the user to define their own max? To reduce memory usage.
+
+# PacketNormal
+
+## Syntax
+
+```C
+typedef struct {
+	Chunk chunks[MAX_CHUNKS];
+} PacketNormal;
+```
+
+Struct holding the packet payload of a regular packet.
+It contains chunks which hold all the gameplay relevant
+net messages.
+
+# Packet
+
+## Syntax
+
+```C
+typedef struct {
+	PacketKind _;
+	PacketHeader header;
+	union {
+		PacketControl *control;
+		PacketNormal *normal;
+	};
+} Packet;
+```
+
+Holds information about on full ddnet packet
+
 # decode_packet_header
 
 ## Syntax
@@ -128,7 +198,7 @@ https://github.com/MilkeeyCat/ddnet_protocol/issues/54
 ## Syntax
 
 ```C
-PacketKind *decode(uint8_t *buf, size_t len, Error *err);
+Packet *decode(uint8_t *buf, size_t len, Error *err);
 ```
 
 Given a pointer to the beginning of a udp payload

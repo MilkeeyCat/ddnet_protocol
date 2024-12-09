@@ -10,7 +10,7 @@ PacketHeader decode_packet_header(uint8_t *buf) {
 	};
 }
 
-PacketKind *decode(uint8_t *buf, size_t len, Error *err) {
+Packet *decode(uint8_t *buf, size_t len, Error *err) {
 	if(len < PACKET_HEADER_SIZE || len > MAX_PACKET_SIZE) {
 		if(err) {
 			*err = ERR_INVALID_PACKET;
@@ -19,13 +19,16 @@ PacketKind *decode(uint8_t *buf, size_t len, Error *err) {
 		return NULL;
 	}
 
-	PacketHeader header = decode_packet_header(buf);
+	Packet *packet = malloc(sizeof(Packet));
+	packet->header = decode_packet_header(buf);
 
-	if(header.flags & PACKET_FLAG_CONTROL) {
-		return (PacketKind *)decode_control(&buf[3], len - 3, header, err);
+	if(packet->header.flags & PACKET_FLAG_CONTROL) {
+		packet->_ = PACKET_CONTROL;
+		packet->control = decode_control(&buf[3], len - 3, &packet->header, err);
 	} else {
-		return (PacketKind *)decode_normal(&buf[3], len - 3, header, err);
+		packet->_ = PACKET_NORMAL;
+		packet->normal = decode_normal(&buf[3], len - 3, &packet->header, err);
 	}
 
-	return NULL;
+	return packet;
 }

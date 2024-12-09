@@ -1,5 +1,6 @@
 #pragma once
 
+#include "chunk.h"
 #include "common.h"
 #include "errors.h"
 #include "token.h"
@@ -87,6 +88,43 @@ typedef struct {
 	Token token;
 } PacketHeader;
 
+// Type of control packet
+typedef enum {
+	CTRL_MSG_KEEPALIVE,
+	CTRL_MSG_CONNECT,
+	CTRL_MSG_CONNECTACCEPT,
+	CTRL_MSG_ACCEPT,
+	CTRL_MSG_CLOSE,
+} ControlMessageKind;
+
+// Control packet
+typedef struct {
+	ControlMessageKind kind;
+	char *reason; // Can be set if msg_kind == CTRL_MSG_CLOSE
+} PacketControl;
+
+// allow the user to define their own max? To reduce memory usage.
+#ifndef MAX_CHUNKS
+#define MAX_CHUNKS 512
+#endif
+
+// Struct holding the packet payload of a regular packet.
+// It contains chunks which hold all the gameplay relevant
+// net messages.
+typedef struct {
+	Chunk chunks[MAX_CHUNKS];
+} PacketNormal;
+
+// Holds information about on full ddnet packet
+typedef struct {
+	PacketKind _;
+	PacketHeader header;
+	union {
+		PacketControl *control;
+		PacketNormal *normal;
+	};
+} Packet;
+
 // Unpacks packet header and fills the `PacketHeader` struct.
 //
 // Warning it does not set the `token` because this one is at the end of
@@ -101,4 +139,4 @@ PacketHeader decode_packet_header(uint8_t *buf);
 // It returns `NULL` on error. Check the `err` value for more details.
 // Or a pointer to newly allocated memory that holds the parsed packet struct.
 // It is your responsiblity to free that pointer!
-PacketKind *decode(uint8_t *buf, size_t len, Error *err);
+Packet *decode(uint8_t *buf, size_t len, Error *err);

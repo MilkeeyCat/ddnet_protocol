@@ -11,7 +11,7 @@ PacketHeader decode_packet_header(uint8_t *buf) {
 }
 
 PacketKind *decode(uint8_t *buf, size_t len, Error *err) {
-	if(len < PACKET_MIN_HEADER_SIZE || len > PACKET_MAX_HEADER_SIZE) {
+	if(len < PACKET_HEADER_SIZE || len > MAX_PACKET_SIZE) {
 		if(err) {
 			*err = ERR_INVALID_PACKET;
 		}

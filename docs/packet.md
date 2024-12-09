@@ -1,19 +1,19 @@
-# PACKET_MIN_HEADER_SIZE
+# PACKET_HEADER_SIZE
 
 ## Syntax
 
 ```C
-#define PACKET_MIN_HEADER_SIZE 3
+#define PACKET_HEADER_SIZE 3
 ```
 
 minimum size in bytes required for a valid packet header
 
-# PACKET_MAX_HEADER_SIZE
+# MAX_PACKET_SIZE
 
 ## Syntax
 
 ```C
-#define PACKET_MAX_HEADER_SIZE 1400
+#define MAX_PACKET_SIZE 1400
 ```
 
 maximum amount of total packet size

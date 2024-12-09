@@ -21,6 +21,7 @@ Packet *decode(uint8_t *buf, size_t len, Error *err) {
 	}
 
 	Packet *packet = malloc(sizeof(Packet));
+	memset(packet, 0, sizeof(*packet));
 	packet->header = decode_packet_header(buf);
 
 	if(packet->header.flags & PACKET_FLAG_CONTROL) {
@@ -39,4 +40,14 @@ Packet *decode(uint8_t *buf, size_t len, Error *err) {
 	}
 
 	return packet;
+}
+
+Error free_packet(Packet *packet) {
+	if(packet->_ == PACKET_NORMAL) {
+		for(size_t i = 0; i < MAX_CHUNKS; i++) {
+			free(packet->chunks[i].msg.null);
+		}
+	}
+	free(packet);
+	return ERR_NONE;
 }

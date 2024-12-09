@@ -28,7 +28,7 @@ TEST(NormalPacket, StartInfoAndRconCmd) {
 
 	EXPECT_EQ(packet->chunks[0].kind, CHUNK_KIND_CL_STARTINFO);
 	EXPECT_EQ(packet->chunks[1].kind, CHUNK_KIND_RCON_CMD);
-	EXPECT_STREQ(packet->chunks[1].msg.rcon_cmd.command, "crashmeplx");
+	EXPECT_STREQ(packet->chunks[1].msg.rcon_cmd->command, "crashmeplx");
 
 	free(packet);
 }

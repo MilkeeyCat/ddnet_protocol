@@ -192,5 +192,15 @@ this determins the type of packet.
 
 It returns `NULL` on error. Check the `err` value for more details.
 Or a pointer to newly allocated memory that holds the parsed packet struct.
-It is your responsiblity to free that pointer!
+It is your responsiblity to free it using `free_packet()`
+
+# free_packet
+
+## Syntax
+
+```C
+Error free_packet(Packet *packet);
+```
+
+Frees a packet struct and all of its fields
 

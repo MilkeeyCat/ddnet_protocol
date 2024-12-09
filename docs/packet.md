@@ -147,20 +147,6 @@ Control packet
 
 allow the user to define their own max? To reduce memory usage.
 
-# PacketNormal
-
-## Syntax
-
-```C
-typedef struct {
-	Chunk chunks[MAX_CHUNKS];
-} PacketNormal;
-```
-
-Struct holding the packet payload of a regular packet.
-It contains chunks which hold all the gameplay relevant
-net messages.
-
 # Packet
 
 ## Syntax
@@ -171,7 +157,7 @@ typedef struct {
 	PacketHeader header;
 	union {
 		PacketControl *control;
-		PacketNormal *normal;
+		Chunk chunks[MAX_CHUNKS];
 	};
 } Packet;
 ```

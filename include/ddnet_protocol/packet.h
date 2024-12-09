@@ -108,20 +108,13 @@ typedef struct {
 #define MAX_CHUNKS 512
 #endif
 
-// Struct holding the packet payload of a regular packet.
-// It contains chunks which hold all the gameplay relevant
-// net messages.
-typedef struct {
-	Chunk chunks[MAX_CHUNKS];
-} PacketNormal;
-
 // Holds information about on full ddnet packet
 typedef struct {
 	PacketKind _;
 	PacketHeader header;
 	union {
 		PacketControl *control;
-		PacketNormal *normal;
+		Chunk chunks[MAX_CHUNKS];
 	};
 } Packet;
 

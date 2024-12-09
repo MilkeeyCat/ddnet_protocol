@@ -8,4 +8,5 @@
 
 // Given a buffer containing the packet payload without packet header.
 // It will extract all system and game messages.
-PacketNormal *decode_normal(uint8_t *buf, size_t len, PacketHeader *header, Error *err);
+// And store them in the given packet struct.
+Error fetch_chunks(uint8_t *buf, size_t len, Packet *packet);

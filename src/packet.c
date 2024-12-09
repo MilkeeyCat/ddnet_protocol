@@ -1,6 +1,7 @@
 #include "packet.h"
+#include "errors.h"
+#include "fetch_chunks.h"
 #include "packet_control.h"
-#include "packet_normal.h"
 
 PacketHeader decode_packet_header(uint8_t *buf) {
 	return (PacketHeader){
@@ -27,7 +28,14 @@ Packet *decode(uint8_t *buf, size_t len, Error *err) {
 		packet->control = decode_control(&buf[3], len - 3, &packet->header, err);
 	} else {
 		packet->_ = PACKET_NORMAL;
-		packet->normal = decode_normal(&buf[3], len - 3, &packet->header, err);
+		Error chunk_error = fetch_chunks(&buf[3], len - 3, packet);
+		if(chunk_error != ERR_NONE) {
+			if(err) {
+				*err = chunk_error;
+			}
+			free(packet);
+			return NULL;
+		}
 	}
 
 	return packet;

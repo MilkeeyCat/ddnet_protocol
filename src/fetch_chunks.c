@@ -1,16 +1,14 @@
-#include "packet_normal.h"
+#include "fetch_chunks.h"
 #include "errors.h"
 #include "message.h"
 #include "packet.h"
 
-PacketNormal *decode_normal(uint8_t *buf, size_t len, PacketHeader *header, Error *err) {
-	PacketNormal *packet = malloc(sizeof(PacketNormal));
-
+Error fetch_chunks(uint8_t *buf, size_t len, Packet *packet) {
 	uint8_t *end = buf + len;
 	uint8_t num_chunks = 0;
 
 	while(true) {
-		if(num_chunks == header->num_chunks) {
+		if(num_chunks == packet->header.num_chunks) {
 			break;
 		}
 
@@ -23,18 +21,14 @@ PacketNormal *decode_normal(uint8_t *buf, size_t len, PacketHeader *header, Erro
 		// but in the ddnet, 0.6 and 0.7 protocol no such message exists
 		// so we can assume that it is an invalid message
 		if(space < 4) {
-			*err = ERR_END_OF_BUFFER;
-			free(packet);
-			return NULL;
+			return ERR_END_OF_BUFFER;
 		}
 
 		ChunkHeader chunk_header = decode_chunk_header(&buf);
 
 		space = end - buf;
 		if(space < chunk_header.size) {
-			*err = ERR_END_OF_BUFFER;
-			free(packet);
-			return NULL;
+			return ERR_END_OF_BUFFER;
 		}
 
 		Chunk chunk;
@@ -43,17 +37,13 @@ PacketNormal *decode_normal(uint8_t *buf, size_t len, PacketHeader *header, Erro
 		num_chunks++;
 		// unknown message ids are not a fatal error in teeworlds
 		if(chunk_err != ERR_NONE && chunk_err != ERR_UNKNOWN_MESSAGE) {
-			*err = chunk_err;
-			free(packet);
-			return NULL;
+			return chunk_err;
 		}
 		buf += chunk_header.size;
 	}
 
-	if(num_chunks < header->num_chunks) {
-		*err = ERR_END_OF_BUFFER;
-		free(packet);
-		return NULL;
+	if(num_chunks < packet->header.num_chunks) {
+		return ERR_END_OF_BUFFER;
 	}
 
 	size_t space = end - buf;
@@ -64,19 +54,15 @@ PacketNormal *decode_normal(uint8_t *buf, size_t len, PacketHeader *header, Erro
 	// because pure teeworlds is not in scope we throw an error
 	// https://github.com/MilkeeyCat/ddnet_protocol/issues/48
 	if(space < 4) {
-		*err = ERR_MISSING_DDNET_SECURITY_TOKEN;
-		free(packet);
-		return NULL;
+		return ERR_MISSING_DDNET_SECURITY_TOKEN;
 	}
 	if(space > 4) {
 		// we did already parse the expected amount of chunks
 		// and the ddnet security token
 		// but there are still bytes left!
-		*err = ERR_REMAINING_BYTES_IN_BUFFER;
-		free(packet);
-		return NULL;
+		return ERR_REMAINING_BYTES_IN_BUFFER;
 	}
 
-	header->token = read_token(buf);
-	return packet;
+	packet->header.token = read_token(buf);
+	return ERR_NONE;
 }

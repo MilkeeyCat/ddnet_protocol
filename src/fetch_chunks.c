@@ -3,12 +3,12 @@
 #include "message.h"
 #include "packet.h"
 
-Error fetch_chunks(uint8_t *buf, size_t len, Packet *packet) {
+Error fetch_chunks(uint8_t *buf, size_t len, PacketHeader *header, OnChunk callback, void *ctx) {
 	uint8_t *end = buf + len;
 	uint8_t num_chunks = 0;
 
 	while(true) {
-		if(num_chunks == packet->header.num_chunks) {
+		if(num_chunks == header->num_chunks) {
 			break;
 		}
 
@@ -32,8 +32,9 @@ Error fetch_chunks(uint8_t *buf, size_t len, Packet *packet) {
 		}
 
 		Chunk chunk;
-		packet->chunks[num_chunks].header = chunk_header;
-		Error chunk_err = decode_message(&packet->chunks[num_chunks], buf);
+		chunk.header = chunk_header;
+		Error chunk_err = decode_message(&chunk, buf);
+		callback(ctx, &chunk);
 		num_chunks++;
 		// unknown message ids are not a fatal error in teeworlds
 		if(chunk_err != ERR_NONE && chunk_err != ERR_UNKNOWN_MESSAGE) {
@@ -42,7 +43,7 @@ Error fetch_chunks(uint8_t *buf, size_t len, Packet *packet) {
 		buf += chunk_header.size;
 	}
 
-	if(num_chunks < packet->header.num_chunks) {
+	if(num_chunks < header->num_chunks) {
 		return ERR_END_OF_BUFFER;
 	}
 
@@ -63,6 +64,7 @@ Error fetch_chunks(uint8_t *buf, size_t len, Packet *packet) {
 		return ERR_REMAINING_BYTES_IN_BUFFER;
 	}
 
-	packet->header.token = read_token(buf);
+	header->token = read_token(buf);
+
 	return ERR_NONE;
 }

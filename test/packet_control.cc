@@ -19,7 +19,7 @@ TEST(ControlPacket, Keepalive) {
 	EXPECT_EQ(packet->header.token, 0x4ec73b04);
 	EXPECT_EQ(packet->control->kind, ControlMessageKind::CTRL_MSG_KEEPALIVE);
 	EXPECT_TRUE(packet->control->reason == nullptr);
-	free(packet);
+	free_packet(packet);
 }
 
 TEST(ControlPacket, Connect) {
@@ -33,7 +33,7 @@ TEST(ControlPacket, Connect) {
 	EXPECT_EQ(packet->control->kind, ControlMessageKind::CTRL_MSG_CONNECT);
 	EXPECT_EQ(packet->header.token, 0xffffffff);
 	EXPECT_TRUE(packet->control->reason == nullptr);
-	free(packet);
+	free_packet(packet);
 }
 
 TEST(ControlPacket, ConnectAccept) {
@@ -47,7 +47,7 @@ TEST(ControlPacket, ConnectAccept) {
 	EXPECT_EQ(packet->control->kind, ControlMessageKind::CTRL_MSG_CONNECTACCEPT);
 	EXPECT_EQ(packet->header.token, 0x4ec73b04);
 	EXPECT_TRUE(packet->control->reason == nullptr);
-	free(packet);
+	free_packet(packet);
 }
 
 TEST(ControlPacket, Accept) {
@@ -61,7 +61,7 @@ TEST(ControlPacket, Accept) {
 	EXPECT_EQ(packet->control->kind, ControlMessageKind::CTRL_MSG_ACCEPT);
 	EXPECT_EQ(packet->header.token, 0x4ec73b04);
 	EXPECT_TRUE(packet->control->reason == nullptr);
-	free(packet);
+	free_packet(packet);
 }
 
 TEST(ControlPacket, Close) {
@@ -75,7 +75,7 @@ TEST(ControlPacket, Close) {
 	EXPECT_EQ(packet->control->kind, ControlMessageKind::CTRL_MSG_CLOSE);
 	EXPECT_EQ(packet->header.token, 0x4ec73b04);
 	EXPECT_TRUE(packet->control->reason == nullptr);
-	free(packet);
+	free_packet(packet);
 }
 
 TEST(ControlPacket, CloseWithReason) {
@@ -89,5 +89,5 @@ TEST(ControlPacket, CloseWithReason) {
 	EXPECT_EQ(packet->control->kind, ControlMessageKind::CTRL_MSG_CLOSE);
 	EXPECT_EQ(packet->header.token, 0x4ec73b04);
 	EXPECT_STREQ(packet->control->reason, "too bad");
-	free(packet);
+	free_packet(packet);
 }

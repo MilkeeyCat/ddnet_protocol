@@ -34,7 +34,7 @@ Packet *decode(uint8_t *buf, size_t len, Error *err) {
 			if(err) {
 				*err = chunk_error;
 			}
-			free(packet);
+			free_packet(packet);
 			return NULL;
 		}
 	}

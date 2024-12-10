@@ -3,6 +3,9 @@ build
 
 a.out
 *.o
+*.o.d
+
+# ninja build
 
 .ninja_deps
 .ninja_log
@@ -23,3 +26,24 @@ cmake_install.cmake
 cmake_uninstall.cmake
 compile_commands.json
 libddnet_protocol.a
+
+# make build
+
+CMakeDirectoryInformation.cmake
+CMakeRuleHashes.txt
+Makefile.cmake
+Makefile
+Makefile2
+DependInfo.cmake
+build.make
+cmake_clean.cmake
+cmake_clean_target.cmake
+depend.make
+flags.make
+link.txt
+cmake_clean.cmake
+compiler_depend.make
+compiler_depend.ts
+progress.marks
+progress.make
+compiler_depend.internal

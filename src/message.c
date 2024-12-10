@@ -20,9 +20,7 @@ static Error decode_game_message(Chunk *chunk, MessageId msg_id, Unpacker *unpac
 static Error decode_system_message(Chunk *chunk, MessageId msg_id, Unpacker *unpacker) {
 	switch(msg_id) {
 	case MSG_RCON_CMD:
-		assert(chunk->msg.rcon_cmd == NULL);
-		chunk->msg.rcon_cmd = malloc(sizeof(MsgRconCmd));
-		chunk->msg.rcon_cmd->command = unpacker_get_string(unpacker);
+		chunk->msg.rcon_cmd.command = unpacker_get_string(unpacker);
 		chunk->kind = CHUNK_KIND_RCON_CMD;
 		break;
 	default:

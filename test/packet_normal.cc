@@ -17,18 +17,18 @@ TEST(NormalPacket, StartInfoAndRconCmd) {
 		0x78, 0x00, 0x3d, 0xe3, 0x94, 0x8d};
 
 	Error err = Error::ERR_NONE;
-	Packet *packet = decode(bytes, sizeof(bytes), &err);
-	EXPECT_TRUE(packet != nullptr);
+	Packet packet = decode(bytes, sizeof(bytes), &err);
+
 	EXPECT_EQ(err, Error::ERR_NONE);
-	EXPECT_EQ(packet->kind, PacketKind::PACKET_NORMAL);
-	EXPECT_EQ(packet->header.flags, 0);
-	EXPECT_EQ(packet->header.num_chunks, 2);
-	EXPECT_EQ(packet->header.ack, 6);
-	EXPECT_EQ(packet->header.token, 0x3de3948d);
+	EXPECT_EQ(packet.kind, PacketKind::PACKET_NORMAL);
+	EXPECT_EQ(packet.header.flags, 0);
+	EXPECT_EQ(packet.header.num_chunks, 2);
+	EXPECT_EQ(packet.header.ack, 6);
+	EXPECT_EQ(packet.header.token, 0x3de3948d);
 
-	EXPECT_EQ(packet->chunks[0].kind, CHUNK_KIND_CL_STARTINFO);
-	EXPECT_EQ(packet->chunks[1].kind, CHUNK_KIND_RCON_CMD);
-	EXPECT_STREQ(packet->chunks[1].msg.rcon_cmd->command, "crashmeplx");
+	EXPECT_EQ(packet.chunks.data[0].kind, CHUNK_KIND_CL_STARTINFO);
+	EXPECT_EQ(packet.chunks.data[1].kind, CHUNK_KIND_RCON_CMD);
+	EXPECT_STREQ(packet.chunks.data[1].msg.rcon_cmd.command, "crashmeplx");
 
-	free_packet(packet);
+	free_packet(&packet);
 }

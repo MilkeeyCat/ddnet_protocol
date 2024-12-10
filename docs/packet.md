@@ -157,7 +157,10 @@ typedef struct {
 	PacketHeader header;
 	union {
 		PacketControl *control;
-		Chunk chunks[MAX_CHUNKS];
+		struct {
+			Chunk *data;
+			size_t len;
+		} chunks;
 	};
 } Packet;
 ```
@@ -184,7 +187,7 @@ https://github.com/MilkeeyCat/ddnet_protocol/issues/54
 ## Syntax
 
 ```C
-Packet *decode(uint8_t *buf, size_t len, Error *err);
+Packet decode(uint8_t *buf, size_t len, Error *err);
 ```
 
 Given a pointer to the beginning of a udp payload

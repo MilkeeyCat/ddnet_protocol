@@ -67,7 +67,7 @@ typedef struct {
 	ChunkKind kind;
 	ChunkHeader header;
 	union {
-		MsgNull *null;
+		void *unused;
 		MsgRconCmd *rcon_cmd;
 	} msg;
 } Chunk;

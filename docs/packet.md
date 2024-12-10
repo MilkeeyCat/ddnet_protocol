@@ -153,7 +153,7 @@ allow the user to define their own max? To reduce memory usage.
 
 ```C
 typedef struct {
-	PacketKind _;
+	PacketKind kind;
 	PacketHeader header;
 	union {
 		PacketControl *control;

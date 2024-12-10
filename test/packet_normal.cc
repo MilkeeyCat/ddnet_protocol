@@ -20,7 +20,7 @@ TEST(NormalPacket, StartInfoAndRconCmd) {
 	Packet *packet = decode(bytes, sizeof(bytes), &err);
 	EXPECT_TRUE(packet != nullptr);
 	EXPECT_EQ(err, Error::ERR_NONE);
-	EXPECT_EQ(packet->_, PacketKind::PACKET_NORMAL);
+	EXPECT_EQ(packet->kind, PacketKind::PACKET_NORMAL);
 	EXPECT_EQ(packet->header.flags, 0);
 	EXPECT_EQ(packet->header.num_chunks, 2);
 	EXPECT_EQ(packet->header.ack, 6);

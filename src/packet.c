@@ -25,10 +25,10 @@ Packet *decode(uint8_t *buf, size_t len, Error *err) {
 	packet->header = decode_packet_header(buf);
 
 	if(packet->header.flags & PACKET_FLAG_CONTROL) {
-		packet->_ = PACKET_CONTROL;
+		packet->kind = PACKET_CONTROL;
 		packet->control = decode_control(&buf[3], len - 3, &packet->header, err);
 	} else {
-		packet->_ = PACKET_NORMAL;
+		packet->kind = PACKET_NORMAL;
 		Error chunk_error = fetch_chunks(&buf[3], len - 3, packet);
 		if(chunk_error != ERR_NONE) {
 			if(err) {
@@ -43,9 +43,9 @@ Packet *decode(uint8_t *buf, size_t len, Error *err) {
 }
 
 Error free_packet(Packet *packet) {
-	if(packet->_ == PACKET_NORMAL) {
+	if(packet->kind == PACKET_NORMAL) {
 		for(size_t i = 0; i < MAX_CHUNKS; i++) {
-			free(packet->chunks[i].msg.null);
+			free(packet->chunks[i].msg.unused);
 		}
 	}
 	free(packet);

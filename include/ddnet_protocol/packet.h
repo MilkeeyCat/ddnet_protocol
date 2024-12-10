@@ -110,7 +110,7 @@ typedef struct {
 
 // Holds information about on full ddnet packet
 typedef struct {
-	PacketKind _;
+	PacketKind kind;
 	PacketHeader header;
 	union {
 		PacketControl *control;

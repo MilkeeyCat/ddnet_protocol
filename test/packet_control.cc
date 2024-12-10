@@ -12,7 +12,7 @@ TEST(ControlPacket, Keepalive) {
 
 	EXPECT_TRUE(packet != nullptr);
 	EXPECT_EQ(err, Error::ERR_NONE);
-	EXPECT_EQ(packet->_, PacketKind::PACKET_CONTROL);
+	EXPECT_EQ(packet->kind, PacketKind::PACKET_CONTROL);
 	EXPECT_EQ(packet->header.flags, PacketFlag::PACKET_FLAG_CONTROL);
 	EXPECT_EQ(packet->header.num_chunks, 0);
 	EXPECT_EQ(packet->header.ack, 0);
@@ -29,7 +29,7 @@ TEST(ControlPacket, Connect) {
 
 	EXPECT_TRUE(packet != nullptr);
 	EXPECT_EQ(err, Error::ERR_NONE);
-	EXPECT_EQ(packet->_, PacketKind::PACKET_CONTROL);
+	EXPECT_EQ(packet->kind, PacketKind::PACKET_CONTROL);
 	EXPECT_EQ(packet->control->kind, ControlMessageKind::CTRL_MSG_CONNECT);
 	EXPECT_EQ(packet->header.token, 0xffffffff);
 	EXPECT_TRUE(packet->control->reason == nullptr);
@@ -43,7 +43,7 @@ TEST(ControlPacket, ConnectAccept) {
 
 	EXPECT_TRUE(packet != nullptr);
 	EXPECT_EQ(err, Error::ERR_NONE);
-	EXPECT_EQ(packet->_, PacketKind::PACKET_CONTROL);
+	EXPECT_EQ(packet->kind, PacketKind::PACKET_CONTROL);
 	EXPECT_EQ(packet->control->kind, ControlMessageKind::CTRL_MSG_CONNECTACCEPT);
 	EXPECT_EQ(packet->header.token, 0x4ec73b04);
 	EXPECT_TRUE(packet->control->reason == nullptr);
@@ -57,7 +57,7 @@ TEST(ControlPacket, Accept) {
 
 	EXPECT_TRUE(packet != nullptr);
 	EXPECT_EQ(err, Error::ERR_NONE);
-	EXPECT_EQ(packet->_, PacketKind::PACKET_CONTROL);
+	EXPECT_EQ(packet->kind, PacketKind::PACKET_CONTROL);
 	EXPECT_EQ(packet->control->kind, ControlMessageKind::CTRL_MSG_ACCEPT);
 	EXPECT_EQ(packet->header.token, 0x4ec73b04);
 	EXPECT_TRUE(packet->control->reason == nullptr);
@@ -71,7 +71,7 @@ TEST(ControlPacket, Close) {
 
 	EXPECT_TRUE(packet != nullptr);
 	EXPECT_EQ(err, Error::ERR_NONE);
-	EXPECT_EQ(packet->_, PacketKind::PACKET_CONTROL);
+	EXPECT_EQ(packet->kind, PacketKind::PACKET_CONTROL);
 	EXPECT_EQ(packet->control->kind, ControlMessageKind::CTRL_MSG_CLOSE);
 	EXPECT_EQ(packet->header.token, 0x4ec73b04);
 	EXPECT_TRUE(packet->control->reason == nullptr);
@@ -85,7 +85,7 @@ TEST(ControlPacket, CloseWithReason) {
 
 	EXPECT_TRUE(packet != nullptr);
 	EXPECT_EQ(err, Error::ERR_NONE);
-	EXPECT_EQ(packet->_, PacketKind::PACKET_CONTROL);
+	EXPECT_EQ(packet->kind, PacketKind::PACKET_CONTROL);
 	EXPECT_EQ(packet->control->kind, ControlMessageKind::CTRL_MSG_CLOSE);
 	EXPECT_EQ(packet->header.token, 0x4ec73b04);
 	EXPECT_STREQ(packet->control->reason, "too bad");

@@ -1,12 +1,16 @@
 #pragma once
 
 #ifdef BLOAT
+#include <assert.h>
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
 #else
+#ifndef assert
+#define assert
+#endif
 typedef unsigned char uint8_t;
 typedef unsigned short int uint16_t;
 typedef int int32_t;

@@ -1,8 +1,8 @@
 #include "packet.h"
 
-#include "packet_control.h"
+#include "control_message.h"
 
-PacketControl *decode_control(uint8_t *buf, size_t len, PacketHeader *header, Error *err) {
+ControlMessage *decode_control(uint8_t *buf, size_t len, PacketHeader *header, Error *err) {
 	ControlMessageKind kind = buf[0];
 	char *reason = NULL;
 
@@ -42,11 +42,11 @@ PacketControl *decode_control(uint8_t *buf, size_t len, PacketHeader *header, Er
 		return NULL;
 	}
 
-	PacketControl *packet = malloc(sizeof(PacketControl));
+	ControlMessage *msg = malloc(sizeof(ControlMessage));
 
 	header->token = read_token(&buf[1]);
-	packet->kind = kind;
-	packet->reason = reason;
+	msg->kind = kind;
+	msg->reason = reason;
 
-	return packet;
+	return msg;
 }

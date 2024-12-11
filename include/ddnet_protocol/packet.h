@@ -39,7 +39,7 @@ typedef enum {
 //
 // but if control is set compression should not be set
 typedef enum {
-	// Indicating that the packet is a control packet (See the `PacketControl` struct)
+	// Indicating that the packet is a control packet (See the `ControlMessage` struct)
 	// Can not be mixed with the PACKET_FLAG_COMPRESSION!
 	PACKET_FLAG_CONTROL = 1 << 2,
 
@@ -101,11 +101,11 @@ typedef enum {
 	CTRL_MSG_CLOSE,
 } ControlMessageKind;
 
-// Control packet
+// Payload of control packets
 typedef struct {
 	ControlMessageKind kind;
 	char *reason; // Can be set if msg_kind == CTRL_MSG_CLOSE
-} PacketControl;
+} ControlMessage;
 
 // allow the user to define their own max? To reduce memory usage.
 #ifndef MAX_CHUNKS
@@ -116,8 +116,11 @@ typedef struct {
 typedef struct {
 	PacketKind kind;
 	PacketHeader header;
+
+	// The parsed packet payload
+	// Check `kind` to know which field in the union to access
 	union {
-		PacketControl *control;
+		ControlMessage *control;
 		struct {
 			Chunk *data;
 			size_t len;
@@ -132,6 +135,11 @@ typedef struct {
 // So it is the responsibility of the payload unpacker to parse the token.
 // https://github.com/MilkeeyCat/ddnet_protocol/issues/54
 PacketHeader decode_packet_header(uint8_t *buf);
+
+// Extract and decompress packet payload.
+// Given a full raw packet as `full_data`
+// It will extract only the payload into `payload` and return the size of the payload.
+size_t get_packet_payload(PacketHeader *header, uint8_t *full_data, size_t full_len, uint8_t *payload, size_t payload_len, Error *err);
 
 // Given a pointer to the beginning of a udp payload
 // this determins the type of packet.

@@ -6,6 +6,15 @@ extern "C" {
 #include <ddnet_protocol/packer.h>
 }
 
+TEST(MessagePacker, Rcon) {
+	Packer packer;
+	packer_init_msg(&packer, MSG_RCON_CMD, MESSAGE_SYSTEM);
+	packer_add_string(&packer, "say hello");
+	uint8_t bytes[] = {
+		0x23, 0x73, 0x61, 0x79, 0x20, 0x68, 0x65, 0x6c, 0x6c, 0x6f, 0x00};
+	EXPECT_TRUE(std::memcmp(packer_data(&packer), bytes, packer_size(&packer)) == 0);
+}
+
 TEST(Packer, SingleByteInts) {
 	Packer packer;
 	packer_init(&packer);
@@ -24,6 +33,82 @@ TEST(Packer, SingleByteInts) {
 
 	EXPECT_EQ(packer_size(&packer), 2);
 	EXPECT_EQ(packer.err, Error::ERR_NONE);
+}
+
+TEST(Packer, MultiByteInts) {
+	Packer packer;
+	packer_init(&packer);
+
+	EXPECT_EQ(packer_remaining_size(&packer), PACKER_BUFFER_SIZE);
+	EXPECT_EQ(packer_size(&packer), 0);
+
+	packer_add_int(&packer, 64);
+	EXPECT_EQ(packer_size(&packer), 2);
+	EXPECT_EQ(packer.err, Error::ERR_NONE);
+	{
+		uint8_t bytes[] = {0x80, 0x01};
+		EXPECT_TRUE(std::memcmp(packer_data(&packer), bytes, packer_size(&packer)) == 0);
+	}
+
+	packer_add_int(&packer, -66663);
+	EXPECT_EQ(packer_size(&packer), 5);
+	EXPECT_EQ(packer.err, Error::ERR_NONE);
+	{
+		uint8_t bytes[] = {0x80, 0x01, 0xe6, 0x91, 0x08};
+		EXPECT_TRUE(std::memcmp(packer_data(&packer), bytes, packer_size(&packer)) == 0);
+	}
+}
+
+TEST(Packer, Strings) {
+	Packer packer;
+	packer_init(&packer);
+
+	packer_add_string(&packer, "");
+	EXPECT_EQ(packer.err, Error::ERR_NONE);
+	EXPECT_EQ(packer_size(&packer), 1);
+	EXPECT_STREQ((char *)packer_data(&packer), "");
+
+	packer_add_string(&packer, "foo");
+	EXPECT_EQ(packer.err, Error::ERR_NONE);
+	EXPECT_EQ(packer_size(&packer), 5);
+	EXPECT_STREQ((char *)packer_data(&packer), "");
+	EXPECT_STREQ((char *)packer_data(&packer) + 1, "foo");
+}
+
+TEST(Packer, StringsAndInts) {
+	Packer packer;
+	packer_init(&packer);
+
+	packer_add_int(&packer, 2);
+	EXPECT_EQ(packer.err, Error::ERR_NONE);
+	EXPECT_EQ(packer_size(&packer), 1);
+	{
+		uint8_t bytes[] = {0x02};
+		EXPECT_TRUE(std::memcmp(packer_data(&packer), bytes, packer_size(&packer)) == 0);
+	}
+
+	packer_add_string(&packer, "");
+	EXPECT_EQ(packer.err, Error::ERR_NONE);
+	EXPECT_EQ(packer_size(&packer), 2);
+	{
+		uint8_t bytes[] = {0x02, 0x00};
+		EXPECT_TRUE(std::memcmp(packer_data(&packer), bytes, packer_size(&packer)) == 0);
+	}
+
+	packer_add_string(&packer, "foo");
+	EXPECT_EQ(packer.err, Error::ERR_NONE);
+	EXPECT_EQ(packer_size(&packer), 6);
+	{
+		uint8_t bytes[] = {0x02, 0x00, 'f', 'o', 'o', 0x00};
+		EXPECT_TRUE(std::memcmp(packer_data(&packer), bytes, packer_size(&packer)) == 0);
+	}
+
+	packer_add_int(&packer, 6);
+	EXPECT_EQ(packer.err, Error::ERR_NONE);
+	{
+		uint8_t bytes[] = {0x02, 0x00, 'f', 'o', 'o', 0x00, 0x06};
+		EXPECT_TRUE(std::memcmp(packer_data(&packer), bytes, packer_size(&packer)) == 0);
+	}
 }
 
 TEST(Unpacker, SingleByteInts) {

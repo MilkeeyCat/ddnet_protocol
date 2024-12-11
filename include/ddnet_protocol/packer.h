@@ -2,6 +2,7 @@
 
 #include "common.h"
 #include "errors.h"
+#include "message.h"
 
 // Replaces all characters below 32 with whitespace.
 void str_sanitize_cc(char *string);
@@ -48,8 +49,21 @@ typedef struct {
 	uint8_t buf[PACKER_BUFFER_SIZE];
 } Packer;
 
-// initializes a new packer struct
+// Initializes a new packer struct.
+// See also `packer_init_msg()` if you want to send a net message.
 void packer_init(Packer *packer);
+
+// Initializes a new packer struct.
+// and already packs the message id and message kind flag.
+//
+// See also `packer_init()` if you need an empty packer.
+//
+// ```C
+// Packer packer;
+// packer_init_msg(&packer, MSG_RCON_CMD, MESSAGE_SYSTEM);
+// packer_add_string(&packer, "say hello");
+// ```
+void packer_init_msg(Packer *packer, MessageId msg_id, MessageKind kind);
 
 // get the size in bytes of the currently packed data
 // see also `packer_data()`
@@ -64,8 +78,11 @@ uint8_t *packer_data(Packer *packer);
 
 // Packs `value` as teeworlds varint
 // call `packer_data()` to receive the full packed data
-// returns true on success
-bool packer_add_int(Packer *packer, int32_t value);
+Error packer_add_int(Packer *packer, int32_t value);
+
+// Packs `value` as plain null terminated C string
+// call `packer_data()` to receive the full packed data
+Error packer_add_string(Packer *packer, const char *value);
 
 // returns a new `Unpacker` instance
 // it keeps track of how much data was already unpacked

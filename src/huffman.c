@@ -1,4 +1,5 @@
 #include "huffman.h"
+#include "errors.h"
 
 static const uint32_t FREQUENCY_TABLE[256 + 1] = {
 	1 << 30, 4545, 2657, 431, 1950, 919, 444, 482, 2244, 617, 838, 542, 715, 1814, 304, 240, 754, 212, 647, 186,
@@ -167,7 +168,7 @@ static void huffman_init() {
 	}
 }
 
-size_t huffman_compress(const uint8_t *input, size_t input_len, uint8_t *output, size_t output_len) {
+size_t huffman_compress(const uint8_t *input, size_t input_len, uint8_t *output, size_t output_len, Error *err) {
 	huffman_init();
 	// this macro loads a symbol for a byte into bits and bitcount
 #define HUFFMAN_MACRO_LOADSYMBOL(sym) \
@@ -178,8 +179,10 @@ size_t huffman_compress(const uint8_t *input, size_t input_len, uint8_t *output,
 #define HUFFMAN_MACRO_WRITE() \
 	while(bitcount >= 8) { \
 		*dst++ = (uint8_t)(bits & 0xff); \
-		if(dst == dstend) \
+		if(dst == dstend) { \
+			*err = ERR_BUFFER_FULL; \
 			return -1; \
+		} \
 		bits >>= 8; \
 		bitcount -= 8; \
 	}
@@ -230,7 +233,7 @@ size_t huffman_compress(const uint8_t *input, size_t input_len, uint8_t *output,
 #undef HUFFMAN_MACRO_WRITE
 }
 
-size_t huffman_decompress(const uint8_t *input, size_t input_len, uint8_t *output, size_t output_len) {
+size_t huffman_decompress(const uint8_t *input, size_t input_len, uint8_t *output, size_t output_len, Error *err) {
 	huffman_init();
 	// setup buffer pointers
 	uint8_t *dst = output;
@@ -263,6 +266,7 @@ size_t huffman_decompress(const uint8_t *input, size_t input_len, uint8_t *outpu
 		}
 
 		if(!node) {
+			*err = ERR_HUFFMAN_NODE_NULL;
 			return -1;
 		}
 
@@ -292,6 +296,7 @@ size_t huffman_decompress(const uint8_t *input, size_t input_len, uint8_t *outpu
 
 				// no more bits, decoding error
 				if(bitcount == 0) {
+					*err = ERR_END_OF_BUFFER;
 					return -1;
 				}
 			}
@@ -304,6 +309,7 @@ size_t huffman_decompress(const uint8_t *input, size_t input_len, uint8_t *outpu
 
 		// output character
 		if(dst == dstend) {
+			*err = ERR_BUFFER_FULL;
 			return -1;
 		}
 		*dst++ = node->symbol;

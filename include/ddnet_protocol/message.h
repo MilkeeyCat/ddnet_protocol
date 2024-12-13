@@ -1,5 +1,9 @@
 #pragma once
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include "chunk.h"
 #include "common.h"
 #include "errors.h"
@@ -23,3 +27,7 @@ typedef enum {
 //
 // this function could also be called decode_chunk_payload()
 Error decode_message(Chunk *chunk, uint8_t *buf);
+
+#ifdef __cplusplus
+}
+#endif

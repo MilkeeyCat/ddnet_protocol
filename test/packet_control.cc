@@ -1,9 +1,7 @@
 #include <gtest/gtest.h>
 
-extern "C" {
 #include <ddnet_protocol/packet.h>
 #include <ddnet_protocol/packet_control.h>
-}
 
 TEST(ControlPacket, Keepalive) {
 	uint8_t bytes[] = {0x10, 0x00, 0x00, 0x00, 0x4e, 0xc7, 0x3b, 0x04};

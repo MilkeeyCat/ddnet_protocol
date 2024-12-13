@@ -1,10 +1,8 @@
 #include <cstring>
 #include <gtest/gtest.h>
 
-extern "C" {
 #include <ddnet_protocol/errors.h>
 #include <ddnet_protocol/packer.h>
-}
 
 TEST(Packer, SingleByteInts) {
 	Packer packer;

@@ -1,8 +1,6 @@
 #include <gtest/gtest.h>
 
-extern "C" {
 #include <ddnet_protocol/packet.h>
-}
 
 TEST(NormalPacket, StartInfoAndRconCmd) {
 	uint8_t bytes[] = {

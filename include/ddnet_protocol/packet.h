@@ -1,5 +1,9 @@
 #pragma once
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include "chunk.h"
 #include "common.h"
 #include "errors.h"
@@ -139,3 +143,7 @@ Packet decode(uint8_t *buf, size_t len, Error *err);
 
 // Frees a packet struct and all of its fields
 Error free_packet(Packet *packet);
+
+#ifdef __cplusplus
+}
+#endif

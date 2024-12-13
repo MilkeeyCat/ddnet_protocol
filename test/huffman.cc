@@ -1,10 +1,8 @@
 #include <gtest/gtest.h>
 
-extern "C" {
 #include <ddnet_protocol/common.h>
 #include <ddnet_protocol/errors.h>
 #include <ddnet_protocol/huffman.h>
-}
 
 TEST(Huffman, Decompress) {
 	uint8_t decompressed[512];

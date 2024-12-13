@@ -1,8 +1,6 @@
 #include <gtest/gtest.h>
 
-extern "C" {
 #include <ddnet_protocol/chunk.h>
-}
 
 TEST(Chunk, HeaderVital) {
 	uint8_t bytes[] = {0x44, 0x04, 0x01, 0x00};

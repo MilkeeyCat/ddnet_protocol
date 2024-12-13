@@ -1,5 +1,9 @@
 #pragma once
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 // generic error enum
 // holds all kind of errors returned
 // by different functions
@@ -18,3 +22,7 @@ typedef enum {
 	ERR_MISSING_DDNET_SECURITY_TOKEN,
 	ERR_HUFFMAN_NODE_NULL,
 } Error;
+
+#ifdef __cplusplus
+}
+#endif

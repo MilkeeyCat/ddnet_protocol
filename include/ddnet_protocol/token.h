@@ -1,5 +1,9 @@
 #pragma once
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include "common.h"
 
 // 4 byte security token used in packet headers
@@ -31,3 +35,7 @@ extern const Token TOKEN_MAGIC;
 //
 // the data in `buf` is expected to be in network endianness
 Token read_token(const uint8_t *buf);
+
+#ifdef __cplusplus
+}
+#endif

@@ -1,5 +1,9 @@
 #pragma once
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include "common.h"
 #include "errors.h"
 
@@ -18,3 +22,7 @@ size_t huffman_compress(const uint8_t *input, size_t input_len, uint8_t *output,
 //
 // See also https://chillerdragon.github.io/teeworlds-protocol/06/fundamentals.html#huffman
 size_t huffman_decompress(const uint8_t *input, size_t input_len, uint8_t *output, size_t output_len, Error *err);
+
+#ifdef __cplusplus
+}
+#endif

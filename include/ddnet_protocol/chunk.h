@@ -1,5 +1,9 @@
 #pragma once
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include "common.h"
 #include "msg_system.h"
 
@@ -70,3 +74,7 @@ typedef struct {
 		MsgRconCmd rcon_cmd;
 	} msg;
 } Chunk;
+
+#ifdef __cplusplus
+}
+#endif

@@ -173,6 +173,12 @@ def parse_docs(filepath)
       comment += "\n"
       next
     end
+    if line.strip == 'extern "C" {'
+      next
+    end
+    if line.strip == '}'
+      next
+    end
 
     # if its not a comment or a filtered line
     # we assume we hit the C type that is being document

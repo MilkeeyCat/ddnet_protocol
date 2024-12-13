@@ -1,5 +1,9 @@
 #pragma once
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include "common.h"
 #include "errors.h"
 
@@ -159,3 +163,7 @@ bool unpacker_get_bool(Unpacker *unpacker);
 // unpacker.err; // => Error::ERR_NONE
 // ```
 const uint8_t *unpacker_get_raw(Unpacker *unpacker, size_t len);
+
+#ifdef __cplusplus
+}
+#endif

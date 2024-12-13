@@ -1,5 +1,9 @@
 #pragma once
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #ifdef BLOAT
 #include <assert.h>
 #include <stdbool.h>
@@ -38,3 +42,7 @@ extern size_t strlen(const char *str);
 #endif
 
 #define MIN(a, b) (((a) < (b)) ? (a) : (b))
+
+#ifdef __cplusplus
+}
+#endif

@@ -7,10 +7,10 @@ extern "C" {
 #include "common.h"
 #include "errors.h"
 
-// Replaces all characters below 32 with whitespace.
+// Replaces all characters below ASCII 32 with whitespace.
 void str_sanitize_cc(char *string);
 
-// Replaces all characters below 32 with whitespace with
+// Replaces all characters below ASCII 32 except \r, \n and \t with whitespace.
 void str_sanitize(char *string);
 
 // Removes leading and trailing spaces and limits the use of multiple spaces.

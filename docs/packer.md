@@ -6,7 +6,7 @@
 void str_sanitize_cc(char *string);
 ```
 
-Replaces all characters below 32 with whitespace.
+Replaces all characters below ASCII 32 with whitespace.
 
 # str_sanitize
 
@@ -16,7 +16,7 @@ Replaces all characters below 32 with whitespace.
 void str_sanitize(char *string);
 ```
 
-Replaces all characters below 32 with whitespace with
+Replaces all characters below ASCII 32 except \r, \n and \t with whitespace.
 
 # str_clean_whitespaces
 

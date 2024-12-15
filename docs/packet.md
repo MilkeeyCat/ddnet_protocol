@@ -47,7 +47,7 @@ not sent over the network
 
 ```C
 typedef enum {
-	// Indicating that the packet is a control packet (See the `PacketControl` struct)
+	// Indicating that the packet is a control packet (See the `ControlMessage` struct)
 	// Can not be mixed with the PACKET_FLAG_COMPRESSION!
 	PACKET_FLAG_CONTROL = 1 << 2,
 	// Inidicating that the packet is a connection less packet.
@@ -124,7 +124,7 @@ typedef enum {
 
 Type of control packet
 
-# PacketControl
+# ControlMessage
 
 ## Syntax
 
@@ -132,10 +132,10 @@ Type of control packet
 typedef struct {
 	ControlMessageKind kind;
 	char *reason; // Can be set if msg_kind == CTRL_MSG_CLOSE
-} PacketControl;
+} ControlMessage;
 ```
 
-Control packet
+Payload of control packets
 
 # MAX_CHUNKS
 
@@ -155,8 +155,10 @@ allow the user to define their own max? To reduce memory usage.
 typedef struct {
 	PacketKind kind;
 	PacketHeader header;
+	// The parsed packet payload
+	// Check `kind` to know which field in the union to access
 	union {
-		PacketControl *control;
+		ControlMessage *control;
 		struct {
 			Chunk *data;
 			size_t len;
@@ -181,6 +183,18 @@ Warning it does not set the `token` because this one is at the end of
 the payload.
 So it is the responsibility of the payload unpacker to parse the token.
 https://github.com/MilkeeyCat/ddnet_protocol/issues/54
+
+# get_packet_payload
+
+## Syntax
+
+```C
+size_t get_packet_payload(PacketHeader *header, uint8_t *full_data, size_t full_len, uint8_t *payload, size_t payload_len, Error *err);
+```
+
+Extract and decompress packet payload.
+Given a full raw packet as `full_data`
+It will extract only the payload into `payload` and return the size of the payload.
 
 # decode
 

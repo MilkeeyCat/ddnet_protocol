@@ -196,12 +196,12 @@ Extract and decompress packet payload.
 Given a full raw packet as `full_data`
 It will extract only the payload into `payload` and return the size of the payload.
 
-# decode
+# decode_packet
 
 ## Syntax
 
 ```C
-Packet decode(uint8_t *buf, size_t len, Error *err);
+Packet decode_packet(uint8_t *buf, size_t len, Error *err);
 ```
 
 Given a pointer to the beginning of a udp payload

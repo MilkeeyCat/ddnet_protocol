@@ -34,7 +34,7 @@ size_t get_packet_payload(PacketHeader *header, uint8_t *full_data, size_t full_
 	return full_len;
 }
 
-Packet decode(uint8_t *buf, size_t len, Error *err) {
+Packet decode_packet(uint8_t *buf, size_t len, Error *err) {
 	Packet packet = {};
 
 	if(len < PACKET_HEADER_SIZE || len > MAX_PACKET_SIZE) {

@@ -15,7 +15,7 @@ TEST(NormalPacket, StartInfoAndRconCmd) {
 		0x78, 0x00, 0x3d, 0xe3, 0x94, 0x8d};
 
 	Error err = Error::ERR_NONE;
-	Packet packet = decode_packet(bytes, sizeof(bytes), &err);
+	DDNetPacket packet = decode_packet(bytes, sizeof(bytes), &err);
 
 	EXPECT_EQ(err, Error::ERR_NONE);
 	EXPECT_EQ(packet.kind, PacketKind::PACKET_NORMAL);

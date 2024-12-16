@@ -147,7 +147,7 @@ Payload of control packets
 
 allow the user to define their own max? To reduce memory usage.
 
-# Packet
+# DDNetPacket
 
 ## Syntax
 
@@ -164,7 +164,7 @@ typedef struct {
 			size_t len;
 		} chunks;
 	};
-} Packet;
+} DDNetPacket;
 ```
 
 Holds information about on full ddnet packet
@@ -201,7 +201,7 @@ It will extract only the payload into `payload` and return the size of the paylo
 ## Syntax
 
 ```C
-Packet decode_packet(uint8_t *buf, size_t len, Error *err);
+DDNetPacket decode_packet(uint8_t *buf, size_t len, Error *err);
 ```
 
 Given a pointer to the beginning of a udp payload
@@ -216,7 +216,7 @@ It is your responsiblity to free it using `free_packet()`
 ## Syntax
 
 ```C
-Error free_packet(Packet *packet);
+Error free_packet(DDNetPacket *packet);
 ```
 
 Frees a packet struct and all of its fields

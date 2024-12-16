@@ -174,6 +174,16 @@ the payload.
 So it is the responsibility of the payload unpacker to parse the token.
 https://github.com/MilkeeyCat/ddnet_protocol/issues/54
 
+# encode_packet_header
+
+## Syntax
+
+```C
+Error encode_packet_header(const PacketHeader *header, uint8_t *buf);
+```
+
+Given a `PacketHeader` as input it writes 3 bytes into `buf`
+
 # get_packet_payload
 
 ## Syntax
@@ -200,6 +210,18 @@ this determins the type of packet.
 It returns `NULL` on error. Check the `err` value for more details.
 Or a pointer to newly allocated memory that holds the parsed packet struct.
 It is your responsiblity to free it using `free_packet()`
+
+# encode_packet
+
+## Syntax
+
+```C
+size_t encode_packet(const DDNetPacket *packet, uint8_t *buf, size_t len, Error *err);
+```
+
+Given a `Packet` struct it will encode a full udp payload
+the output is written into `buf` which has to be at least `len` big
+And returns the amount of written bytes
 
 # free_packet
 

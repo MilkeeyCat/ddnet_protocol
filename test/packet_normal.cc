@@ -1,6 +1,7 @@
+#include <cstring>
 #include <gtest/gtest.h>
 
-#include <ddnet_protocol/chunk.h>
+#include <ddnet_protocol/errors.h>
 #include <ddnet_protocol/packet.h>
 
 TEST(NormalPacket, StartInfoAndRconCmd) {
@@ -38,4 +39,27 @@ TEST(NormalPacket, StartInfoAndRconCmd) {
 	EXPECT_STREQ(packet.chunks.data[1].msg.rcon_cmd.command, "crashmeplx");
 
 	free_packet(&packet);
+}
+
+TEST(NormalPacket, PackEmpty) {
+	DDNetPacket packet = {.kind = PacketKind::PACKET_NORMAL};
+	uint8_t bytes[MAX_PACKET_SIZE];
+	Error err = ERR_NONE;
+	size_t size = encode_packet(&packet, bytes, sizeof(bytes), &err);
+	EXPECT_EQ(err, ERR_NONE);
+	EXPECT_EQ(size, 3);
+	uint8_t expected[] = {0x00, 0x00, 0x00};
+	EXPECT_TRUE(std::memcmp(bytes, expected, size) == 0);
+}
+
+TEST(NormalPacket, PackEmptyWithAck) {
+	DDNetPacket packet = {.kind = PacketKind::PACKET_NORMAL};
+	packet.header.ack = 2;
+	uint8_t bytes[MAX_PACKET_SIZE];
+	Error err = ERR_NONE;
+	size_t size = encode_packet(&packet, bytes, sizeof(bytes), &err);
+	EXPECT_EQ(err, ERR_NONE);
+	EXPECT_EQ(size, 3);
+	uint8_t expected[] = {0x00, 0x02, 0x00};
+	EXPECT_TRUE(std::memcmp(bytes, expected, size) == 0);
 }

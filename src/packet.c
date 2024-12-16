@@ -13,6 +13,15 @@ PacketHeader decode_packet_header(uint8_t *buf) {
 	};
 }
 
+Error encode_packet_header(const PacketHeader *header, uint8_t *buf) {
+	buf[0] = ((header->flags << 2) & 0xfc | ((header->ack >> 8)) & 0x3);
+	buf[1] = header->ack & 0xff;
+	buf[2] = header->num_chunks;
+	// TODO: check ack/flags/num_chunks out of bounds
+	//       could also flip ack on MAX_SEQUENCE here
+	return ERR_NONE;
+}
+
 typedef struct {
 	Chunk *chunks;
 	size_t len;
@@ -76,6 +85,21 @@ DDNetPacket decode_packet(uint8_t *buf, size_t len, Error *err) {
 	}
 
 	return packet;
+}
+
+size_t encode_packet(const DDNetPacket *packet, uint8_t *buf, size_t len, Error *err) {
+	if(len < PACKET_HEADER_SIZE) {
+		*err = ERR_BUFFER_FULL;
+		return 0;
+	}
+	size_t bytes_written = PACKET_HEADER_SIZE;
+	if(packet->kind == PACKET_NORMAL) {
+		encode_packet_header(&packet->header, buf);
+		// buf += PACKET_HEADER_SIZE;
+		return bytes_written;
+	}
+	*err = ERR_INVALID_PACKET;
+	return 0;
 }
 
 Error free_packet(DDNetPacket *packet) {

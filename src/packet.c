@@ -34,8 +34,8 @@ size_t get_packet_payload(PacketHeader *header, uint8_t *full_data, size_t full_
 	return full_len;
 }
 
-Packet decode(uint8_t *buf, size_t len, Error *err) {
-	Packet packet = {};
+DDNetPacket decode_packet(uint8_t *buf, size_t len, Error *err) {
+	DDNetPacket packet = {};
 
 	if(len < PACKET_HEADER_SIZE || len > MAX_PACKET_SIZE) {
 		if(err) {
@@ -78,7 +78,7 @@ Packet decode(uint8_t *buf, size_t len, Error *err) {
 	return packet;
 }
 
-Error free_packet(Packet *packet) {
+Error free_packet(DDNetPacket *packet) {
 	if(packet->kind == PACKET_NORMAL) {
 		free(packet->chunks.data);
 	}

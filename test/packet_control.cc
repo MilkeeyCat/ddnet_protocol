@@ -6,7 +6,7 @@
 TEST(ControlPacket, Keepalive) {
 	uint8_t bytes[] = {0x10, 0x00, 0x00, 0x00, 0x4e, 0xc7, 0x3b, 0x04};
 	Error err = Error::ERR_NONE;
-	Packet packet = decode(bytes, sizeof(bytes), &err);
+	DDNetPacket packet = decode_packet(bytes, sizeof(bytes), &err);
 
 	EXPECT_EQ(err, Error::ERR_NONE);
 	EXPECT_EQ(packet.kind, PacketKind::PACKET_CONTROL);
@@ -22,7 +22,7 @@ TEST(ControlPacket, Keepalive) {
 TEST(ControlPacket, Connect) {
 	uint8_t bytes[] = {0x10, 0x00, 0x00, 0x01, 0x54, 0x4b, 0x45, 0x4e, 0xff, 0xff, 0xff, 0xff};
 	Error err = Error::ERR_NONE;
-	Packet packet = decode(bytes, sizeof(bytes), &err);
+	DDNetPacket packet = decode_packet(bytes, sizeof(bytes), &err);
 
 	EXPECT_EQ(err, Error::ERR_NONE);
 	EXPECT_EQ(packet.kind, PacketKind::PACKET_CONTROL);
@@ -35,7 +35,7 @@ TEST(ControlPacket, Connect) {
 TEST(ControlPacket, ConnectAccept) {
 	uint8_t bytes[] = {0x10, 0x00, 0x00, 0x02, 0x54, 0x4b, 0x45, 0x4e, 0x4e, 0xc7, 0x3b, 0x04};
 	Error err = Error::ERR_NONE;
-	Packet packet = decode(bytes, sizeof(bytes), &err);
+	DDNetPacket packet = decode_packet(bytes, sizeof(bytes), &err);
 
 	EXPECT_EQ(err, Error::ERR_NONE);
 	EXPECT_EQ(packet.kind, PacketKind::PACKET_CONTROL);
@@ -48,7 +48,7 @@ TEST(ControlPacket, ConnectAccept) {
 TEST(ControlPacket, Accept) {
 	uint8_t bytes[] = {0x10, 0x00, 0x00, 0x03, 0x4e, 0xc7, 0x3b, 0x04};
 	Error err = Error::ERR_NONE;
-	Packet packet = decode(bytes, sizeof(bytes), &err);
+	DDNetPacket packet = decode_packet(bytes, sizeof(bytes), &err);
 
 	EXPECT_EQ(err, Error::ERR_NONE);
 	EXPECT_EQ(packet.kind, PacketKind::PACKET_CONTROL);
@@ -61,7 +61,7 @@ TEST(ControlPacket, Accept) {
 TEST(ControlPacket, Close) {
 	uint8_t bytes[] = {0x10, 0x00, 0x00, 0x04, 0x4e, 0xc7, 0x3b, 0x04};
 	Error err = Error::ERR_NONE;
-	Packet packet = decode(bytes, sizeof(bytes), &err);
+	DDNetPacket packet = decode_packet(bytes, sizeof(bytes), &err);
 
 	EXPECT_EQ(err, Error::ERR_NONE);
 	EXPECT_EQ(packet.kind, PacketKind::PACKET_CONTROL);
@@ -74,7 +74,7 @@ TEST(ControlPacket, Close) {
 TEST(ControlPacket, CloseWithReason) {
 	uint8_t bytes[] = {0x10, 0x00, 0x00, 0x04, 0x74, 0x6f, 0x6f, 0x20, 0x62, 0x61, 0x64, 0x00, 0x4e, 0xc7, 0x3b, 0x04};
 	Error err = Error::ERR_NONE;
-	Packet packet = decode(bytes, sizeof(bytes), &err);
+	DDNetPacket packet = decode_packet(bytes, sizeof(bytes), &err);
 
 	EXPECT_EQ(err, Error::ERR_NONE);
 	EXPECT_EQ(packet.kind, PacketKind::PACKET_CONTROL);

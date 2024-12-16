@@ -2,7 +2,7 @@
 
 #include <ddnet_protocol/packet.h>
 
-TEST(Packet, Header) {
+TEST(DDNetPacket, Header) {
 	uint8_t bytes[] = {0x80, 0x02, 0x05};
 	PacketHeader header = decode_packet_header(bytes);
 

@@ -21,6 +21,13 @@ typedef enum {
 	MSG_CL_STARTINFO = 20,
 } MessageId;
 
+// Every chunk contains either a system or game message
+// This type is set as a bit flag in the first byte of the chunk payload
+typedef enum {
+	MESSAGE_GAME = 0,
+	MESSAGE_SYSTEM = 1,
+} MessageKind;
+
 // The given chunk has to have a correct header set
 // and its `msg` will be filled based on the content of
 // `buf` which has to point to the beginning of the chunk payload

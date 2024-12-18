@@ -4,6 +4,15 @@
 #include <ddnet_protocol/errors.h>
 #include <ddnet_protocol/packer.h>
 
+TEST(MessagePacker, Rcon) {
+	Packer packer;
+	packer_init_msg(&packer, MSG_RCON_CMD, MESSAGE_SYSTEM);
+	packer_add_string(&packer, "say hello");
+	uint8_t bytes[] = {
+		0x23, 0x73, 0x61, 0x79, 0x20, 0x68, 0x65, 0x6c, 0x6c, 0x6f, 0x00};
+	EXPECT_TRUE(std::memcmp(packer_data(&packer), bytes, packer_size(&packer)) == 0);
+}
+
 TEST(Packer, SingleByteInts) {
 	Packer packer;
 	packer_init(&packer);

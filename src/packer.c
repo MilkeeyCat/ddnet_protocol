@@ -126,6 +126,8 @@ Error packer_add_string(Packer *packer, const char *value) {
 	}
 	strncpy((char *)packer->current, value, len);
 	packer->current += len;
+
+	return ERR_NONE;
 }
 
 void unpacker_init(Unpacker *unpacker, uint8_t *buf, size_t len) {

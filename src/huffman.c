@@ -126,7 +126,7 @@ static void construct_tree(const uint32_t *frequencies) {
 	setbits_r(start_node, 0, 0);
 }
 
-static void huffman_init() {
+static void huffman_init(void) {
 	if(huffman_initialized) {
 		return;
 	}

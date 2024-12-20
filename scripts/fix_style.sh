@@ -12,3 +12,9 @@ then
 	printf 'Error: detected upper case hex values ^ please use lowercase\n'
 	exit 1
 fi
+
+if grep -rnF '() {' src/
+then
+	printf 'Error: detected function without arguments ^ plase take void as argument\n'
+	exit 1
+fi

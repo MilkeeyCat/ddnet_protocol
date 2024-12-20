@@ -20,11 +20,11 @@ typedef enum {
 	// Vital chunks are reliable.
 	// They contain a sequence number and will be resend
 	// if the peer did not acknowledge that sequence number.
-	CHUNK_FLAG_VITAL = 1,
+	CHUNK_FLAG_VITAL = 0b01000000,
 
 	// If this exact message was already sent the resend flag is set.
 	// This can happen if there is lag or packet loss.
-	CHUNK_FLAG_RESEND,
+	CHUNK_FLAG_RESEND = 0b10000000,
 } ChunkFlag;
 
 // Every game or system message is packed in a chunk.
@@ -50,6 +50,22 @@ typedef struct {
 // The pointer is then incremented by 2 or 3 depending on how many bytes
 // where consumed.
 ChunkHeader decode_chunk_header(uint8_t **buf_ptr);
+
+// Given a filled header struct it it will pack it into `buf`
+// writing either 2 or 3 bytes depending on the header type.
+//
+// It then returns a pointer to the last byte written.
+// Example usage:
+//
+// ```C
+// ChunkHeader header = {
+// 	.flags = CHUNK_FLAG_VITAL,
+// 	.size = 2,
+// 	.sequence = 4};
+// uint8_t buf[8];
+// uint8_t *buf_writer = encode_chunk_header(&header, buf);
+// ```
+uint8_t *encode_chunk_header(const ChunkHeader *header, uint8_t *buf);
 
 // Holds the type of `msg` in a `Chunk` struct
 //

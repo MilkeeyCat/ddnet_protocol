@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 
+#include <ddnet_protocol/chunk.h>
 #include <ddnet_protocol/packet.h>
 
 TEST(NormalPacket, StartInfoAndRconCmd) {
@@ -25,6 +26,14 @@ TEST(NormalPacket, StartInfoAndRconCmd) {
 	EXPECT_EQ(packet.header.token, 0x3de3948d);
 
 	EXPECT_EQ(packet.chunks.data[0].kind, CHUNK_KIND_CL_STARTINFO);
+	MsgClStartInfo start_info = packet.chunks.data[0].msg.start_info;
+	EXPECT_STREQ(start_info.name, "ChillerDragon");
+	EXPECT_STREQ(start_info.clan, "|*KoG*|");
+	EXPECT_EQ(start_info.country, 64);
+	EXPECT_STREQ(start_info.skin, "greensward");
+	EXPECT_EQ(start_info.color_body, 14790983);
+	EXPECT_EQ(start_info.color_feet, 2345678);
+
 	EXPECT_EQ(packet.chunks.data[1].kind, CHUNK_KIND_RCON_CMD);
 	EXPECT_STREQ(packet.chunks.data[1].msg.rcon_cmd.command, "crashmeplx");
 

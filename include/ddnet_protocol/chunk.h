@@ -5,6 +5,7 @@ extern "C" {
 #endif
 
 #include "common.h"
+#include "msg_game.h"
 #include "msg_system.h"
 
 // The sequence and acknowledge number can never
@@ -72,6 +73,7 @@ typedef struct {
 	ChunkHeader header;
 	union {
 		MsgRconCmd rcon_cmd;
+		MsgClStartInfo start_info;
 	} msg;
 } Chunk;
 

@@ -93,6 +93,7 @@ typedef struct {
 	ChunkHeader header;
 	union {
 		MsgRconCmd rcon_cmd;
+		MsgClStartInfo start_info;
 	} msg;
 } Chunk;
 ```

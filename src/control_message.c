@@ -1,12 +1,13 @@
+#include "control_message.h"
 #include "packet.h"
 
-#include "control_message.h"
+ControlMessage decode_control(uint8_t *buf, size_t len, PacketHeader *header, Error *err) {
+	ControlMessage msg = {
+		.kind = buf[0],
+		.reason = NULL,
+	};
 
-ControlMessage *decode_control(uint8_t *buf, size_t len, PacketHeader *header, Error *err) {
-	ControlMessageKind kind = buf[0];
-	char *reason = NULL;
-
-	switch(kind) {
+	switch(msg.kind) {
 	case CTRL_MSG_CONNECT:
 	case CTRL_MSG_CONNECTACCEPT: {
 		Token token_magic = read_token(&buf[1]);
@@ -16,7 +17,7 @@ ControlMessage *decode_control(uint8_t *buf, size_t len, PacketHeader *header, E
 				*err = ERR_INVALID_TOKEN_MAGIC;
 			}
 
-			return NULL;
+			return msg;
 		}
 
 		buf += sizeof(Token);
@@ -25,8 +26,8 @@ ControlMessage *decode_control(uint8_t *buf, size_t len, PacketHeader *header, E
 	}
 	case CTRL_MSG_CLOSE: {
 		if(len - 1 > sizeof(Token)) {
-			reason = (char *)&buf[1];
-			buf += strlen(reason) + 1;
+			msg.reason = (char *)&buf[1];
+			buf += strlen(msg.reason) + 1;
 		}
 
 		break;
@@ -39,14 +40,10 @@ ControlMessage *decode_control(uint8_t *buf, size_t len, PacketHeader *header, E
 			*err = ERR_INVALID_CONTROL_MESSAGE;
 		}
 
-		return NULL;
+		return msg;
 	}
 
-	ControlMessage *msg = malloc(sizeof(ControlMessage));
-
 	header->token = read_token(&buf[1]);
-	msg->kind = kind;
-	msg->reason = reason;
 
 	return msg;
 }

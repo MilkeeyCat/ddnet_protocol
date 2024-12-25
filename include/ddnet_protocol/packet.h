@@ -107,11 +107,6 @@ typedef struct {
 	char *reason; // Can be set if msg_kind == CTRL_MSG_CLOSE
 } ControlMessage;
 
-// allow the user to define their own max? To reduce memory usage.
-#ifndef MAX_CHUNKS
-#define MAX_CHUNKS 512
-#endif
-
 // Holds information about on full ddnet packet
 typedef struct {
 	PacketKind kind;

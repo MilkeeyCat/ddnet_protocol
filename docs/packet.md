@@ -137,16 +137,6 @@ typedef struct {
 
 Payload of control packets
 
-# MAX_CHUNKS
-
-## Syntax
-
-```C
-#define MAX_CHUNKS 512
-```
-
-allow the user to define their own max? To reduce memory usage.
-
 # DDNetPacket
 
 ## Syntax

@@ -158,7 +158,7 @@ typedef struct {
 	// The parsed packet payload
 	// Check `kind` to know which field in the union to access
 	union {
-		ControlMessage *control;
+		ControlMessage control;
 		struct {
 			Chunk *data;
 			size_t len;

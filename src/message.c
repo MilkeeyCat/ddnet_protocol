@@ -7,8 +7,14 @@
 static Error decode_game_message(Chunk *chunk, MessageId msg_id, Unpacker *unpacker) {
 	switch(msg_id) {
 	case MSG_CL_STARTINFO:
-		// TODO: unpack startinfo
 		chunk->kind = CHUNK_KIND_CL_STARTINFO;
+		chunk->msg.start_info.name = unpacker_get_string(unpacker);
+		chunk->msg.start_info.clan = unpacker_get_string(unpacker);
+		chunk->msg.start_info.country = unpacker_get_int(unpacker);
+		chunk->msg.start_info.skin = unpacker_get_string(unpacker);
+		chunk->msg.start_info.use_custom_color = unpacker_get_bool(unpacker);
+		chunk->msg.start_info.color_body = unpacker_get_int(unpacker);
+		chunk->msg.start_info.color_feet = unpacker_get_int(unpacker);
 		break;
 	default:
 		return ERR_UNKNOWN_MESSAGE;

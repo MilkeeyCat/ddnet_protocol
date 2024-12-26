@@ -131,6 +131,9 @@ typedef struct {
 // https://github.com/MilkeeyCat/ddnet_protocol/issues/54
 PacketHeader decode_packet_header(uint8_t *buf);
 
+// Given a `PacketHeader` as input it writes 3 bytes into `buf`
+Error encode_packet_header(const PacketHeader *header, uint8_t *buf);
+
 // Extract and decompress packet payload.
 // Given a full raw packet as `full_data`
 // It will extract only the payload into `payload` and return the size of the payload.
@@ -143,6 +146,11 @@ size_t get_packet_payload(PacketHeader *header, uint8_t *full_data, size_t full_
 // Or a pointer to newly allocated memory that holds the parsed packet struct.
 // It is your responsiblity to free it using `free_packet()`
 DDNetPacket decode_packet(uint8_t *buf, size_t len, Error *err);
+
+// Given a `Packet` struct it will encode a full udp payload
+// the output is written into `buf` which has to be at least `len` big
+// And returns the amount of written bytes
+size_t encode_packet(const DDNetPacket *packet, uint8_t *buf, size_t len, Error *err);
 
 // Frees a packet struct and all of its fields
 Error free_packet(DDNetPacket *packet);

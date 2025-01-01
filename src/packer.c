@@ -58,15 +58,24 @@ void packer_init(Packer *packer) {
 	packer->end = packer->buf + (size_t)PACKER_BUFFER_SIZE;
 }
 
-void packer_init_msg(Packer *packer, MessageId msg_id, MessageKind kind) {
+void packer_init_msg(Packer *packer, ChunkKind kind) {
 	packer_init(packer);
 
-	if(msg_id < 0 || msg_id > 0x3fffffff) {
-		packer->err = ERR_MESSAGE_ID_OUT_OF_BOUNDS;
-		return;
+	MessageId msg_id;
+	MessageKind msg_kind;
+
+	switch(kind) {
+	case CHUNK_KIND_RCON_CMD:
+		msg_id = MSG_RCON_CMD;
+		msg_kind = MESSAGE_SYSTEM;
+		break;
+	case CHUNK_KIND_CL_STARTINFO:
+		msg_id = MSG_CL_STARTINFO;
+		msg_kind = MESSAGE_GAME;
+		break;
 	}
 
-	packer_add_int(packer, (int32_t)((msg_id << 1) | kind));
+	packer_add_int(packer, (int32_t)((msg_id << 1) | msg_kind));
 }
 
 size_t packer_size(Packer *packer) {

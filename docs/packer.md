@@ -99,17 +99,17 @@ See also `packer_init_msg()` if you want to send a net message.
 ## Syntax
 
 ```C
-void packer_init_msg(Packer *packer, MessageId msg_id, MessageKind kind);
+void packer_init_msg(Packer *packer, ChunkKind kind);
 ```
 
 Initializes a new packer struct.
-and already packs the message id and message kind flag.
+And already packs the message id and message kind flag.
 
 See also `packer_init()` if you need an empty packer.
 
 ```C
 Packer packer;
-packer_init_msg(&packer, MSG_RCON_CMD, MESSAGE_SYSTEM);
+packer_init_msg(&packer, CHUNK_KIND_RCON_CMD);
 packer_add_string(&packer, "say hello");
 ```
 

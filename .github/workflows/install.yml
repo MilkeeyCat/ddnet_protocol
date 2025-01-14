@@ -46,19 +46,19 @@ jobs:
 
     - name: Build and run examples
       run: |
-        gcc examples/huffman.c -o huffman -lddnet_protocol
+        gcc -DCODE_SPACE=USER_SPACE examples/huffman.c -o huffman -lddnet_protocol
         ./huffman
         [ "$(./huffman)" = foo ] || { printf 'Error: expected "foo" but got ^\n'; exit 1; }
 
     - name: Build example snippet in README.md
       run: |
-          LDLIBS=-lddnet_protocol lintdown.sh README.md
+          CFLAGS=-DCODE_SPACE=USER_SPACE LDLIBS=-lddnet_protocol lintdown.sh README.md
 
     - name: Build all code snippets in documentation
       run: |
           export C_INCLUDES="$(ls include/ddnet_protocol/ | awk '{ print "ddnet_protocol/" $0 }' | tr '\n' ',')"
           C_INCLUDES+=stdint.h,stddef.h,stdbool.h
-          CFLAGS="-DBLOAT" LDLIBS=-lddnet_protocol lintdown.sh docs/*.md --skip-pattern 'typedef (enum|struct) {' --wrap-main
+          CFLAGS=-DCODE_SPACE=USER_SPACE LDLIBS=-lddnet_protocol lintdown.sh docs/*.md --skip-pattern 'typedef (enum|struct) {' --wrap-main
 
     - name: Uninstall
       run: |

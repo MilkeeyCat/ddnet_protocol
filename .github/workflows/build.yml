@@ -55,11 +55,3 @@ jobs:
         cd release
         ${{ matrix.cmake-path }}cmake -E env ${{ matrix.cmake-init-env }} ${{ matrix.cmake-path }}cmake ${{ matrix.cmake-args }} -DCMAKE_BUILD_TYPE=Release -Werror=dev ..
         ${{ matrix.cmake-path }}cmake --build . --config Release ${{ matrix.build-args }}
-
-    - name: Build with bloat off
-      run: |
-        mkdir bloat
-        cd bloat
-        ${{ matrix.cmake-path }}cmake -E env ${{ matrix.cmake-init-env }} ${{ matrix.cmake-path }}cmake ${{ matrix.cmake-args }} -DCMAKE_BUILD_TYPE=Debug -Werror=dev -DBLOAT=OFF ..
-        ${{ matrix.cmake-path }}cmake --build . --config Debug ${{ matrix.build-args }}
-

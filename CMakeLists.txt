@@ -16,13 +16,9 @@ target_include_directories(ddnet_protocol PRIVATE include/ddnet_protocol)
 
 set_target_properties(ddnet_protocol PROPERTIES PUBLIC_HEADER "${LIB_PUBLIC_HEADERS}")
 
-option(BLOAT "Whether to use C standard library" ON)
+set(CODE_SPACE USER_SPACE CACHE STRING "Specifies where the code will be run, kernel or user space.")
 
-if (BLOAT)
-    add_definitions(-DBLOAT)
-endif()
-
-### tests
+add_compile_definitions(CODE_SPACE=${CODE_SPACE})
 
 if(CMAKE_TESTING_ENABLED)
     set(INSTALL_GTEST OFF)

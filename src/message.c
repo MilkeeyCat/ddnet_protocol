@@ -48,3 +48,37 @@ Error decode_message(Chunk *chunk, uint8_t *buf) {
 	}
 	return decode_game_message(chunk, msg_id, &unpacker);
 }
+
+size_t encode_message(Chunk *chunk, uint8_t *buf, Error *err) {
+	Packer packer;
+	packer_init_msg(&packer, chunk->kind);
+
+	switch(chunk->kind) {
+	case CHUNK_KIND_RCON_CMD:
+		packer_add_string(&packer, chunk->msg.rcon_cmd.command);
+		break;
+	case CHUNK_KIND_CL_STARTINFO:
+		packer_add_string(&packer, chunk->msg.start_info.name);
+		packer_add_string(&packer, chunk->msg.start_info.clan);
+		packer_add_int(&packer, (int32_t)chunk->msg.start_info.country);
+		packer_add_string(&packer, chunk->msg.start_info.skin);
+		packer_add_int(&packer, chunk->msg.start_info.use_custom_color);
+		packer_add_int(&packer, (int32_t)chunk->msg.start_info.color_body);
+		packer_add_int(&packer, (int32_t)chunk->msg.start_info.color_feet);
+		break;
+	default:
+		if(err != NULL) {
+			*err = ERR_UNKNOWN_MESSAGE;
+		}
+	}
+
+	if(err != NULL && packer.err != ERR_NONE) {
+		*err = packer.err;
+
+		return 0;
+	}
+
+	memcpy(buf, packer_data(&packer), packer_size(&packer));
+
+	return packer_size(&packer);
+}

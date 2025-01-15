@@ -73,9 +73,17 @@ uint8_t *encode_chunk_header(const ChunkHeader *header, uint8_t *buf);
 // Be careful this is not the message id
 // that is sent over the network!
 typedef enum {
+	CHUNK_KIND_INPUT,
 	CHUNK_KIND_RCON_CMD,
 	CHUNK_KIND_CL_STARTINFO,
+	CHUNK_KIND_RAW,
 } ChunkKind;
+
+typedef struct {
+	int id;
+	int kind;
+	uint8_t *data;
+} MsgRaw;
 
 // A chunk is the container of a net message.
 // One chunk contains of a chunk header.
@@ -88,8 +96,10 @@ typedef struct {
 	ChunkKind kind;
 	ChunkHeader header;
 	union {
+		MsgInput input;
 		MsgRconCmd rcon_cmd;
 		MsgClStartInfo start_info;
+		MsgRaw raw;
 	} msg;
 } Chunk;
 

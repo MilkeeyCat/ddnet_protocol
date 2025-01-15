@@ -65,6 +65,10 @@ void packer_init_msg(Packer *packer, ChunkKind kind) {
 	MessageKind msg_kind;
 
 	switch(kind) {
+	case CHUNK_KIND_INPUT:
+		msg_id = MSG_INPUT;
+		msg_kind = MESSAGE_SYSTEM;
+		break;
 	case CHUNK_KIND_RCON_CMD:
 		msg_id = MSG_RCON_CMD;
 		msg_kind = MESSAGE_SYSTEM;
@@ -73,6 +77,8 @@ void packer_init_msg(Packer *packer, ChunkKind kind) {
 		msg_id = MSG_CL_STARTINFO;
 		msg_kind = MESSAGE_GAME;
 		break;
+	case CHUNK_KIND_RAW:
+		__builtin_unreachable();
 	}
 
 	packer_add_int(packer, (int32_t)((msg_id << 1) | msg_kind));

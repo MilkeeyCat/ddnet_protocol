@@ -17,7 +17,10 @@ static Error decode_game_message(Chunk *chunk, MessageId msg_id, Unpacker *unpac
 		chunk->msg.start_info.color_feet = unpacker_get_int(unpacker);
 		break;
 	default:
-		return ERR_UNKNOWN_MESSAGE;
+		chunk->msg.raw.id = msg_id;
+		chunk->msg.raw.kind = MESSAGE_GAME;
+		chunk->msg.raw.data = unpacker->buf;
+		chunk->kind = CHUNK_KIND_RAW;
 	}
 
 	return unpacker->err;
@@ -29,8 +32,27 @@ static Error decode_system_message(Chunk *chunk, MessageId msg_id, Unpacker *unp
 		chunk->msg.rcon_cmd.command = unpacker_get_string(unpacker);
 		chunk->kind = CHUNK_KIND_RCON_CMD;
 		break;
+	case MSG_INPUT:
+		chunk->msg.input.ack = unpacker_get_int(unpacker);
+		chunk->msg.input.prediction = unpacker_get_int(unpacker);
+		chunk->msg.input.size = unpacker_get_int(unpacker);
+		chunk->msg.input.direction = unpacker_get_int(unpacker);
+		chunk->msg.input.target_x = unpacker_get_int(unpacker);
+		chunk->msg.input.target_y = unpacker_get_int(unpacker);
+		chunk->msg.input.jump = unpacker_get_int(unpacker);
+		chunk->msg.input.fire = unpacker_get_int(unpacker);
+		chunk->msg.input.hook = unpacker_get_int(unpacker);
+		chunk->msg.input.player_flags = unpacker_get_int(unpacker);
+		chunk->msg.input.wanted_weapon = unpacker_get_int(unpacker);
+		chunk->msg.input.next_weapon = unpacker_get_int(unpacker);
+		chunk->msg.input.prev_weapon = unpacker_get_int(unpacker);
+		chunk->kind = CHUNK_KIND_INPUT;
+		break;
 	default:
-		return ERR_UNKNOWN_MESSAGE;
+		chunk->msg.raw.id = msg_id;
+		chunk->msg.raw.kind = MESSAGE_SYSTEM;
+		chunk->msg.raw.data = unpacker->buf;
+		chunk->kind = CHUNK_KIND_RAW;
 	}
 
 	return unpacker->err;
@@ -51,9 +73,29 @@ Error decode_message(Chunk *chunk, uint8_t *buf) {
 
 size_t encode_message(Chunk *chunk, uint8_t *buf, Error *err) {
 	Packer packer;
-	packer_init_msg(&packer, chunk->kind);
+	if(chunk->kind == CHUNK_KIND_RAW) {
+		packer_init(&packer);
+		packer_add_int(&packer, (int32_t)((chunk->msg.raw.id << 1) | chunk->msg.raw.kind));
+	} else {
+		packer_init_msg(&packer, chunk->kind);
+	}
 
 	switch(chunk->kind) {
+	case CHUNK_KIND_INPUT:
+		packer_add_int(&packer, chunk->msg.input.ack);
+		packer_add_int(&packer, chunk->msg.input.prediction);
+		packer_add_int(&packer, chunk->msg.input.size);
+		packer_add_int(&packer, chunk->msg.input.direction);
+		packer_add_int(&packer, chunk->msg.input.target_x);
+		packer_add_int(&packer, chunk->msg.input.target_y);
+		packer_add_int(&packer, chunk->msg.input.jump);
+		packer_add_int(&packer, chunk->msg.input.fire);
+		packer_add_int(&packer, chunk->msg.input.hook);
+		packer_add_int(&packer, chunk->msg.input.player_flags);
+		packer_add_int(&packer, chunk->msg.input.wanted_weapon);
+		packer_add_int(&packer, chunk->msg.input.next_weapon);
+		packer_add_int(&packer, chunk->msg.input.prev_weapon);
+		break;
 	case CHUNK_KIND_RCON_CMD:
 		packer_add_string(&packer, chunk->msg.rcon_cmd.command);
 		break;
@@ -65,6 +107,10 @@ size_t encode_message(Chunk *chunk, uint8_t *buf, Error *err) {
 		packer_add_int(&packer, chunk->msg.start_info.use_custom_color);
 		packer_add_int(&packer, (int32_t)chunk->msg.start_info.color_body);
 		packer_add_int(&packer, (int32_t)chunk->msg.start_info.color_feet);
+		break;
+	case CHUNK_KIND_RAW:
+		memcpy(packer.current, chunk->msg.raw.data, chunk->header.size);
+		packer.current += chunk->header.size - 1;
 		break;
 	default:
 		if(err != NULL) {

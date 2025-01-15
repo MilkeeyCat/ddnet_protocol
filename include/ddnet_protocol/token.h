@@ -36,6 +36,9 @@ extern const Token TOKEN_MAGIC;
 // the data in `buf` is expected to be in network endianness
 Token read_token(const uint8_t *buf);
 
+// writes 4 bytes token into `buf`
+void write_token(Token token, uint8_t *buf);
+
 #ifdef __cplusplus
 }
 #endif

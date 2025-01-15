@@ -35,6 +35,8 @@ typedef enum {
 // this function could also be called decode_chunk_payload()
 Error decode_message(Chunk *chunk, uint8_t *buf);
 
+size_t encode_message(Chunk *chunk, uint8_t *buf, Error *err);
+
 #ifdef __cplusplus
 }
 #endif

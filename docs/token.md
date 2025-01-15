@@ -49,3 +49,13 @@ is one uint32_t
 
 the data in `buf` is expected to be in network endianness
 
+# write_token
+
+## Syntax
+
+```C
+void write_token(Token token, uint8_t *buf);
+```
+
+writes 4 bytes token into `buf`
+

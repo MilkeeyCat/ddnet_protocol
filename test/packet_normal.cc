@@ -47,8 +47,8 @@ TEST(NormalPacket, PackEmpty) {
 	Error err = ERR_NONE;
 	size_t size = encode_packet(&packet, bytes, sizeof(bytes), &err);
 	EXPECT_EQ(err, ERR_NONE);
-	EXPECT_EQ(size, 3);
-	uint8_t expected[] = {0x00, 0x00, 0x00};
+	EXPECT_EQ(size, 7);
+	uint8_t expected[] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
 	EXPECT_TRUE(std::memcmp(bytes, expected, size) == 0);
 }
 
@@ -59,7 +59,7 @@ TEST(NormalPacket, PackEmptyWithAck) {
 	Error err = ERR_NONE;
 	size_t size = encode_packet(&packet, bytes, sizeof(bytes), &err);
 	EXPECT_EQ(err, ERR_NONE);
-	EXPECT_EQ(size, 3);
-	uint8_t expected[] = {0x00, 0x02, 0x00};
+	EXPECT_EQ(size, 7);
+	uint8_t expected[] = {0x00, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00};
 	EXPECT_TRUE(std::memcmp(bytes, expected, size) == 0);
 }

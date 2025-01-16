@@ -1,9 +1,12 @@
 #include "packet.h"
+#include "chunk.h"
 #include "common.h"
 #include "control_message.h"
 #include "errors.h"
 #include "fetch_chunks.h"
 #include "huffman.h"
+#include "message.h"
+#include "token.h"
 
 PacketHeader decode_packet_header(uint8_t *buf) {
 	return (PacketHeader){
@@ -92,12 +95,24 @@ size_t encode_packet(const DDNetPacket *packet, uint8_t *buf, size_t len, Error 
 		*err = ERR_BUFFER_FULL;
 		return 0;
 	}
-	size_t bytes_written = PACKET_HEADER_SIZE;
+
+	uint8_t *start = buf;
+
 	if(packet->kind == PACKET_NORMAL) {
 		encode_packet_header(&packet->header, buf);
-		// buf += PACKET_HEADER_SIZE;
-		return bytes_written;
+		buf += PACKET_HEADER_SIZE;
+
+		for(size_t i = 0; i < packet->chunks.len; i++) {
+			buf = encode_chunk_header(&packet->chunks.data[i].header, buf);
+			buf += encode_message(&packet->chunks.data[i], buf, err);
+		}
+
+		write_token(packet->header.token, buf);
+		buf += sizeof(Token);
+
+		return buf - start;
 	}
+
 	*err = ERR_INVALID_PACKET;
 	return 0;
 }

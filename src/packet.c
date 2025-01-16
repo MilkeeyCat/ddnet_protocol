@@ -107,7 +107,7 @@ size_t encode_packet(const DDNetPacket *packet, uint8_t *buf, size_t len, Error 
 			buf += encode_message(&packet->chunks.data[i], buf, err);
 		}
 
-		memcpy(buf, &packet->header.token, sizeof(Token));
+		write_token(packet->header.token, buf);
 		buf += sizeof(Token);
 
 		return buf - start;

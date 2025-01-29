@@ -103,7 +103,7 @@ size_t encode_packet(const DDNetPacket *packet, uint8_t *buf, size_t len, Error 
 		buf += PACKET_HEADER_SIZE;
 
 		for(size_t i = 0; i < packet->chunks.len; i++) {
-			buf = encode_chunk_header(&packet->chunks.data[i].header, buf);
+			buf += encode_chunk_header(&packet->chunks.data[i].header, buf);
 			buf += encode_message(&packet->chunks.data[i], buf, err);
 		}
 

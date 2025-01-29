@@ -60,34 +60,33 @@ Be careful! The `sequence` field is only used by vital chunks!
 ## Syntax
 
 ```C
-ChunkHeader decode_chunk_header(uint8_t **buf_ptr);
+size_t decode_chunk_header(const uint8_t *buf, ChunkHeader *header);
 ```
 
-Given a pointer to a byte buffer it will parse it as a chunk header.
-The pointer is then incremented by 2 or 3 depending on how many bytes
-where consumed.
+Parses a byte buffer as a chunk header.
+Consumes 2 or 3 bytes and stores the result in `header`. Returns the number
+of bytes consumed.
 
 # encode_chunk_header
 
 ## Syntax
 
 ```C
-uint8_t *encode_chunk_header(const ChunkHeader *header, uint8_t *buf);
+size_t encode_chunk_header(const ChunkHeader *header, uint8_t *buf);
 ```
 
 Given a filled header struct it it will pack it into `buf`
 writing either 2 or 3 bytes depending on the header type.
+Returns a number of bytes written
 
-It then returns a pointer to the last byte written.
 Example usage:
-
 ```C
 ChunkHeader header = {
 	.flags = CHUNK_FLAG_VITAL,
 	.size = 2,
 	.sequence = 4};
 uint8_t buf[8];
-uint8_t *buf_writer = encode_chunk_header(&header, buf);
+size_t bytes_written = encode_chunk_header(&header, buf);
 ```
 
 # ChunkKind

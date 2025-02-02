@@ -24,7 +24,8 @@ Error fetch_chunks(uint8_t *buf, size_t len, PacketHeader *header, OnChunk callb
 			return ERR_END_OF_BUFFER;
 		}
 
-		ChunkHeader chunk_header = decode_chunk_header(&buf);
+		ChunkHeader chunk_header;
+		buf += decode_chunk_header(buf, &chunk_header);
 
 		space = end - buf;
 		if(space < chunk_header.size) {

@@ -1,7 +1,6 @@
 #include "packer.h"
-#include "errors.h"
-
 #include "common.h"
+#include "errors.h"
 
 void str_sanitize_cc(char *string) {
 	uint8_t *str = (uint8_t *)string;

@@ -7,7 +7,7 @@ on:
 
 jobs:
   check-style:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
     steps:
@@ -17,7 +17,12 @@ jobs:
     - name: Prepare
       run: |
         sudo apt-get update -y
-        sudo apt-get install -y pkg-config cmake cmake build-essential shellcheck clang-format
+        sudo apt-get install -y pkg-config cmake cmake build-essential shellcheck
+        wget https://github.com/muttleyxd/clang-tools-static-binaries/releases/download/master-46b8640/clang-format-10_linux-amd64
+        echo "b8ed0cfc9cded28f8c0c9dd0da402d1287453b7d55a68bf243b432035aebcaa4720bfff22440d1f1c5d4c82f7b8d85948214cca85a2aa976589b88459e440521 clang-format-10_linux-amd64" | sha512sum -c
+        mkdir -p ~/.local/bin
+        mv clang-format-10_linux-amd64 ~/.local/bin/clang-format
+        chmod +x ~/.local/bin/clang-format
     - name: Check clang format version
       run: |
         clang-format -version # expect 10

@@ -1,8 +1,35 @@
 #include <cstring>
 #include <gtest/gtest.h>
 
+#include <ddnet_protocol/chunk.h>
 #include <ddnet_protocol/errors.h>
 #include <ddnet_protocol/packet.h>
+
+TEST(NormalPacket, HeaderOk) {
+	PacketHeader header;
+	header.ack = 0;
+	header.flags = PACKET_FLAG_RESEND;
+	header.num_chunks = 1;
+	uint8_t bytes[PACKET_HEADER_SIZE];
+	Error err = encode_packet_header(&header, bytes);
+	EXPECT_EQ(err, ERR_NONE);
+	EXPECT_EQ(bytes[0], 0x40);
+	EXPECT_EQ(bytes[1], 0x00);
+	EXPECT_EQ(bytes[2], 0x01);
+}
+
+TEST(NormalPacket, HeaderAckOob) {
+	PacketHeader header;
+	header.ack = MAX_SEQUENCE + 2;
+	header.flags = PACKET_FLAG_RESEND;
+	header.num_chunks = 1;
+	uint8_t bytes[PACKET_HEADER_SIZE] = {};
+	Error err = encode_packet_header(&header, bytes);
+	EXPECT_EQ(err, ERR_ACK_OUT_OF_BOUNDS);
+	EXPECT_EQ(bytes[0], 0x00);
+	EXPECT_EQ(bytes[1], 0x00);
+	EXPECT_EQ(bytes[2], 0x00);
+}
 
 TEST(NormalPacket, StartInfoAndRconCmd) {
 	uint8_t bytes[] = {

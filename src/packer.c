@@ -1,6 +1,7 @@
 #include "packer.h"
 #include "common.h"
 #include "errors.h"
+#include "message.h"
 
 void str_sanitize_cc(char *string) {
 	uint8_t *str = (uint8_t *)string;
@@ -66,6 +67,10 @@ void packer_init_msg(Packer *packer, ChunkKind kind) {
 	switch(kind) {
 	case CHUNK_KIND_INFO:
 		msg_id = MSG_INFO;
+		msg_kind = MESSAGE_SYSTEM;
+		break;
+	case CHUNK_KIND_MAP_CHANGE:
+		msg_id = MSG_MAP_CHANGE;
 		msg_kind = MESSAGE_SYSTEM;
 		break;
 	case CHUNK_KIND_RCON_CMD:

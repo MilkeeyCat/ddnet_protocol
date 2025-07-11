@@ -15,6 +15,7 @@ typedef enum {
 
 	// system messages
 	MSG_INFO = 1,
+	MSG_MAP_CHANGE = 2,
 	MSG_RCON_CMD = 17,
 
 	// game messages

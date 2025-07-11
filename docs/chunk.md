@@ -96,6 +96,7 @@ size_t bytes_written = encode_chunk_header(&header, buf);
 ```C
 typedef enum {
 	CHUNK_KIND_INFO,
+	CHUNK_KIND_MAP_CHANGE,
 	CHUNK_KIND_RCON_CMD,
 	CHUNK_KIND_CL_STARTINFO,
 } ChunkKind;
@@ -116,6 +117,7 @@ typedef struct {
 	ChunkHeader header;
 	union {
 		MsgInfo info;
+		MsgMapChange map_change;
 		MsgRconCmd rcon_cmd;
 		MsgClStartInfo start_info;
 	} msg;

@@ -3,7 +3,7 @@
 ## Syntax
 
 ```C
-#define MAX_SEQUENCE 1 << 10
+#define MAX_SEQUENCE (1 << 10)
 ```
 
 The sequence and acknowledge number can never

@@ -1,5 +1,4 @@
 ---
-Language: Cpp
 AccessModifierOffset: -8
 AlignAfterOpenBracket: DontAlign
 AlignEscapedNewlines: DontAlign

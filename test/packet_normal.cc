@@ -31,6 +31,32 @@ TEST(NormalPacket, HeaderAckOob) {
 	EXPECT_EQ(bytes[2], 0x00);
 }
 
+TEST(NormalPacket, Info) {
+	uint8_t bytes[] = {
+		0x00, 0x00, 0x01, 0x41, 0x07, 0x03, 0x03, 0x30,
+		0x2e, 0x36, 0x20, 0x36, 0x32, 0x36, 0x66, 0x63,
+		0x65, 0x39, 0x61, 0x37, 0x37, 0x38, 0x64, 0x66,
+		0x34, 0x64, 0x34, 0x00, 0x00, 0x3d, 0xe3, 0x94,
+		0x8d};
+
+	Error err = Error::ERR_NONE;
+	DDNetPacket packet = decode_packet(bytes, sizeof(bytes), &err);
+
+	EXPECT_EQ(err, Error::ERR_NONE);
+	EXPECT_EQ(packet.kind, PacketKind::PACKET_NORMAL);
+	EXPECT_EQ(packet.header.flags, 0);
+	EXPECT_EQ(packet.header.num_chunks, 1);
+	EXPECT_EQ(packet.header.ack, 0);
+	EXPECT_EQ(packet.header.token, 0x3de3948d);
+
+	EXPECT_EQ(packet.chunks.data[0].kind, CHUNK_KIND_INFO);
+	MsgInfo info = packet.chunks.data[0].msg.info;
+	EXPECT_STREQ(info.version, "0.6 626fce9a778df4d4");
+	EXPECT_STREQ(info.password, "");
+
+	free_packet(&packet);
+}
+
 TEST(NormalPacket, StartInfoAndRconCmd) {
 	uint8_t bytes[] = {
 		0x00, 0x06, 0x02, 0x42, 0x0d, 0x05, 0x28, 0x43,

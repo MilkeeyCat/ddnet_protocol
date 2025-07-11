@@ -25,6 +25,11 @@ static Error decode_game_message(Chunk *chunk, MessageId msg_id, Unpacker *unpac
 
 static Error decode_system_message(Chunk *chunk, MessageId msg_id, Unpacker *unpacker) {
 	switch(msg_id) {
+	case MSG_INFO:
+		chunk->msg.info.version = unpacker_get_string(unpacker);
+		chunk->msg.info.password = unpacker_get_string(unpacker);
+		chunk->kind = CHUNK_KIND_INFO;
+		break;
 	case MSG_RCON_CMD:
 		chunk->msg.rcon_cmd.command = unpacker_get_string(unpacker);
 		chunk->kind = CHUNK_KIND_RCON_CMD;
@@ -54,6 +59,10 @@ size_t encode_message(Chunk *chunk, uint8_t *buf, Error *err) {
 	packer_init_msg(&packer, chunk->kind);
 
 	switch(chunk->kind) {
+	case CHUNK_KIND_INFO:
+		packer_add_string(&packer, chunk->msg.info.version);
+		packer_add_string(&packer, chunk->msg.info.password);
+		break;
 	case CHUNK_KIND_RCON_CMD:
 		packer_add_string(&packer, chunk->msg.rcon_cmd.command);
 		break;

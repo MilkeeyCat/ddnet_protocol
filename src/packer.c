@@ -64,6 +64,10 @@ void packer_init_msg(Packer *packer, ChunkKind kind) {
 	MessageKind msg_kind;
 
 	switch(kind) {
+	case CHUNK_KIND_INFO:
+		msg_id = MSG_INFO;
+		msg_kind = MESSAGE_SYSTEM;
+		break;
 	case CHUNK_KIND_RCON_CMD:
 		msg_id = MSG_RCON_CMD;
 		msg_kind = MESSAGE_SYSTEM;

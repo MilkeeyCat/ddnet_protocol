@@ -72,6 +72,7 @@ size_t encode_chunk_header(const ChunkHeader *header, uint8_t *buf);
 // Be careful this is not the message id
 // that is sent over the network!
 typedef enum {
+	CHUNK_KIND_INFO,
 	CHUNK_KIND_RCON_CMD,
 	CHUNK_KIND_CL_STARTINFO,
 } ChunkKind;
@@ -87,6 +88,7 @@ typedef struct {
 	ChunkKind kind;
 	ChunkHeader header;
 	union {
+		MsgInfo info;
 		MsgRconCmd rcon_cmd;
 		MsgClStartInfo start_info;
 	} msg;

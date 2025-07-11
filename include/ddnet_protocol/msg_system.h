@@ -7,6 +7,12 @@ extern "C" {
 #include "common.h"
 
 // Sent by the client.
+typedef struct {
+	const char *version;
+	const char *password;
+} MsgInfo;
+
+// Sent by the client.
 // The `command` will be executed in the server console.
 typedef struct {
 	const char *command;

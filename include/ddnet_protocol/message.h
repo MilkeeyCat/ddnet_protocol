@@ -5,7 +5,6 @@ extern "C" {
 #endif
 
 #include "chunk.h"
-#include "common.h"
 #include "errors.h"
 
 // Message id of system and game net messages
@@ -15,6 +14,7 @@ typedef enum {
 	MSG_NULL = 0,
 
 	// system messages
+	MSG_INFO = 1,
 	MSG_RCON_CMD = 17,
 
 	// game messages

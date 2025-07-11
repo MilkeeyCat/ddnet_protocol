@@ -64,6 +64,17 @@ and also tracks if errors occured
 
 See also `unpacker_init` and `unpacker_get_int`
 
+# PACKER_BUFFER_SIZE
+
+## Syntax
+
+```C
+#define PACKER_BUFFER_SIZE (1024 * 2)
+```
+
+maximum output and storage size in bytes
+used by the `Packer`
+
 # Packer
 
 ## Syntax
@@ -77,8 +88,6 @@ typedef struct {
 } Packer;
 ```
 
-maximum output and storage size in bytes
-used by the `Packer`
 State for the packer
 holds the currently packed data
 and also tracks errors

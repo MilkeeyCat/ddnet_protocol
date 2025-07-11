@@ -3,7 +3,7 @@
 class BaseDoc
   attr_accessor :comment, :signature
 
-  NUMERIC_REGEX = /^[\s+-]*(0x)?[0-9]+([\s+*\/<>-]*(0x)?[0-9]+)*$/
+  NUMERIC_REGEX = /^[\(\s+-]*(0x)?[0-9]+([\s+*\/<>-]*(0x)?[0-9]+)*\)*$/
   DEFINE_REGEX = /#define (?<name>[A-Z][A-Z_0-9]+) (?<value>.+)$/
 
   def initialize(comment)

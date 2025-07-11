@@ -10,7 +10,7 @@ extern "C" {
 
 // The sequence and acknowledge number can never
 // be higher than 1024
-#define MAX_SEQUENCE 1 << 10
+#define MAX_SEQUENCE (1 << 10)
 
 // These flags are used by the chunk header.
 // Vital chunks contain a sequence number

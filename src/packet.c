@@ -1,6 +1,5 @@
 #include "packet.h"
 #include "chunk.h"
-#include "common.h"
 #include "control_message.h"
 #include "errors.h"
 #include "fetch_chunks.h"
@@ -17,11 +16,12 @@ PacketHeader decode_packet_header(uint8_t *buf) {
 }
 
 Error encode_packet_header(const PacketHeader *header, uint8_t *buf) {
+	if(header->ack >= MAX_SEQUENCE) {
+		return ERR_ACK_OUT_OF_BOUNDS;
+	}
 	buf[0] = ((header->flags << 2) & 0xfc | ((header->ack >> 8)) & 0x3);
 	buf[1] = header->ack & 0xff;
 	buf[2] = header->num_chunks;
-	// TODO: check ack/flags/num_chunks out of bounds
-	//       could also flip ack on MAX_SEQUENCE here
 	return ERR_NONE;
 }
 

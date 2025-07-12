@@ -25,6 +25,25 @@ static Error decode_game_message(Chunk *chunk, MessageId msg_id, Unpacker *unpac
 
 static Error decode_system_message(Chunk *chunk, MessageId msg_id, Unpacker *unpacker) {
 	switch(msg_id) {
+	case MSG_INFO:
+		chunk->msg.info.version = unpacker_get_string(unpacker);
+		chunk->msg.info.password = unpacker_get_string(unpacker);
+		chunk->kind = CHUNK_KIND_INFO;
+		break;
+	case MSG_MAP_CHANGE:
+		chunk->msg.map_change.name = unpacker_get_string(unpacker);
+		chunk->msg.map_change.crc = unpacker_get_int(unpacker);
+		chunk->msg.map_change.size = unpacker_get_int(unpacker);
+		chunk->kind = CHUNK_KIND_MAP_CHANGE;
+		break;
+	case MSG_MAP_DATA:
+		chunk->msg.map_data.last = unpacker_get_int(unpacker);
+		chunk->msg.map_data.map_crc = unpacker_get_int(unpacker);
+		chunk->msg.map_data.chunk = unpacker_get_int(unpacker);
+		chunk->msg.map_data.chunk_size = unpacker_get_int(unpacker);
+		chunk->msg.map_data.data = unpacker_get_raw(unpacker, chunk->msg.map_data.chunk_size);
+		chunk->kind = CHUNK_KIND_MAP_CHANGE;
+		break;
 	case MSG_RCON_CMD:
 		chunk->msg.rcon_cmd.command = unpacker_get_string(unpacker);
 		chunk->kind = CHUNK_KIND_RCON_CMD;
@@ -54,6 +73,22 @@ size_t encode_message(Chunk *chunk, uint8_t *buf, Error *err) {
 	packer_init_msg(&packer, chunk->kind);
 
 	switch(chunk->kind) {
+	case CHUNK_KIND_INFO:
+		packer_add_string(&packer, chunk->msg.info.version);
+		packer_add_string(&packer, chunk->msg.info.password);
+		break;
+	case CHUNK_KIND_MAP_CHANGE:
+		packer_add_string(&packer, chunk->msg.map_change.name);
+		packer_add_int(&packer, chunk->msg.map_change.crc);
+		packer_add_int(&packer, chunk->msg.map_change.size);
+		break;
+	case CHUNK_KIND_MAP_DATA:
+		packer_add_int(&packer, chunk->msg.map_data.last);
+		packer_add_int(&packer, chunk->msg.map_data.map_crc);
+		packer_add_int(&packer, chunk->msg.map_data.chunk);
+		packer_add_int(&packer, chunk->msg.map_data.chunk_size);
+		packer_add_raw(&packer, chunk->msg.map_data.data, chunk->msg.map_data.chunk_size);
+		break;
 	case CHUNK_KIND_RCON_CMD:
 		packer_add_string(&packer, chunk->msg.rcon_cmd.command);
 		break;

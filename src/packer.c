@@ -1,6 +1,7 @@
 #include "packer.h"
 #include "common.h"
 #include "errors.h"
+#include "message.h"
 
 void str_sanitize_cc(char *string) {
 	uint8_t *str = (uint8_t *)string;
@@ -64,6 +65,18 @@ void packer_init_msg(Packer *packer, ChunkKind kind) {
 	MessageKind msg_kind;
 
 	switch(kind) {
+	case CHUNK_KIND_INFO:
+		msg_id = MSG_INFO;
+		msg_kind = MESSAGE_SYSTEM;
+		break;
+	case CHUNK_KIND_MAP_CHANGE:
+		msg_id = MSG_MAP_CHANGE;
+		msg_kind = MESSAGE_SYSTEM;
+		break;
+	case CHUNK_KIND_MAP_DATA:
+		msg_id = MSG_MAP_DATA;
+		msg_kind = MESSAGE_SYSTEM;
+		break;
 	case CHUNK_KIND_RCON_CMD:
 		msg_id = MSG_RCON_CMD;
 		msg_kind = MESSAGE_SYSTEM;
@@ -135,6 +148,15 @@ Error packer_add_string(Packer *packer, const char *value) {
 	strncpy((char *)packer->current, value, len);
 	packer->current += len;
 
+	return ERR_NONE;
+}
+
+Error packer_add_raw(Packer *packer, const uint8_t *data, size_t size) {
+	if(packer_remaining_size(packer) < size) {
+		return packer->err = ERR_BUFFER_FULL;
+	}
+	memcpy(packer->current, data, size);
+	packer->current += size;
 	return ERR_NONE;
 }
 

@@ -1,0 +1,39 @@
+name: Check ASan & UBSan
+
+on:
+  push:
+  pull_request:
+  merge_group:
+
+
+jobs:
+  check-clang-san:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        submodules: true
+
+    - name: Prepare Linux
+      run: |
+        sudo apt-get update -y
+        sudo apt-get install -y pkg-config cmake cmake build-essential clang
+
+    - name: Build with ASan and UBSan
+      run: |
+        mkdir clang-sanitizer
+        cd clang-sanitizer
+        export CC=clang
+        export CXX=clang++
+        export CXXFLAGS="-fsanitize=address,undefined -fno-sanitize-recover -fno-omit-frame-pointer"
+        export CFLAGS="-fsanitize=address,undefined -fno-sanitize-recover -fno-omit-frame-pointer"
+        cmake \
+          -DCMAKE_BUILD_TYPE=Debug \
+          -Werror=dev \
+          -DCMAKE_TESTING_ENABLED=ON \
+          ..
+
+    - name: Run tests
+      run: |
+        cd clang-sanitizer
+        make run_tests

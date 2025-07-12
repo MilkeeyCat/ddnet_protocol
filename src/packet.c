@@ -7,7 +7,7 @@
 #include "message.h"
 #include "token.h"
 
-PacketHeader decode_packet_header(uint8_t *buf) {
+PacketHeader decode_packet_header(const uint8_t *buf) {
 	return (PacketHeader){
 		.flags = buf[0] >> 2,
 		.ack = ((buf[0] & 0x3) << 8) | buf[1],
@@ -36,17 +36,17 @@ static void on_chunk(void *ctx, Chunk *chunk) {
 	memcpy(&context->chunks[context->len++], chunk, sizeof(Chunk));
 }
 
-size_t get_packet_payload(PacketHeader *header, uint8_t *full_data, size_t full_len, uint8_t *payload, size_t payload_len, Error *err) {
+size_t get_packet_payload(PacketHeader *header, const uint8_t *full_data, size_t full_len, uint8_t *payload, size_t payload_len, Error *err) {
 	full_data += PACKET_HEADER_SIZE;
 	full_len -= PACKET_HEADER_SIZE;
 	if(header->flags & PACKET_FLAG_COMPRESSION) {
 		return huffman_decompress(full_data, full_len, payload, payload_len, err);
 	}
-	memcpy(payload, full_data, payload_len);
+	memcpy(payload, full_data, full_len);
 	return full_len;
 }
 
-DDNetPacket decode_packet(uint8_t *buf, size_t len, Error *err) {
+DDNetPacket decode_packet(const uint8_t *buf, size_t len, Error *err) {
 	DDNetPacket packet = {};
 
 	if(len < PACKET_HEADER_SIZE || len > MAX_PACKET_SIZE) {
@@ -58,23 +58,22 @@ DDNetPacket decode_packet(uint8_t *buf, size_t len, Error *err) {
 	}
 
 	packet.header = decode_packet_header(buf);
-
-	uint8_t payload[MAX_PACKET_SIZE];
-	size_t payload_len = get_packet_payload(&packet.header, buf, len, payload, sizeof(payload), err);
+	packet.payload = malloc(MAX_PACKET_SIZE);
+	packet.payload_len = get_packet_payload(&packet.header, buf, len, packet.payload, MAX_PACKET_SIZE, err);
 	if(*err != ERR_NONE) {
 		return packet;
 	}
 
 	if(packet.header.flags & PACKET_FLAG_CONTROL) {
 		packet.kind = PACKET_CONTROL;
-		packet.control = decode_control(payload, payload_len, &packet.header, err);
+		packet.control = decode_control(packet.payload, packet.payload_len, &packet.header, err);
 	} else {
 		packet.kind = PACKET_NORMAL;
 		Context ctx = {
 			.chunks = malloc(sizeof(Chunk) * packet.header.num_chunks),
 			.len = 0,
 		};
-		Error chunk_error = fetch_chunks(payload, payload_len, &packet.header, on_chunk, &ctx);
+		Error chunk_error = fetch_chunks(packet.payload, packet.payload_len, &packet.header, on_chunk, &ctx);
 		if(chunk_error != ERR_NONE) {
 			if(err) {
 				*err = chunk_error;
@@ -121,6 +120,7 @@ Error free_packet(DDNetPacket *packet) {
 	if(packet->kind == PACKET_NORMAL) {
 		free(packet->chunks.data);
 	}
+	free(packet->payload);
 
 	return ERR_NONE;
 }

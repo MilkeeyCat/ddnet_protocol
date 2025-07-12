@@ -145,6 +145,8 @@ Payload of control packets
 typedef struct {
 	PacketKind kind;
 	PacketHeader header;
+	uint8_t *payload;
+	size_t payload_len;
 	// The parsed packet payload
 	// Check `kind` to know which field in the union to access
 	union {
@@ -164,7 +166,7 @@ Holds information about on full ddnet packet
 ## Syntax
 
 ```C
-PacketHeader decode_packet_header(uint8_t *buf);
+PacketHeader decode_packet_header(const uint8_t *buf);
 ```
 
 Unpacks packet header and fills the `PacketHeader` struct.
@@ -189,7 +191,7 @@ Given a `PacketHeader` as input it writes 3 bytes into `buf`
 ## Syntax
 
 ```C
-size_t get_packet_payload(PacketHeader *header, uint8_t *full_data, size_t full_len, uint8_t *payload, size_t payload_len, Error *err);
+size_t get_packet_payload(PacketHeader *header, const uint8_t *full_data, size_t full_len, uint8_t *payload, size_t payload_len, Error *err);
 ```
 
 Extract and decompress packet payload.
@@ -201,7 +203,7 @@ It will extract only the payload into `payload` and return the size of the paylo
 ## Syntax
 
 ```C
-DDNetPacket decode_packet(uint8_t *buf, size_t len, Error *err);
+DDNetPacket decode_packet(const uint8_t *buf, size_t len, Error *err);
 ```
 
 Given a pointer to the beginning of a udp payload

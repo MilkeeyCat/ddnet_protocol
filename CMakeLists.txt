@@ -13,6 +13,7 @@ FILE(GLOB LIB_PUBLIC_HEADERS include/ddnet_protocol/*.h)
 add_library(ddnet_protocol ${LIB_SOURCES})
 
 target_include_directories(ddnet_protocol PRIVATE include/ddnet_protocol)
+target_include_directories(ddnet_protocol PUBLIC include)
 
 set_target_properties(ddnet_protocol PROPERTIES PUBLIC_HEADER "${LIB_PUBLIC_HEADERS}")
 
@@ -26,8 +27,6 @@ if(CMAKE_TESTING_ENABLED)
 
     FILE(GLOB TEST_SOURCES test/*.cc)
     add_executable(${TARGET_TESTRUNNER} EXCLUDE_FROM_ALL ${TEST_SOURCES})
-
-    target_include_directories(${TARGET_TESTRUNNER} PRIVATE include)
 
     target_link_libraries(${TARGET_TESTRUNNER}
         ddnet_protocol
@@ -57,6 +56,19 @@ if(CMAKE_TESTING_ENABLED)
         DEPENDS ${TARGET_TESTRUNNER}
         USES_TERMINAL
     )
+endif()
+
+### examples
+
+if(EXAMPLES)
+	set(EXAMPLE_LIST huffman)
+	foreach(EXAMPLE ${EXAMPLE_LIST})
+	    add_executable(${EXAMPLE} examples/${EXAMPLE}.c)
+	    target_link_libraries(${EXAMPLE} ddnet_protocol)
+	    set_target_properties(${EXAMPLE} PROPERTIES
+		RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/examples"
+	    )
+	endforeach()
 endif()
 
 ### install

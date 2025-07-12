@@ -7,7 +7,7 @@
 #include "message.h"
 #include "token.h"
 
-PacketHeader decode_packet_header(uint8_t *buf) {
+PacketHeader decode_packet_header(const uint8_t *buf) {
 	return (PacketHeader){
 		.flags = buf[0] >> 2,
 		.ack = ((buf[0] & 0x3) << 8) | buf[1],
@@ -36,7 +36,7 @@ static void on_chunk(void *ctx, Chunk *chunk) {
 	memcpy(&context->chunks[context->len++], chunk, sizeof(Chunk));
 }
 
-size_t get_packet_payload(PacketHeader *header, uint8_t *full_data, size_t full_len, uint8_t *payload, size_t payload_len, Error *err) {
+size_t get_packet_payload(PacketHeader *header, const uint8_t *full_data, size_t full_len, uint8_t *payload, size_t payload_len, Error *err) {
 	full_data += PACKET_HEADER_SIZE;
 	full_len -= PACKET_HEADER_SIZE;
 	if(header->flags & PACKET_FLAG_COMPRESSION) {
@@ -46,7 +46,7 @@ size_t get_packet_payload(PacketHeader *header, uint8_t *full_data, size_t full_
 	return full_len;
 }
 
-DDNetPacket decode_packet(uint8_t *buf, size_t len, Error *err) {
+DDNetPacket decode_packet(const uint8_t *buf, size_t len, Error *err) {
 	DDNetPacket packet = {};
 
 	if(len < PACKET_HEADER_SIZE || len > MAX_PACKET_SIZE) {

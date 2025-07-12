@@ -90,3 +90,19 @@ TEST(NormalPacket, PackEmptyWithAck) {
 	uint8_t expected[] = {0x00, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00};
 	EXPECT_TRUE(std::memcmp(bytes, expected, size) == 0);
 }
+
+TEST(NormalPacket, EmptyResendRequest) {
+	uint8_t bytes[] = {0x40, 0x00, 0x00, 0x3d, 0xe3, 0x94, 0x8d};
+
+	Error err = Error::ERR_NONE;
+	DDNetPacket packet = decode_packet(bytes, sizeof(bytes), &err);
+
+	EXPECT_EQ(err, Error::ERR_NONE);
+	EXPECT_EQ(packet.kind, PacketKind::PACKET_NORMAL);
+	EXPECT_NE(packet.header.flags & PACKET_FLAG_RESEND, 0);
+	EXPECT_EQ(packet.header.num_chunks, 0);
+	EXPECT_EQ(packet.header.ack, 0);
+	EXPECT_EQ(packet.header.token, 0x3de3948d);
+
+	free_packet(&packet);
+}

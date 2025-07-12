@@ -112,6 +112,9 @@ typedef struct {
 	PacketKind kind;
 	PacketHeader header;
 
+	uint8_t *payload;
+	size_t payload_len;
+
 	// The parsed packet payload
 	// Check `kind` to know which field in the union to access
 	union {

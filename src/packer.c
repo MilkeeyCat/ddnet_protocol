@@ -73,6 +73,10 @@ void packer_init_msg(Packer *packer, ChunkKind kind) {
 		msg_id = MSG_MAP_CHANGE;
 		msg_kind = MESSAGE_SYSTEM;
 		break;
+	case CHUNK_KIND_MAP_DATA:
+		msg_id = MSG_MAP_DATA;
+		msg_kind = MESSAGE_SYSTEM;
+		break;
 	case CHUNK_KIND_RCON_CMD:
 		msg_id = MSG_RCON_CMD;
 		msg_kind = MESSAGE_SYSTEM;

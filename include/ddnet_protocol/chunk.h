@@ -74,6 +74,7 @@ size_t encode_chunk_header(const ChunkHeader *header, uint8_t *buf);
 typedef enum {
 	CHUNK_KIND_INFO,
 	CHUNK_KIND_MAP_CHANGE,
+	CHUNK_KIND_MAP_DATA,
 	CHUNK_KIND_RCON_CMD,
 	CHUNK_KIND_CL_STARTINFO,
 } ChunkKind;
@@ -91,6 +92,7 @@ typedef struct {
 	union {
 		MsgInfo info;
 		MsgMapChange map_change;
+		MsgMapData map_data;
 		MsgRconCmd rcon_cmd;
 		MsgClStartInfo start_info;
 	} msg;

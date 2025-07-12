@@ -88,6 +88,10 @@ Error packer_add_int(Packer *packer, int32_t value);
 // call `packer_data()` to receive the full packed data
 Error packer_add_string(Packer *packer, const char *value);
 
+// Packs `data` as raw data
+// call `packer_data()` to receive the full packed data
+Error packer_add_raw(Packer *packer, const uint8_t *data, size_t size);
+
 // returns a new `Unpacker` instance
 // it keeps track of how much data was already unpacked
 //

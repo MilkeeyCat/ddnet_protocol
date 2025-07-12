@@ -176,6 +176,17 @@ Error packer_add_string(Packer *packer, const char *value);
 Packs `value` as plain null terminated C string
 call `packer_data()` to receive the full packed data
 
+# packer_add_raw
+
+## Syntax
+
+```C
+Error packer_add_raw(Packer *packer, const uint8_t *data, size_t size);
+```
+
+Packs `data` as raw data
+call `packer_data()` to receive the full packed data
+
 # unpacker_init
 
 ## Syntax

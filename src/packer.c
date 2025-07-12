@@ -147,6 +147,15 @@ Error packer_add_string(Packer *packer, const char *value) {
 	return ERR_NONE;
 }
 
+Error packer_add_raw(Packer *packer, const uint8_t *data, size_t size) {
+	if(packer_remaining_size(packer) < size) {
+		return packer->err = ERR_BUFFER_FULL;
+	}
+	memcpy(packer->current, data, size);
+	packer->current += size;
+	return ERR_NONE;
+}
+
 void unpacker_init(Unpacker *unpacker, uint8_t *buf, size_t len) {
 	unpacker->err = ERR_NONE;
 	unpacker->buf = buf;

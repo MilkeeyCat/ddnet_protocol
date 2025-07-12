@@ -8,6 +8,8 @@ if (CMAKE_VERSION VERSION_GREATER_EQUAL "3.24.0")
     cmake_policy(SET CMP0135 NEW)
 endif()
 
+option(EXAMPLES "If enabled, examples will be built" OFF)
+
 FILE(GLOB LIB_SOURCES src/*.c)
 FILE(GLOB LIB_PUBLIC_HEADERS include/ddnet_protocol/*.h)
 add_library(ddnet_protocol ${LIB_SOURCES})

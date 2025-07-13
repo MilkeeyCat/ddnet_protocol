@@ -1,6 +1,7 @@
 #include "control_message.h"
 #include "packer.h"
 #include "packet.h"
+#include "token.h"
 
 ControlMessage decode_control(uint8_t *buf, size_t len, PacketHeader *header, Error *err) {
 	ControlMessage msg = {
@@ -56,7 +57,6 @@ size_t encode_control(const ControlMessage *msg, uint8_t *buf, Error *err) {
 
 	switch(msg->kind) {
 	case CTRL_MSG_KEEPALIVE:
-	case CTRL_MSG_CONNECT:
 	case CTRL_MSG_CONNECTACCEPT:
 	case CTRL_MSG_ACCEPT:
 		if(err) {
@@ -64,6 +64,9 @@ size_t encode_control(const ControlMessage *msg, uint8_t *buf, Error *err) {
 			*err = ERR_INVALID_CONTROL_MESSAGE;
 		}
 		break;
+	case CTRL_MSG_CONNECT:
+		write_token(TOKEN_MAGIC, buf + 1);
+		return sizeof(Token) + 1;
 	case CTRL_MSG_CLOSE:
 		if(msg->reason && msg->reason[0]) {
 			packer_add_string(&packer, msg->reason);

@@ -116,3 +116,19 @@ TEST(ControlPacket, EncodeCloseWithReason) {
 	EXPECT_EQ(size, sizeof(expected));
 	EXPECT_TRUE(std::memcmp(bytes, expected, size) == 0);
 }
+
+TEST(ControlPacket, EncodeConnect) {
+	DDNetPacket packet = {
+		.kind = PacketKind::PACKET_CONTROL,
+		.header = {
+			.flags = PACKET_FLAG_CONTROL,
+			.token = 0xffffffff},
+		.control = {.kind = CTRL_MSG_CONNECT}};
+	uint8_t bytes[MAX_PACKET_SIZE];
+	Error err = ERR_NONE;
+	size_t size = encode_packet(&packet, bytes, sizeof(bytes), &err);
+	EXPECT_EQ(err, ERR_NONE);
+	uint8_t expected[] = {0x10, 0x00, 0x00, 0x01, 0x54, 0x4b, 0x45, 0x4e, 0xff, 0xff, 0xff, 0xff};
+	EXPECT_EQ(size, sizeof(expected));
+	EXPECT_TRUE(std::memcmp(bytes, expected, size) == 0);
+}

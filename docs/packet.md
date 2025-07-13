@@ -131,7 +131,7 @@ Type of control packet
 ```C
 typedef struct {
 	ControlMessageKind kind;
-	char *reason; // Can be set if msg_kind == CTRL_MSG_CLOSE
+	const char *reason; // Can be set if msg_kind == CTRL_MSG_CLOSE
 } ControlMessage;
 ```
 

@@ -97,7 +97,8 @@ size_t encode_packet(const DDNetPacket *packet, uint8_t *buf, size_t len, Error 
 
 	uint8_t *start = buf;
 
-	if(packet->kind == PACKET_NORMAL) {
+	switch(packet->kind) {
+	case PACKET_NORMAL:
 		encode_packet_header(&packet->header, buf);
 		buf += PACKET_HEADER_SIZE;
 
@@ -110,6 +111,17 @@ size_t encode_packet(const DDNetPacket *packet, uint8_t *buf, size_t len, Error 
 		buf += sizeof(Token);
 
 		return buf - start;
+		break;
+	case PACKET_CONTROL:
+		encode_packet_header(&packet->header, buf);
+		buf += PACKET_HEADER_SIZE;
+		buf += encode_control(&packet->control, buf, err);
+		write_token(packet->header.token, buf);
+		buf += sizeof(Token);
+		return buf - start;
+		break;
+	case PACKET_CONNLESS:
+		break;
 	}
 
 	*err = ERR_INVALID_PACKET;

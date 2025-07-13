@@ -1,3 +1,4 @@
+#include <cstring>
 #include <gtest/gtest.h>
 
 #include <ddnet_protocol/control_message.h>
@@ -82,4 +83,52 @@ TEST(ControlPacket, CloseWithReason) {
 	EXPECT_EQ(packet.header.token, 0x4ec73b04);
 	EXPECT_STREQ(packet.control.reason, "too bad");
 	free_packet(&packet);
+}
+
+TEST(ControlPacket, EncodeClose) {
+	DDNetPacket packet = {
+		.kind = PacketKind::PACKET_CONTROL,
+		.header = {
+			.flags = PACKET_FLAG_CONTROL,
+			.token = 0x4ec73b04},
+		.control = {.kind = CTRL_MSG_CLOSE}};
+	uint8_t bytes[MAX_PACKET_SIZE];
+	Error err = ERR_NONE;
+	size_t size = encode_packet(&packet, bytes, sizeof(bytes), &err);
+	EXPECT_EQ(err, ERR_NONE);
+	uint8_t expected[] = {0x10, 0x00, 0x00, 0x04, 0x4e, 0xc7, 0x3b, 0x04};
+	EXPECT_EQ(size, sizeof(expected));
+	EXPECT_TRUE(std::memcmp(bytes, expected, size) == 0);
+}
+
+TEST(ControlPacket, EncodeCloseWithReason) {
+	DDNetPacket packet = {
+		.kind = PacketKind::PACKET_CONTROL,
+		.header = {
+			.flags = PACKET_FLAG_CONTROL,
+			.token = 0x4ec73b04},
+		.control = {.kind = CTRL_MSG_CLOSE, .reason = "too bad"}};
+	uint8_t bytes[MAX_PACKET_SIZE];
+	Error err = ERR_NONE;
+	size_t size = encode_packet(&packet, bytes, sizeof(bytes), &err);
+	EXPECT_EQ(err, ERR_NONE);
+	uint8_t expected[] = {0x10, 0x00, 0x00, 0x04, 0x74, 0x6f, 0x6f, 0x20, 0x62, 0x61, 0x64, 0x00, 0x4e, 0xc7, 0x3b, 0x04};
+	EXPECT_EQ(size, sizeof(expected));
+	EXPECT_TRUE(std::memcmp(bytes, expected, size) == 0);
+}
+
+TEST(ControlPacket, EncodeConnect) {
+	DDNetPacket packet = {
+		.kind = PacketKind::PACKET_CONTROL,
+		.header = {
+			.flags = PACKET_FLAG_CONTROL,
+			.token = 0xffffffff},
+		.control = {.kind = CTRL_MSG_CONNECT}};
+	uint8_t bytes[MAX_PACKET_SIZE];
+	Error err = ERR_NONE;
+	size_t size = encode_packet(&packet, bytes, sizeof(bytes), &err);
+	EXPECT_EQ(err, ERR_NONE);
+	uint8_t expected[] = {0x10, 0x00, 0x00, 0x01, 0x54, 0x4b, 0x45, 0x4e, 0xff, 0xff, 0xff, 0xff};
+	EXPECT_EQ(size, sizeof(expected));
+	EXPECT_TRUE(std::memcmp(bytes, expected, size) == 0);
 }

@@ -96,20 +96,25 @@ size_t encode_packet(const DDNetPacket *packet, uint8_t *buf, size_t len, Error 
 	}
 
 	uint8_t *start = buf;
+	encode_packet_header(&packet->header, buf);
+	buf += PACKET_HEADER_SIZE;
 
-	if(packet->kind == PACKET_NORMAL) {
-		encode_packet_header(&packet->header, buf);
-		buf += PACKET_HEADER_SIZE;
-
+	switch(packet->kind) {
+	case PACKET_NORMAL:
 		for(size_t i = 0; i < packet->chunks.len; i++) {
 			buf += encode_chunk_header(&packet->chunks.data[i].header, buf);
 			buf += encode_message(&packet->chunks.data[i], buf, err);
 		}
-
 		write_token(packet->header.token, buf);
 		buf += sizeof(Token);
-
 		return buf - start;
+	case PACKET_CONTROL:
+		buf += encode_control(&packet->control, buf, err);
+		write_token(packet->header.token, buf);
+		buf += sizeof(Token);
+		return buf - start;
+	case PACKET_CONNLESS:
+		break;
 	}
 
 	*err = ERR_INVALID_PACKET;

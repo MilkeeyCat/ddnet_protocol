@@ -104,7 +104,7 @@ typedef enum {
 // Payload of control packets
 typedef struct {
 	ControlMessageKind kind;
-	char *reason; // Can be set if msg_kind == CTRL_MSG_CLOSE
+	const char *reason; // Can be set if msg_kind == CTRL_MSG_CLOSE
 } ControlMessage;
 
 // Holds information about on full ddnet packet

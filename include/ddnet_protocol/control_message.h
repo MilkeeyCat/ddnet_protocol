@@ -10,6 +10,10 @@ extern "C" {
 // It will extract one control message.
 ControlMessage decode_control(uint8_t *buf, size_t len, PacketHeader *header, Error *err);
 
+// Given a ControlMessage it will write the network presentation without packet header into buf
+// And it returns the amount of bytes written.
+size_t encode_control(const ControlMessage *msg, uint8_t *buf, Error *err);
+
 #ifdef __cplusplus
 }
 #endif

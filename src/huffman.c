@@ -83,8 +83,8 @@ static void setbits_r(Node *node, int32_t bits, uint32_t depth) {
 }
 
 static void construct_tree(const uint32_t *frequencies) {
-	HuffmanConstructNode aNodesLeftStorage[HUFFMAN_MAX_SYMBOLS];
-	HuffmanConstructNode *apNodesLeft[HUFFMAN_MAX_SYMBOLS];
+	HuffmanConstructNode nodes_left_storage[HUFFMAN_MAX_SYMBOLS];
+	HuffmanConstructNode *nodes_left[HUFFMAN_MAX_SYMBOLS];
 	int32_t num_nodes_left = HUFFMAN_MAX_SYMBOLS;
 
 	// add the symbols
@@ -95,12 +95,12 @@ static void construct_tree(const uint32_t *frequencies) {
 		nodes[i].leafs[1] = 0xffff;
 
 		if(i == HUFFMAN_EOF_SYMBOL) {
-			aNodesLeftStorage[i].frequency = 1;
+			nodes_left_storage[i].frequency = 1;
 		} else {
-			aNodesLeftStorage[i].frequency = frequencies[i];
+			nodes_left_storage[i].frequency = frequencies[i];
 		}
-		aNodesLeftStorage[i].node_id = i;
-		apNodesLeft[i] = &aNodesLeftStorage[i];
+		nodes_left_storage[i].node_id = i;
+		nodes_left[i] = &nodes_left_storage[i];
 	}
 
 	num_nodes = HUFFMAN_MAX_SYMBOLS;
@@ -108,14 +108,14 @@ static void construct_tree(const uint32_t *frequencies) {
 	// construct the table
 	while(num_nodes_left > 1) {
 		// we can't rely on stdlib's qsort for this, it can generate different results on different implementations
-		bubble_sort_nodes(apNodesLeft, num_nodes_left);
+		bubble_sort_nodes(nodes_left, num_nodes_left);
 
 		nodes[num_nodes].num_bits = 0;
-		nodes[num_nodes].leafs[0] = apNodesLeft[num_nodes_left - 1]->node_id;
-		nodes[num_nodes].leafs[1] = apNodesLeft[num_nodes_left - 2]->node_id;
-		apNodesLeft[num_nodes_left - 2]->node_id = num_nodes;
+		nodes[num_nodes].leafs[0] = nodes_left[num_nodes_left - 1]->node_id;
+		nodes[num_nodes].leafs[1] = nodes_left[num_nodes_left - 2]->node_id;
+		nodes_left[num_nodes_left - 2]->node_id = num_nodes;
 
-		apNodesLeft[num_nodes_left - 2]->frequency = apNodesLeft[num_nodes_left - 1]->frequency + apNodesLeft[num_nodes_left - 2]->frequency;
+		nodes_left[num_nodes_left - 2]->frequency = nodes_left[num_nodes_left - 1]->frequency + nodes_left[num_nodes_left - 2]->frequency;
 		num_nodes++;
 		num_nodes_left--;
 	}

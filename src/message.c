@@ -65,10 +65,20 @@ Error decode_message(Chunk *chunk, uint8_t *buf) {
 	bool sys = msg_and_sys & 1;
 	MessageId msg_id = msg_and_sys >> 1;
 
+	Error err = ERR_NONE;
 	if(sys) {
-		return decode_system_message(chunk, msg_id, &unpacker);
+		err = decode_system_message(chunk, msg_id, &unpacker);
+	} else {
+		err = decode_game_message(chunk, msg_id, &unpacker);
 	}
-	return decode_game_message(chunk, msg_id, &unpacker);
+
+	if(err == ERR_UNKNOWN_MESSAGE) {
+		chunk->msg.unknown.len = chunk->header.size;
+		chunk->msg.unknown.buf = buf;
+		chunk->kind = CHUNK_KIND_UNKNOWN;
+	}
+
+	return err;
 }
 
 size_t encode_message(Chunk *chunk, uint8_t *buf, Error *err) {
@@ -76,6 +86,9 @@ size_t encode_message(Chunk *chunk, uint8_t *buf, Error *err) {
 	packer_init_msg(&packer, chunk->kind);
 
 	switch(chunk->kind) {
+	case CHUNK_KIND_UNKNOWN:
+		memcpy(buf, chunk->msg.unknown.buf, chunk->msg.unknown.len);
+		return chunk->msg.unknown.len;
 	case CHUNK_KIND_INFO:
 		packer_add_string(&packer, chunk->msg.info.version);
 		packer_add_string(&packer, chunk->msg.info.password);

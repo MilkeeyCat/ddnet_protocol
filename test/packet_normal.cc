@@ -131,6 +131,54 @@ TEST(NormalPacket, GameMotdAndSysConReady) {
 	free_packet(&packet);
 }
 
+TEST(NormalPacket, UnknownFakeMessage) {
+	// sent from C++ version using the following code
+	//
+	// CMsgPacker FakeMsg(99, true);
+	// FakeMsg.AddString("ABC");
+	// SendMsg(Conn, &FakeMsg, MSGFLAG_VITAL | MSGFLAG_FLUSH);
+
+	//                                          two byte message id 99 and system flag
+	//                                          |
+	//                                          |                               ddnet security token
+	//                                          |                    null byte   |
+	uint8_t bytes[] = {//                       vvvvvvvvvv                 vvvv  vvvvvvvvvvvvvvvvvvvvvv
+		0x00, 0x00, 0x01, 0x40, 0x06, 0x03, 0x87, 0x03, 'A', 'B', 'C', 0x00, 0x8b, 0x6c, 0xdb, 0xc3};
+	//      ^^^^^^^^^^^^^^^^  ^^^^^^^^^^^^^^^^
+	//      packet header  |  vital chunk header
+	//          num_chunks=1  size=6 sequence=3
+
+	Error err = ERR_NONE;
+	DDNetPacket packet = decode_packet(bytes, sizeof(bytes), &err);
+	EXPECT_EQ(err, ERR_NONE);
+	EXPECT_EQ(packet.kind, PacketKind::PACKET_NORMAL);
+	EXPECT_EQ(packet.header.flags, 0);
+	EXPECT_EQ(packet.header.num_chunks, 1);
+	EXPECT_EQ(packet.header.ack, 0);
+	EXPECT_EQ(packet.header.token, 0x8b6cdbc3);
+	EXPECT_EQ(packet.chunks.len, 1);
+	EXPECT_EQ(packet.chunks.data[0].kind, CHUNK_KIND_UNKNOWN);
+	const size_t msg_id_size = 2;
+	const size_t str_size = strlen("ABC") + 1;
+	EXPECT_EQ(packet.chunks.data[0].msg.unknown.len, msg_id_size + str_size);
+	EXPECT_EQ(packet.chunks.data[0].msg.unknown.buf[0], 0x87); // two byte
+	EXPECT_EQ(packet.chunks.data[0].msg.unknown.buf[1], 0x03); // message id and system flag
+	EXPECT_EQ(packet.chunks.data[0].msg.unknown.buf[2], 'A');
+	EXPECT_EQ(packet.chunks.data[0].msg.unknown.buf[3], 'B');
+	EXPECT_EQ(packet.chunks.data[0].msg.unknown.buf[4], 'C');
+	EXPECT_EQ(packet.chunks.data[0].msg.unknown.buf[5], 0x00); // null term
+	EXPECT_EQ(packet.chunks.data[0].header.flags, CHUNK_FLAG_VITAL);
+	EXPECT_EQ(packet.chunks.data[0].header.sequence, 3);
+	EXPECT_EQ(packet.chunks.data[0].header.size, 6);
+
+	uint8_t repack[2048];
+	size_t repack_size = encode_packet(&packet, repack, sizeof(repack), &err);
+	EXPECT_EQ(err, ERR_NONE);
+	EXPECT_EQ(repack_size, sizeof(bytes));
+	EXPECT_TRUE(std::memcmp(bytes, repack, repack_size) == 0);
+	free_packet(&packet);
+}
+
 TEST(NormalPacket, PackEmpty) {
 	DDNetPacket packet = {.kind = PacketKind::PACKET_NORMAL};
 	uint8_t bytes[MAX_PACKET_SIZE];

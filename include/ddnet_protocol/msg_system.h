@@ -6,6 +6,13 @@ extern "C" {
 
 #include "common.h"
 
+// Holds the raw data including the message id
+// of a message unknown to the ddnet_protocol library
+typedef struct {
+	const uint8_t *buf;
+	size_t len;
+} MsgUnknown;
+
 // Sent by the client.
 typedef struct {
 	const char *version;

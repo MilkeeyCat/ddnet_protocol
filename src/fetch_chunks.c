@@ -21,7 +21,7 @@ size_t fetch_chunks(uint8_t *buf, size_t len, PacketHeader *header, OnChunk call
 		//
 		// but in the ddnet, 0.6 and 0.7 protocol no such message exists
 		// so we can assume that it is an invalid message
-		if(space < 4) {
+		if(space < sizeof(Token)) {
 			if(err) {
 				*err = ERR_END_OF_BUFFER;
 			}

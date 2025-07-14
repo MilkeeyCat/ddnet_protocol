@@ -59,8 +59,12 @@ DDNetPacket decode_packet(const uint8_t *buf, size_t len, Error *err) {
 
 	packet.header = decode_packet_header(buf);
 	packet.payload = malloc(MAX_PACKET_SIZE);
-	packet.payload_len = get_packet_payload(&packet.header, buf, len, packet.payload, MAX_PACKET_SIZE, err);
-	if(*err != ERR_NONE) {
+	Error payload_err = ERR_NONE;
+	packet.payload_len = get_packet_payload(&packet.header, buf, len, packet.payload, MAX_PACKET_SIZE, &payload_err);
+	if(payload_err != ERR_NONE) {
+		if(err) {
+			*err = payload_err;
+		}
 		return packet;
 	}
 

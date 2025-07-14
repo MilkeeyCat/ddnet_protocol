@@ -3,7 +3,8 @@
 #include "message.h"
 #include "packet.h"
 
-Error fetch_chunks(uint8_t *buf, size_t len, PacketHeader *header, OnChunk callback, void *ctx) {
+size_t fetch_chunks(uint8_t *buf, size_t len, PacketHeader *header, OnChunk callback, void *ctx, Error *err) {
+	uint8_t *start = buf;
 	uint8_t *end = buf + len;
 	uint8_t num_chunks = 0;
 
@@ -21,7 +22,11 @@ Error fetch_chunks(uint8_t *buf, size_t len, PacketHeader *header, OnChunk callb
 		// but in the ddnet, 0.6 and 0.7 protocol no such message exists
 		// so we can assume that it is an invalid message
 		if(space < 4) {
-			return ERR_END_OF_BUFFER;
+			if(err) {
+				*err = ERR_END_OF_BUFFER;
+			}
+
+			return 0;
 		}
 
 		ChunkHeader chunk_header;
@@ -29,7 +34,11 @@ Error fetch_chunks(uint8_t *buf, size_t len, PacketHeader *header, OnChunk callb
 
 		space = end - buf;
 		if(space < chunk_header.size) {
-			return ERR_END_OF_BUFFER;
+			if(err) {
+				*err = ERR_END_OF_BUFFER;
+			}
+
+			return 0;
 		}
 
 		Chunk chunk;
@@ -39,33 +48,22 @@ Error fetch_chunks(uint8_t *buf, size_t len, PacketHeader *header, OnChunk callb
 		num_chunks++;
 		// unknown message ids are not a fatal error in teeworlds
 		if(chunk_err != ERR_NONE && chunk_err != ERR_UNKNOWN_MESSAGE) {
-			return chunk_err;
+			if(err) {
+				*err = chunk_err;
+			}
+
+			return 0;
 		}
 		buf += chunk_header.size;
 	}
 
 	if(num_chunks < header->num_chunks) {
-		return ERR_END_OF_BUFFER;
+		if(err) {
+			*err = ERR_END_OF_BUFFER;
+		}
+
+		return 0;
 	}
 
-	size_t space = end - buf;
-	// missing ddnet security token
-	// this is an error in the ddnet protocol
-	// but expected in the teeworlds protocol
-	//
-	// because pure teeworlds is not in scope we throw an error
-	// https://github.com/MilkeeyCat/ddnet_protocol/issues/48
-	if(space < 4) {
-		return ERR_MISSING_DDNET_SECURITY_TOKEN;
-	}
-	if(space > 4) {
-		// we did already parse the expected amount of chunks
-		// and the ddnet security token
-		// but there are still bytes left!
-		return ERR_REMAINING_BYTES_IN_BUFFER;
-	}
-
-	header->token = read_token(buf);
-
-	return ERR_NONE;
+	return buf - start;
 }

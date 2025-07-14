@@ -66,17 +66,20 @@ DDNetPacket decode_packet(const uint8_t *buf, size_t len, Error *err) {
 
 	if(packet.header.flags & PACKET_FLAG_CONTROL) {
 		packet.kind = PACKET_CONTROL;
-		packet.control = decode_control(packet.payload, packet.payload_len, &packet.header, err);
+		size_t size = decode_control(packet.payload, packet.payload_len, &packet.control, err); // NOLINT(clang-analyzer-unix.Malloc)
+		packet.header.token = read_token(packet.payload + size);
 	} else {
 		packet.kind = PACKET_NORMAL;
 		Context ctx = {
 			.chunks = malloc(sizeof(Chunk) * packet.header.num_chunks),
 			.len = 0,
 		};
-		Error chunk_error = fetch_chunks(packet.payload, packet.payload_len, &packet.header, on_chunk, &ctx);
-		if(chunk_error != ERR_NONE) {
+		Error chunk_err = ERR_NONE;
+		size_t size = fetch_chunks(packet.payload, packet.payload_len, &packet.header, on_chunk, &ctx, &chunk_err);
+		size_t space = packet.payload_len - size;
+		if(chunk_err != ERR_NONE) {
 			if(err) {
-				*err = chunk_error;
+				*err = chunk_err;
 			}
 
 			return packet;
@@ -84,6 +87,33 @@ DDNetPacket decode_packet(const uint8_t *buf, size_t len, Error *err) {
 
 		packet.chunks.data = ctx.chunks;
 		packet.chunks.len = ctx.len;
+
+		// missing ddnet security token
+		// this is an error in the ddnet protocol
+		// but expected in the teeworlds protocol
+		//
+		// because pure teeworlds is not in scope we throw an error
+		// https://github.com/MilkeeyCat/ddnet_protocol/issues/48
+		if(space < 4) {
+			if(err) {
+				*err = ERR_MISSING_DDNET_SECURITY_TOKEN;
+			}
+
+			return packet;
+		}
+
+		if(space > 4) {
+			// we did already parse the expected amount of chunks
+			// and the ddnet security token
+			// but there are still bytes left!
+			if(err) {
+				*err = ERR_REMAINING_BYTES_IN_BUFFER;
+			}
+
+			return packet;
+		}
+
+		packet.header.token = read_token(packet.payload + size);
 	}
 
 	return packet;

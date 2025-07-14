@@ -52,11 +52,12 @@ size_t encode_control(const ControlMessage *msg, uint8_t *buf, Error *err) {
 	switch(msg->kind) {
 	case CTRL_MSG_KEEPALIVE:
 	case CTRL_MSG_CONNECTACCEPT:
-	case CTRL_MSG_ACCEPT:
 		if(err) {
 			// TODO: implement
 			*err = ERR_INVALID_CONTROL_MESSAGE;
 		}
+		break;
+	case CTRL_MSG_ACCEPT:
 		break;
 	case CTRL_MSG_CONNECT:
 		write_token(TOKEN_MAGIC, buf + 1);

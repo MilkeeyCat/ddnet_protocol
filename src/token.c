@@ -1,6 +1,7 @@
 #include "token.h"
 
 const Token TOKEN_MAGIC = 0x544b454e;
+const Token TOKEN_NONE = 0xffffffff;
 
 Token read_token(const uint8_t *buf) {
 	return ((buf[0] & 0xffU) << 24U) | ((buf[1] & 0xffU) << 16U) | ((buf[2] & 0xffU) << 8U) | (buf[3] & 0xffU);

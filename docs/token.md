@@ -35,6 +35,17 @@ because the 0.6 release of teeworlds
 had no security tokens
 and we (ddnet) are 0.6 compatible
 
+# TOKEN_NONE
+
+## Syntax
+
+```C
+extern const Token TOKEN_NONE;
+```
+
+the token value that represents the absence of a token
+sent during the token handshake as a placeholder
+
 # read_token
 
 ## Syntax

@@ -29,6 +29,10 @@ typedef uint32_t Token;
 // and we (ddnet) are 0.6 compatible
 extern const Token TOKEN_MAGIC;
 
+// the token value that represents the absence of a token
+// sent during the token handshake as a placeholder
+extern const Token TOKEN_NONE;
+
 // reads the first 4 bytes of `buf`
 // and converts it into `Token` which
 // is one uint32_t

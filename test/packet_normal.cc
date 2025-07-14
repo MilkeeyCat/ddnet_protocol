@@ -94,6 +94,27 @@ TEST(NormalPacket, StartInfoAndRconCmd) {
 	free_packet(&packet);
 }
 
+TEST(NormalPacket, GameMotdAndSysConReady) {
+	uint8_t bytes[] = {
+		0x00, 0x04, 0x02, 0x40, 0x02, 0x05, 0x02, 0x00,
+		0x40, 0x01, 0x06, 0x09, 0xb6, 0xea, 0x17, 0x83};
+
+	Error err = ERR_NONE;
+	DDNetPacket packet = decode_packet(bytes, sizeof(bytes), &err);
+	EXPECT_EQ(err, ERR_NONE);
+	EXPECT_EQ(packet.kind, PacketKind::PACKET_NORMAL);
+	EXPECT_EQ(packet.header.flags, 0);
+	EXPECT_EQ(packet.header.num_chunks, 2);
+	EXPECT_EQ(packet.header.ack, 4);
+	EXPECT_EQ(packet.header.token, 0xb6ea1783);
+
+	// TODO: check msg 0 once motd is supported
+
+	EXPECT_EQ(packet.chunks.data[1].kind, CHUNK_KIND_CON_READY);
+
+	free_packet(&packet);
+}
+
 TEST(NormalPacket, PackEmpty) {
 	DDNetPacket packet = {.kind = PacketKind::PACKET_NORMAL};
 	uint8_t bytes[MAX_PACKET_SIZE];

@@ -44,6 +44,9 @@ static Error decode_system_message(Chunk *chunk, MessageId msg_id, Unpacker *unp
 		chunk->msg.map_data.data = unpacker_get_raw(unpacker, chunk->msg.map_data.chunk_size);
 		chunk->kind = CHUNK_KIND_MAP_CHANGE;
 		break;
+	case MSG_CON_READY:
+		chunk->kind = CHUNK_KIND_CON_READY;
+		break;
 	case MSG_RCON_CMD:
 		chunk->msg.rcon_cmd.command = unpacker_get_string(unpacker);
 		chunk->kind = CHUNK_KIND_RCON_CMD;
@@ -88,6 +91,8 @@ size_t encode_message(Chunk *chunk, uint8_t *buf, Error *err) {
 		packer_add_int(&packer, chunk->msg.map_data.chunk);
 		packer_add_int(&packer, chunk->msg.map_data.chunk_size);
 		packer_add_raw(&packer, chunk->msg.map_data.data, chunk->msg.map_data.chunk_size);
+		break;
+	case CHUNK_KIND_CON_READY:
 		break;
 	case CHUNK_KIND_RCON_CMD:
 		packer_add_string(&packer, chunk->msg.rcon_cmd.command);

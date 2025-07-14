@@ -95,6 +95,7 @@ size_t bytes_written = encode_chunk_header(&header, buf);
 
 ```C
 typedef enum {
+	CHUNK_KIND_UNKNOWN,
 	CHUNK_KIND_INFO,
 	CHUNK_KIND_MAP_CHANGE,
 	CHUNK_KIND_MAP_DATA,
@@ -118,6 +119,7 @@ typedef struct {
 	ChunkKind kind;
 	ChunkHeader header;
 	union {
+		MsgUnknown unknown;
 		MsgInfo info;
 		MsgMapChange map_change;
 		MsgMapData map_data;

@@ -94,7 +94,7 @@ DDNetPacket decode_packet(const uint8_t *buf, size_t len, Error *err) {
 		//
 		// because pure teeworlds is not in scope we throw an error
 		// https://github.com/MilkeeyCat/ddnet_protocol/issues/48
-		if(space < 4) {
+		if(space < sizeof(Token)) {
 			if(err) {
 				*err = ERR_MISSING_DDNET_SECURITY_TOKEN;
 			}
@@ -102,7 +102,7 @@ DDNetPacket decode_packet(const uint8_t *buf, size_t len, Error *err) {
 			return packet;
 		}
 
-		if(space > 4) {
+		if(space > sizeof(Token)) {
 			// we did already parse the expected amount of chunks
 			// and the ddnet security token
 			// but there are still bytes left!

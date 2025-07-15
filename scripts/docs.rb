@@ -46,6 +46,7 @@ class BaseDoc
   def self.is_typedef?(line)
     return false if is_struct? line
     return false if is_enum? line
+    return false if is_union? line
 
     !line.match(/^typedef /).nil?
   end
@@ -69,6 +70,10 @@ class BaseDoc
 
   def self.is_enum?(line)
     line.strip == "typedef enum {"
+  end
+
+  def self.is_union?(line)
+    line.strip == "typedef union {"
   end
 end
 
@@ -142,6 +147,10 @@ class EnumDoc < StructDoc
   # OOPs where is the code
 end
 
+class UnionDoc < StructDoc
+  # OOPs where is the code
+end
+
 # @param filepath String
 # @return (FuncDoc|StructDoc)[]
 def parse_docs(filepath)
@@ -200,6 +209,11 @@ def parse_docs(filepath)
       # we have to seek to the end of the enum before
       # we can store the instance
       struct_or_enum = EnumDoc.new(comment)
+      struct_or_enum.signature += line
+    elsif BaseDoc.is_union? line
+      # we have to seek to the end of the union before
+      # we can store the instance
+      struct_or_enum = UnionDoc.new(comment)
       struct_or_enum.signature += line
     else
       raise "#{filepath}:#{line_num} Expected function or struct got unknown: #{line}"

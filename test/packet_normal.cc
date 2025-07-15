@@ -49,9 +49,9 @@ TEST(NormalPacket, Info) {
 	EXPECT_EQ(packet.header.ack, 0);
 	EXPECT_EQ(packet.header.token, 0x3de3948d);
 
-	EXPECT_EQ(packet.chunks.data[0].kind, CHUNK_KIND_INFO);
+	EXPECT_EQ(packet.chunks.data[0].payload.kind, DDNET_MSG_KIND_INFO);
 	EXPECT_EQ(packet.chunks.data[0].header.sequence, 3);
-	MsgInfo info = packet.chunks.data[0].msg.info;
+	MsgInfo info = packet.chunks.data[0].payload.msg.info;
 	EXPECT_STREQ(info.version, "0.6 626fce9a778df4d4");
 	EXPECT_STREQ(info.password, "");
 
@@ -67,14 +67,14 @@ TEST(NormalPacket, PackInfo) {
 
 	packet.chunks.data[0].header.flags = CHUNK_FLAG_VITAL;
 	packet.chunks.data[0].header.sequence = 3;
-	packet.chunks.data[0].kind = CHUNK_KIND_INFO;
-	packet.chunks.data[0].msg.info.password = "";
-	packet.chunks.data[0].msg.info.version = "short version";
+	packet.chunks.data[0].payload.kind = DDNET_MSG_KIND_INFO;
+	packet.chunks.data[0].payload.msg.info.password = "";
+	packet.chunks.data[0].payload.msg.info.version = "short version";
 
 	fill_chunk_header(&packet.chunks.data[0]);
 	EXPECT_EQ(packet.chunks.data[0].header.size, 16);
 
-	packet.chunks.data[0].msg.info.version = "0.6 626fce9a778df4d4";
+	packet.chunks.data[0].payload.msg.info.version = "0.6 626fce9a778df4d4";
 	fill_chunk_header(&packet.chunks.data[0]);
 	EXPECT_EQ(packet.chunks.data[0].header.size, 23);
 
@@ -131,8 +131,8 @@ TEST(NormalPacket, StartInfoAndRconCmd) {
 	EXPECT_EQ(packet.header.ack, 6);
 	EXPECT_EQ(packet.header.token, 0x3de3948d);
 
-	EXPECT_EQ(packet.chunks.data[0].kind, CHUNK_KIND_CL_STARTINFO);
-	MsgClStartInfo start_info = packet.chunks.data[0].msg.start_info;
+	EXPECT_EQ(packet.chunks.data[0].payload.kind, DDNET_MSG_KIND_CL_STARTINFO);
+	MsgClStartInfo start_info = packet.chunks.data[0].payload.msg.start_info;
 	EXPECT_STREQ(start_info.name, "ChillerDragon");
 	EXPECT_STREQ(start_info.clan, "|*KoG*|");
 	EXPECT_EQ(start_info.country, 64);
@@ -140,8 +140,8 @@ TEST(NormalPacket, StartInfoAndRconCmd) {
 	EXPECT_EQ(start_info.color_body, 14790983);
 	EXPECT_EQ(start_info.color_feet, 2345678);
 
-	EXPECT_EQ(packet.chunks.data[1].kind, CHUNK_KIND_RCON_CMD);
-	EXPECT_STREQ(packet.chunks.data[1].msg.rcon_cmd.command, "crashmeplx");
+	EXPECT_EQ(packet.chunks.data[1].payload.kind, DDNET_MSG_KIND_RCON_CMD);
+	EXPECT_STREQ(packet.chunks.data[1].payload.msg.rcon_cmd.command, "crashmeplx");
 
 	free_packet(&packet);
 }
@@ -162,7 +162,7 @@ TEST(NormalPacket, GameMotdAndSysConReady) {
 
 	// TODO: check msg 0 once motd is supported
 
-	EXPECT_EQ(packet.chunks.data[1].kind, CHUNK_KIND_CON_READY);
+	EXPECT_EQ(packet.chunks.data[1].payload.kind, DDNET_MSG_KIND_CON_READY);
 
 	free_packet(&packet);
 }
@@ -193,16 +193,16 @@ TEST(NormalPacket, UnknownFakeMessage) {
 	EXPECT_EQ(packet.header.ack, 0);
 	EXPECT_EQ(packet.header.token, 0x8b6cdbc3);
 	EXPECT_EQ(packet.chunks.len, 1);
-	EXPECT_EQ(packet.chunks.data[0].kind, CHUNK_KIND_UNKNOWN);
+	EXPECT_EQ(packet.chunks.data[0].payload.kind, DDNET_MSG_KIND_UNKNOWN);
 	const size_t msg_id_size = 2;
 	const size_t str_size = strlen("ABC") + 1;
-	EXPECT_EQ(packet.chunks.data[0].msg.unknown.len, msg_id_size + str_size);
-	EXPECT_EQ(packet.chunks.data[0].msg.unknown.buf[0], 0x87); // two byte
-	EXPECT_EQ(packet.chunks.data[0].msg.unknown.buf[1], 0x03); // message id and system flag
-	EXPECT_EQ(packet.chunks.data[0].msg.unknown.buf[2], 'A');
-	EXPECT_EQ(packet.chunks.data[0].msg.unknown.buf[3], 'B');
-	EXPECT_EQ(packet.chunks.data[0].msg.unknown.buf[4], 'C');
-	EXPECT_EQ(packet.chunks.data[0].msg.unknown.buf[5], 0x00); // null term
+	EXPECT_EQ(packet.chunks.data[0].payload.msg.unknown.len, msg_id_size + str_size);
+	EXPECT_EQ(packet.chunks.data[0].payload.msg.unknown.buf[0], 0x87); // two byte
+	EXPECT_EQ(packet.chunks.data[0].payload.msg.unknown.buf[1], 0x03); // message id and system flag
+	EXPECT_EQ(packet.chunks.data[0].payload.msg.unknown.buf[2], 'A');
+	EXPECT_EQ(packet.chunks.data[0].payload.msg.unknown.buf[3], 'B');
+	EXPECT_EQ(packet.chunks.data[0].payload.msg.unknown.buf[4], 'C');
+	EXPECT_EQ(packet.chunks.data[0].payload.msg.unknown.buf[5], 0x00); // null term
 	EXPECT_EQ(packet.chunks.data[0].header.flags, CHUNK_FLAG_VITAL);
 	EXPECT_EQ(packet.chunks.data[0].header.sequence, 3);
 	EXPECT_EQ(packet.chunks.data[0].header.size, 6);

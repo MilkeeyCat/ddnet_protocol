@@ -6,7 +6,7 @@
 
 TEST(MessagePacker, Rcon) {
 	Packer packer;
-	packer_init_msg(&packer, CHUNK_KIND_RCON_CMD);
+	packer_init_msg(&packer, DDNET_MSG_KIND_RCON_CMD);
 	packer_add_string(&packer, "say hello");
 	uint8_t bytes[] = {
 		0x23, 0x73, 0x61, 0x79, 0x20, 0x68, 0x65, 0x6c, 0x6c, 0x6f, 0x00};

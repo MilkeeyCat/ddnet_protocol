@@ -89,26 +89,56 @@ uint8_t buf[8];
 size_t bytes_written = encode_chunk_header(&header, buf);
 ```
 
-# ChunkKind
+# DDNetMessageKind
 
 ## Syntax
 
 ```C
 typedef enum {
-	CHUNK_KIND_UNKNOWN,
-	CHUNK_KIND_INFO,
-	CHUNK_KIND_MAP_CHANGE,
-	CHUNK_KIND_MAP_DATA,
-	CHUNK_KIND_CON_READY,
-	CHUNK_KIND_RCON_CMD,
-	CHUNK_KIND_CL_STARTINFO,
-} ChunkKind;
+	DDNET_MSG_KIND_UNKNOWN,
+	DDNET_MSG_KIND_INFO,
+	DDNET_MSG_KIND_MAP_CHANGE,
+	DDNET_MSG_KIND_MAP_DATA,
+	DDNET_MSG_KIND_CON_READY,
+	DDNET_MSG_KIND_RCON_CMD,
+	DDNET_MSG_KIND_CL_STARTINFO,
+} DDNetMessageKind;
 ```
-
-Holds the type of `msg` in a `Chunk` struct
 
 Be careful this is not the message id
 that is sent over the network!
+
+# DDNetGenericMessage
+
+## Syntax
+
+```C
+typedef union {
+	MsgUnknown unknown;
+	MsgInfo info;
+	MsgMapChange map_change;
+	MsgMapData map_data;
+	MsgRconCmd rcon_cmd;
+	MsgClStartInfo start_info;
+} DDNetGenericMessage;
+```
+
+Union abstracting away any kind of game or system message
+Check the DDNetMessageKind to know which one to use
+
+# DDNetMessage
+
+## Syntax
+
+```C
+typedef struct {
+	DDNetMessageKind kind;
+	DDNetGenericMessage msg;
+} DDNetMessage;
+```
+
+To access the net message struct check the `kind`
+and access the `msg` union accordingly.
 
 # Chunk
 
@@ -116,16 +146,8 @@ that is sent over the network!
 
 ```C
 typedef struct {
-	ChunkKind kind;
 	ChunkHeader header;
-	union {
-		MsgUnknown unknown;
-		MsgInfo info;
-		MsgMapChange map_change;
-		MsgMapData map_data;
-		MsgRconCmd rcon_cmd;
-		MsgClStartInfo start_info;
-	} msg;
+	DDNetMessage payload;
 } Chunk;
 ```
 
@@ -133,9 +155,6 @@ A chunk is the container of a net message.
 One chunk contains of a chunk header.
 And a chunk payload. The payload contains
 exactly one net message of either type game or system.
-
-To access the net message struct check the `kind`
-and access the `msg` union accordingly.
 
 # fill_chunk_header
 

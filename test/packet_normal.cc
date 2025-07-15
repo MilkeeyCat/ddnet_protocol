@@ -50,10 +50,46 @@ TEST(NormalPacket, Info) {
 	EXPECT_EQ(packet.header.token, 0x3de3948d);
 
 	EXPECT_EQ(packet.chunks.data[0].kind, CHUNK_KIND_INFO);
+	EXPECT_EQ(packet.chunks.data[0].header.sequence, 3);
 	MsgInfo info = packet.chunks.data[0].msg.info;
 	EXPECT_STREQ(info.version, "0.6 626fce9a778df4d4");
 	EXPECT_STREQ(info.password, "");
 
+	free_packet(&packet);
+}
+
+TEST(NormalPacket, PackInfo) {
+	DDNetPacket packet = {
+		.kind = PACKET_NORMAL,
+		.header = {.num_chunks = 1, .token = 0x3de3948d}};
+	packet.chunks.data = (Chunk *)malloc(sizeof(Chunk) * packet.header.num_chunks);
+	packet.chunks.len = packet.header.num_chunks;
+
+	packet.chunks.data[0].header.flags = CHUNK_FLAG_VITAL;
+	packet.chunks.data[0].header.sequence = 3;
+	packet.chunks.data[0].kind = CHUNK_KIND_INFO;
+	packet.chunks.data[0].msg.info.password = "";
+	packet.chunks.data[0].msg.info.version = "short version";
+
+	fill_chunk_header(&packet.chunks.data[0]);
+	EXPECT_EQ(packet.chunks.data[0].header.size, 16);
+
+	packet.chunks.data[0].msg.info.version = "0.6 626fce9a778df4d4";
+	fill_chunk_header(&packet.chunks.data[0]);
+	EXPECT_EQ(packet.chunks.data[0].header.size, 23);
+
+	uint8_t buf[MAX_PACKET_SIZE];
+	Error err = ERR_NONE;
+	size_t len = encode_packet(&packet, buf, sizeof(buf), &err);
+	EXPECT_EQ(err, ERR_NONE);
+	uint8_t expected[] = {
+		0x00, 0x00, 0x01, 0x41, 0x07, 0x03, 0x03, 0x30,
+		0x2e, 0x36, 0x20, 0x36, 0x32, 0x36, 0x66, 0x63,
+		0x65, 0x39, 0x61, 0x37, 0x37, 0x38, 0x64, 0x66,
+		0x34, 0x64, 0x34, 0x00, 0x00, 0x3d, 0xe3, 0x94,
+		0x8d};
+	EXPECT_EQ(len, sizeof(expected));
+	EXPECT_TRUE(std::memcmp(buf, expected, len) == 0);
 	free_packet(&packet);
 }
 

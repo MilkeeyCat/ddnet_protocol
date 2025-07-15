@@ -5,6 +5,7 @@ extern "C" {
 #endif
 
 #include "common.h"
+#include "errors.h"
 #include "msg_game.h"
 #include "msg_system.h"
 
@@ -100,6 +101,12 @@ typedef struct {
 		MsgClStartInfo start_info;
 	} msg;
 } Chunk;
+
+// Given an entire chunk that has all values
+// for message in the payload already set
+// This function will fill the chunks header accordingly
+// For now this only means setting the correct size based on the payload
+Error fill_chunk_header(Chunk *chunk);
 
 #ifdef __cplusplus
 }

@@ -137,3 +137,16 @@ exactly one net message of either type game or system.
 To access the net message struct check the `kind`
 and access the `msg` union accordingly.
 
+# fill_chunk_header
+
+## Syntax
+
+```C
+Error fill_chunk_header(Chunk *chunk);
+```
+
+Given an entire chunk that has all values
+for message in the payload already set
+This function will fill the chunks header accordingly
+For now this only means setting the correct size based on the payload
+

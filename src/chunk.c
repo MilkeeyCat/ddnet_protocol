@@ -1,4 +1,7 @@
 #include "chunk.h"
+#include "errors.h"
+#include "message.h"
+#include "packet.h"
 
 size_t decode_chunk_header(const uint8_t *buf, ChunkHeader *header) {
 	header->flags = buf[0] & 0b11000000;
@@ -25,4 +28,15 @@ size_t encode_chunk_header(const ChunkHeader *header, uint8_t *buf) {
 	}
 
 	return 2;
+}
+
+Error fill_chunk_header(Chunk *chunk) {
+	uint8_t chunk_payload[MAX_PACKET_SIZE];
+	Error encode_err = ERR_NONE;
+	size_t chunk_payload_len = encode_message(chunk, chunk_payload, &encode_err);
+	if(encode_err != ERR_NONE) {
+		return encode_err;
+	}
+	chunk->header.size = chunk_payload_len;
+	return ERR_NONE;
 }

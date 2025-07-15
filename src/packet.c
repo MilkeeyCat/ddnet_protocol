@@ -40,7 +40,7 @@ size_t get_packet_payload(PacketHeader *header, const uint8_t *full_data, size_t
 	full_data += PACKET_HEADER_SIZE;
 	full_len -= PACKET_HEADER_SIZE;
 	if(header->flags & PACKET_FLAG_COMPRESSION) {
-		return huffman_decompress(full_data, full_len, payload, payload_len, err);
+		return ddnet_huffman_decompress(full_data, full_len, payload, payload_len, err);
 	}
 	memcpy(payload, full_data, full_len);
 	return full_len;

@@ -168,7 +168,7 @@ static void huffman_init(void) {
 	}
 }
 
-size_t huffman_compress(const uint8_t *input, size_t input_len, uint8_t *output, size_t output_len, Error *err) {
+size_t ddnet_huffman_compress(const uint8_t *input, size_t input_len, uint8_t *output, size_t output_len, Error *err) {
 	huffman_init();
 	// this macro loads a symbol for a byte into bits and bitcount
 #define HUFFMAN_MACRO_LOADSYMBOL(sym) \
@@ -233,7 +233,7 @@ size_t huffman_compress(const uint8_t *input, size_t input_len, uint8_t *output,
 #undef HUFFMAN_MACRO_WRITE
 }
 
-size_t huffman_decompress(const uint8_t *input, size_t input_len, uint8_t *output, size_t output_len, Error *err) {
+size_t ddnet_huffman_decompress(const uint8_t *input, size_t input_len, uint8_t *output, size_t output_len, Error *err) {
 	huffman_init();
 	// setup buffer pointers
 	uint8_t *dst = output;

@@ -62,38 +62,38 @@ void packer_init_msg(Packer *packer, ChunkKind kind) {
 	packer_init(packer);
 
 	MessageId msg_id;
-	MessageKind msg_kind;
+	DDNetMessageCategory msg_category;
 
 	switch(kind) {
 	case CHUNK_KIND_UNKNOWN:
 		return;
 	case CHUNK_KIND_INFO:
 		msg_id = MSG_INFO;
-		msg_kind = MESSAGE_SYSTEM;
+		msg_category = DDNET_SYSTEM;
 		break;
 	case CHUNK_KIND_MAP_CHANGE:
 		msg_id = MSG_MAP_CHANGE;
-		msg_kind = MESSAGE_SYSTEM;
+		msg_category = DDNET_SYSTEM;
 		break;
 	case CHUNK_KIND_MAP_DATA:
 		msg_id = MSG_MAP_DATA;
-		msg_kind = MESSAGE_SYSTEM;
+		msg_category = DDNET_SYSTEM;
 		break;
 	case CHUNK_KIND_CON_READY:
 		msg_id = MSG_CON_READY;
-		msg_kind = MESSAGE_SYSTEM;
+		msg_category = DDNET_SYSTEM;
 		break;
 	case CHUNK_KIND_RCON_CMD:
 		msg_id = MSG_RCON_CMD;
-		msg_kind = MESSAGE_SYSTEM;
+		msg_category = DDNET_SYSTEM;
 		break;
 	case CHUNK_KIND_CL_STARTINFO:
 		msg_id = MSG_CL_STARTINFO;
-		msg_kind = MESSAGE_GAME;
+		msg_category = DDNET_GAME;
 		break;
 	}
 
-	packer_add_int(packer, (int32_t)((msg_id << 1) | msg_kind));
+	packer_add_int(packer, (int32_t)((msg_id << 1) | msg_category));
 }
 
 size_t packer_size(Packer *packer) {

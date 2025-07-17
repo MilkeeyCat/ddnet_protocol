@@ -3,6 +3,7 @@
 
 #include <ddnet_protocol/chunk.h>
 #include <ddnet_protocol/errors.h>
+#include <ddnet_protocol/message.h>
 #include <ddnet_protocol/packet.h>
 #include <ddnet_protocol/session.h>
 
@@ -95,13 +96,7 @@ TEST(NormalPacket, PackInfo) {
 }
 
 TEST(NormalPacket, PackInfoWithBuiler) {
-	DDNetMessage messages[] = {
-		(DDNetMessage){
-			.kind = DDNET_MSG_KIND_INFO,
-			.msg = {
-				.info = {
-					.version = "0.6 626fce9a778df4d4",
-					.password = ""}}}};
+	DDNetMessage messages[] = {ddnet_build_msg_info("")};
 	DDNetSession session = {.sequence = 2, .token = 0x3de3948d};
 	DDNetPacket packet = {};
 	DDNetError err = ddnet_build_packet(&packet, messages, (sizeof(messages) / sizeof(messages[0])), &session);

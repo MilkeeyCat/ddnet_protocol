@@ -243,3 +243,12 @@ size_t encode_message(DDNetChunk *chunk, uint8_t *buf, DDNetError *err) {
 
 	return packer_size(&packer);
 }
+
+DDNetMessage ddnet_build_msg_info(const char *password) {
+	return (DDNetMessage){
+		.kind = DDNET_MSG_KIND_INFO,
+		.msg = {
+			.info = {
+				.version = "0.6 626fce9a778df4d4",
+				.password = password}}};
+}

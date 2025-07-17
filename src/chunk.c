@@ -30,6 +30,14 @@ size_t encode_chunk_header(const ChunkHeader *header, uint8_t *buf) {
 	return 2;
 }
 
+bool ddnet_is_vital_msg(DDNetMessageKind kind) {
+	return kind != DDNET_MSG_KIND_INPUT &&
+	       kind != DDNET_MSG_KIND_SNAP &&
+	       kind != DDNET_MSG_KIND_SNAPEMPTY &&
+	       kind != DDNET_MSG_KIND_SNAPSINGLE &&
+	       kind != DDNET_MSG_KIND_SNAPSMALL;
+}
+
 Error fill_chunk_header(Chunk *chunk) {
 	uint8_t chunk_payload[MAX_PACKET_SIZE];
 	Error encode_err = ERR_NONE;
@@ -38,5 +46,6 @@ Error fill_chunk_header(Chunk *chunk) {
 		return encode_err;
 	}
 	chunk->header.size = chunk_payload_len;
+	chunk->header.flags = ddnet_is_vital_msg(chunk->payload.kind) ? CHUNK_FLAG_VITAL : 0;
 	return ERR_NONE;
 }

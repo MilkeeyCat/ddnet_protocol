@@ -18,6 +18,11 @@ typedef enum {
 	MSG_MAP_CHANGE = 2,
 	MSG_MAP_DATA = 3,
 	MSG_CON_READY = 4,
+	MSG_SNAP = 5,
+	MSG_SNAPEMPTY = 6,
+	MSG_SNAPSINGLE = 7,
+	MSG_SNAPSMALL = 8,
+	MSG_INPUT = 16,
 	MSG_RCON_CMD = 17,
 
 	// game messages

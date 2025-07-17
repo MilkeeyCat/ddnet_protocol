@@ -92,6 +92,26 @@ void packer_init_msg(Packer *packer, DDNetMessageKind kind) {
 		msg_id = MSG_CL_STARTINFO;
 		msg_category = DDNET_GAME;
 		break;
+	case DDNET_MSG_KIND_SNAP:
+		msg_id = MSG_SNAP;
+		msg_category = DDNET_SYSTEM;
+		break;
+	case DDNET_MSG_KIND_SNAPEMPTY:
+		msg_id = MSG_SNAPEMPTY;
+		msg_category = DDNET_SYSTEM;
+		break;
+	case DDNET_MSG_KIND_SNAPSINGLE:
+		msg_id = MSG_SNAPSINGLE;
+		msg_category = DDNET_SYSTEM;
+		break;
+	case DDNET_MSG_KIND_SNAPSMALL:
+		msg_id = MSG_SNAPSMALL;
+		msg_category = DDNET_SYSTEM;
+		break;
+	case DDNET_MSG_KIND_INPUT:
+		msg_id = MSG_INPUT;
+		msg_category = DDNET_SYSTEM;
+		break;
 	}
 
 	packer_add_int(packer, (int32_t)((msg_id << 1) | msg_category));

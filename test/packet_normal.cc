@@ -4,6 +4,7 @@
 #include <ddnet_protocol/chunk.h>
 #include <ddnet_protocol/errors.h>
 #include <ddnet_protocol/packet.h>
+#include <ddnet_protocol/session.h>
 
 TEST(NormalPacket, HeaderOk) {
 	PacketHeader header;
@@ -80,6 +81,33 @@ TEST(NormalPacket, PackInfo) {
 
 	uint8_t buf[MAX_PACKET_SIZE];
 	DDNetError err = DDNET_ERR_NONE;
+	size_t len = encode_packet(&packet, buf, sizeof(buf), &err);
+	EXPECT_EQ(err, DDNET_ERR_NONE);
+	uint8_t expected[] = {
+		0x00, 0x00, 0x01, 0x41, 0x07, 0x03, 0x03, 0x30,
+		0x2e, 0x36, 0x20, 0x36, 0x32, 0x36, 0x66, 0x63,
+		0x65, 0x39, 0x61, 0x37, 0x37, 0x38, 0x64, 0x66,
+		0x34, 0x64, 0x34, 0x00, 0x00, 0x3d, 0xe3, 0x94,
+		0x8d};
+	EXPECT_EQ(len, sizeof(expected));
+	EXPECT_TRUE(std::memcmp(buf, expected, len) == 0);
+	free_packet(&packet);
+}
+
+TEST(NormalPacket, PackInfoWithBuiler) {
+	DDNetMessage messages[] = {
+		(DDNetMessage){
+			.kind = DDNET_MSG_KIND_INFO,
+			.msg = {
+				.info = {
+					.version = "0.6 626fce9a778df4d4",
+					.password = ""}}}};
+	DDNetSession session = {.sequence = 2, .token = 0x3de3948d};
+	DDNetPacket packet = {};
+	DDNetError err = ddnet_build_packet(&packet, messages, (sizeof(messages) / sizeof(messages[0])), &session);
+	EXPECT_EQ(err, DDNET_ERR_NONE);
+	EXPECT_EQ(session.sequence, 3); // incremented by build_packet because info is vital
+	uint8_t buf[MAX_PACKET_SIZE];
 	size_t len = encode_packet(&packet, buf, sizeof(buf), &err);
 	EXPECT_EQ(err, DDNET_ERR_NONE);
 	uint8_t expected[] = {

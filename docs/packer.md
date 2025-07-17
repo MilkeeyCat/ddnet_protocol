@@ -108,7 +108,7 @@ See also `packer_init_msg()` if you want to send a net message.
 ## Syntax
 
 ```C
-void packer_init_msg(Packer *packer, ChunkKind kind);
+void packer_init_msg(Packer *packer, DDNetMessageKind kind);
 ```
 
 Initializes a new packer struct.
@@ -118,7 +118,7 @@ See also `packer_init()` if you need an empty packer.
 
 ```C
 Packer packer;
-packer_init_msg(&packer, CHUNK_KIND_RCON_CMD);
+packer_init_msg(&packer, DDNET_MSG_KIND_RCON_CMD);
 packer_add_string(&packer, "say hello");
 ```
 

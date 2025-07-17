@@ -27,9 +27,9 @@ typedef enum {
 // Every chunk contains either a system or game message
 // This type is set as a bit flag in the first byte of the chunk payload
 typedef enum {
-	MESSAGE_GAME = 0,
-	MESSAGE_SYSTEM = 1,
-} MessageKind;
+	DDNET_GAME = 0,
+	DDNET_SYSTEM = 1,
+} DDNetMessageCategory;
 
 // The given chunk has to have a correct header set
 // and its `msg` will be filled based on the content of

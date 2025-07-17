@@ -64,10 +64,10 @@ void packer_init(Packer *packer);
 //
 // ```C
 // Packer packer;
-// packer_init_msg(&packer, CHUNK_KIND_RCON_CMD);
+// packer_init_msg(&packer, DDNET_MSG_KIND_RCON_CMD);
 // packer_add_string(&packer, "say hello");
 // ```
-void packer_init_msg(Packer *packer, ChunkKind kind);
+void packer_init_msg(Packer *packer, DDNetMessageKind kind);
 
 // get the size in bytes of the currently packed data
 // see also `packer_data()`

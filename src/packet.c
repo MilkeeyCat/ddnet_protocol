@@ -162,13 +162,13 @@ DDNetError ddnet_build_packet(DDNetPacket *packet, const DDNetMessage messages[]
 	packet->header.ack = session->ack;
 	packet->header.num_chunks = messages_len;
 	packet->chunks.len = messages_len;
-	packet->chunks.data = malloc(sizeof(Chunk) * messages_len);
+	packet->chunks.data = malloc(sizeof(DDNetChunk) * messages_len);
 	for(uint8_t i = 0; i < messages_len; i++) {
 		const DDNetMessage *msg = &messages[i];
 		packet->chunks.data[i].payload.kind = msg->kind;
 		packet->chunks.data[i].payload.msg = msg->msg;
 		DDNetError chunk_err = fill_chunk_header(&packet->chunks.data[i]);
-		if(packet->chunks.data[i].header.flags & CHUNK_FLAG_VITAL) {
+		if(packet->chunks.data[i].header.flags & DDNET_CHUNK_FLAG_VITAL) {
 			session->sequence++;
 		}
 		packet->chunks.data[i].header.sequence = session->sequence;

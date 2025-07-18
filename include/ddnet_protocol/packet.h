@@ -84,6 +84,8 @@ typedef struct {
 	// One chunk contains one net message.
 	// If it is a control packet the number of chunks should
 	// be always zero.
+	//
+	// Should be kept in sync with `DDNetPacket`s `packet.chunks.len`
 	uint8_t num_chunks;
 
 	// DDNet security token. Is a 4 byte random integer
@@ -121,7 +123,16 @@ typedef struct {
 	union {
 		ControlMessage control;
 		struct {
+			// should be either `NULL`
+			// or point to memory of size `chunks.len * sizeof(Chunk)`
 			DDNetChunk *data;
+
+			// should be either `0`
+			// or match the allocated size of `chunks.data` in `sizeof(Chunk)`
+			// otherwise you might run into segfaults
+			//
+			// should match `header.num_chunks` or is a protocol issue
+			// and the peer might not understand you correctly
 			size_t len;
 		} chunks;
 	};

@@ -102,6 +102,11 @@ typedef enum {
 	DDNET_MSG_KIND_CON_READY,
 	DDNET_MSG_KIND_RCON_CMD,
 	DDNET_MSG_KIND_CL_STARTINFO,
+	DDNET_MSG_KIND_SNAP,
+	DDNET_MSG_KIND_SNAPEMPTY,
+	DDNET_MSG_KIND_SNAPSINGLE,
+	DDNET_MSG_KIND_SNAPSMALL,
+	DDNET_MSG_KIND_INPUT,
 } DDNetMessageKind;
 ```
 
@@ -155,6 +160,20 @@ A chunk is the container of a net message.
 One chunk contains of a chunk header.
 And a chunk payload. The payload contains
 exactly one net message of either type game or system.
+
+# ddnet_is_vital_msg
+
+## Syntax
+
+```C
+bool ddnet_is_vital_msg(DDNetMessageKind kind);
+```
+
+Returns true if the passed in message kind is a vital message
+vital messages are reliable and should be resend if they
+are not acknowledged by the peer.
+Not all messages are vital to improve performance
+and not resend outdated data such as game state and inputs.
 
 # fill_chunk_header
 

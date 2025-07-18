@@ -123,6 +123,11 @@ size_t encode_message(Chunk *chunk, uint8_t *buf, Error *err) {
 		packer_add_int(&packer, (int32_t)msg->start_info.color_body);
 		packer_add_int(&packer, (int32_t)msg->start_info.color_feet);
 		break;
+	case DDNET_MSG_KIND_SNAP:
+	case DDNET_MSG_KIND_SNAPEMPTY:
+	case DDNET_MSG_KIND_SNAPSINGLE:
+	case DDNET_MSG_KIND_SNAPSMALL:
+	case DDNET_MSG_KIND_INPUT:
 	default:
 		if(err != NULL) {
 			*err = ERR_UNKNOWN_MESSAGE;

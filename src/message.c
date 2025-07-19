@@ -250,5 +250,8 @@ DDNetMessage ddnet_build_msg_info(const char *password) {
 		.msg = {
 			.info = {
 				.version = "0.6 626fce9a778df4d4",
-				.password = password}}};
+				.password = password,
+			},
+		},
+	};
 }

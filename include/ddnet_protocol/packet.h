@@ -167,15 +167,15 @@ DDNetPacket decode_packet(const uint8_t *buf, size_t len, DDNetError *err);
 // And returns the amount of written bytes
 size_t encode_packet(const DDNetPacket *packet, uint8_t *buf, size_t len, DDNetError *err);
 
-// Convenience function to initialized a `packet` struct.
-// Creates a normal ddnet packet. If you need a conless or control packet
+// Convenience function to initialize a `packet` struct.
+// Creates a normal ddnet packet. If you need a connless or control packet
 // You have to build it by hand.
 // Fills the passed `packet` struct based on the messages and session passed in.
 // It will read and write to the `session` struct passed in.
 //
 // The ``messages`` will be copied into the ``packet``.
 // new memory will be allocated for that operation.
-// It is your responsiblity to free it using `free_packet()`
+// It is your responsibility to free it using `free_packet()`
 DDNetError ddnet_build_packet(DDNetPacket *packet, const DDNetMessage messages[], uint8_t messages_len, DDNetSession *session);
 
 // Frees a packet struct and all of its fields

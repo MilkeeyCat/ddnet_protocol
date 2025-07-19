@@ -158,7 +158,7 @@ TEST(Unpacker, NegativeIntsSingleByte) {
 	EXPECT_EQ(unpacker.err, Error::ERR_NONE);
 }
 
-TEST(Unpacker, NegativeIntsMutliByte) {
+TEST(Unpacker, NegativeIntsMultiByte) {
 	uint8_t bytes[] = {0xc0, 0x01};
 	Unpacker unpacker;
 	unpacker_init(&unpacker, bytes, sizeof(bytes));

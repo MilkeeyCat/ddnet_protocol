@@ -27,7 +27,7 @@ typedef struct Node {
 	uint32_t num_bits;
 
 	// don't use pointers for this. shorts are smaller so we can fit more data into the cache
-	uint16_t leafs[2];
+	uint16_t leaves[2];
 
 	// what the symbol represents
 	uint8_t symbol;
@@ -69,11 +69,11 @@ static void bubble_sort_nodes(HuffmanConstructNode **list, int32_t size) {
 }
 
 static void setbits_r(Node *node, int32_t bits, uint32_t depth) {
-	if(node->leafs[1] != 0xffff) {
-		setbits_r(&nodes[node->leafs[1]], bits | (1 << depth), depth + 1);
+	if(node->leaves[1] != 0xffff) {
+		setbits_r(&nodes[node->leaves[1]], bits | (1 << depth), depth + 1);
 	}
-	if(node->leafs[0] != 0xffff) {
-		setbits_r(&nodes[node->leafs[0]], bits, depth + 1);
+	if(node->leaves[0] != 0xffff) {
+		setbits_r(&nodes[node->leaves[0]], bits, depth + 1);
 	}
 
 	if(node->num_bits) {
@@ -91,8 +91,8 @@ static void construct_tree(const uint32_t *frequencies) {
 	for(int32_t i = 0; i < HUFFMAN_MAX_SYMBOLS; i++) {
 		nodes[i].num_bits = 0xffffffff;
 		nodes[i].symbol = i;
-		nodes[i].leafs[0] = 0xffff;
-		nodes[i].leafs[1] = 0xffff;
+		nodes[i].leaves[0] = 0xffff;
+		nodes[i].leaves[1] = 0xffff;
 
 		if(i == HUFFMAN_EOF_SYMBOL) {
 			nodes_left_storage[i].frequency = 1;
@@ -111,8 +111,8 @@ static void construct_tree(const uint32_t *frequencies) {
 		bubble_sort_nodes(nodes_left, num_nodes_left);
 
 		nodes[num_nodes].num_bits = 0;
-		nodes[num_nodes].leafs[0] = nodes_left[num_nodes_left - 1]->node_id;
-		nodes[num_nodes].leafs[1] = nodes_left[num_nodes_left - 2]->node_id;
+		nodes[num_nodes].leaves[0] = nodes_left[num_nodes_left - 1]->node_id;
+		nodes[num_nodes].leaves[1] = nodes_left[num_nodes_left - 2]->node_id;
 		nodes_left[num_nodes_left - 2]->node_id = num_nodes;
 
 		nodes_left[num_nodes_left - 2]->frequency = nodes_left[num_nodes_left - 1]->frequency + nodes_left[num_nodes_left - 2]->frequency;
@@ -149,7 +149,7 @@ static void huffman_init(void) {
 		int32_t counter;
 		Node *node = start_node;
 		for(counter = 0; counter < HUFFMAN_LUTBITS; counter++) {
-			node = &nodes[node->leafs[bits & 1]];
+			node = &nodes[node->leaves[bits & 1]];
 			bits >>= 1;
 
 			if(!node) {
@@ -283,7 +283,7 @@ size_t ddnet_huffman_decompress(const uint8_t *input, size_t input_len, uint8_t 
 			// walk the tree bit by bit
 			while(1) {
 				// traverse tree
-				node = &nodes[node->leafs[bits & 1]];
+				node = &nodes[node->leaves[bits & 1]];
 
 				// remove bit
 				bitcount--;

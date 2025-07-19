@@ -95,7 +95,7 @@ TEST(NormalPacket, PackInfo) {
 	free_packet(&packet);
 }
 
-TEST(NormalPacket, PackInfoWithBuiler) {
+TEST(NormalPacket, PackInfoWithBuilder) {
 	DDNetMessage messages[] = {ddnet_build_msg_info("")};
 	DDNetSession session = {.sequence = 2, .token = 0x3de3948d};
 	DDNetPacket packet = {};

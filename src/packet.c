@@ -158,8 +158,11 @@ size_t encode_packet(const DDNetPacket *packet, uint8_t *buf, size_t len, Error 
 Error free_packet(DDNetPacket *packet) {
 	if(packet->kind == PACKET_NORMAL) {
 		free(packet->chunks.data);
+		packet->chunks.data = NULL;
+		packet->chunks.len = 0;
 	}
 	free(packet->payload);
+	packet->payload = NULL;
 
 	return ERR_NONE;
 }

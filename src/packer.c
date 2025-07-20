@@ -84,10 +84,6 @@ void packer_init_msg(Packer *packer, DDNetMessageKind kind) {
 		msg_id = MSG_CON_READY;
 		msg_category = DDNET_SYSTEM;
 		break;
-	case DDNET_MSG_KIND_RCON_CMD:
-		msg_id = MSG_RCON_CMD;
-		msg_category = DDNET_SYSTEM;
-		break;
 	case DDNET_MSG_KIND_CL_STARTINFO:
 		msg_id = MSG_CL_STARTINFO;
 		msg_category = DDNET_GAME;
@@ -108,8 +104,32 @@ void packer_init_msg(Packer *packer, DDNetMessageKind kind) {
 		msg_id = MSG_SNAPSMALL;
 		msg_category = DDNET_SYSTEM;
 		break;
+	case DDNET_MSG_KIND_INPUTTIMING:
+		msg_id = MSG_INPUTTIMING;
+		msg_category = DDNET_SYSTEM;
+		break;
+	case DDNET_MSG_KIND_RCON_AUTH_STATUS:
+		msg_id = MSG_RCON_AUTH_STATUS;
+		msg_category = DDNET_SYSTEM;
+		break;
+	case DDNET_MSG_KIND_RCON_LINE:
+		msg_id = MSG_RCON_LINE;
+		msg_category = DDNET_SYSTEM;
+		break;
+	case DDNET_MSG_KIND_READY:
+		msg_id = MSG_READY;
+		msg_category = DDNET_SYSTEM;
+		break;
+	case DDNET_MSG_KIND_ENTERGAME:
+		msg_id = MSG_ENTERGAME;
+		msg_category = DDNET_SYSTEM;
+		break;
 	case DDNET_MSG_KIND_INPUT:
 		msg_id = MSG_INPUT;
+		msg_category = DDNET_SYSTEM;
+		break;
+	case DDNET_MSG_KIND_RCON_CMD:
+		msg_id = MSG_RCON_CMD;
 		msg_category = DDNET_SYSTEM;
 		break;
 	}

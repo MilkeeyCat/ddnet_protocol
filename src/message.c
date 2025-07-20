@@ -49,6 +49,42 @@ static Error decode_system_message(Chunk *chunk, MessageId msg_id, Unpacker *unp
 	case MSG_CON_READY:
 		chunk->payload.kind = DDNET_MSG_KIND_CON_READY;
 		break;
+	case MSG_INPUTTIMING:
+		msg->input_timing.intended_tick = unpacker_get_int(unpacker);
+		msg->input_timing.time_left = unpacker_get_int(unpacker);
+		chunk->payload.kind = DDNET_MSG_KIND_INPUTTIMING;
+		break;
+	case MSG_RCON_AUTH_STATUS:
+		msg->rcon_auth_status.authed = unpacker_get_int(unpacker);
+		msg->rcon_auth_status.cmdlist = unpacker_get_int(unpacker);
+		chunk->payload.kind = DDNET_MSG_KIND_RCON_AUTH_STATUS;
+		break;
+	case MSG_RCON_LINE:
+		msg->rcon_line.line = unpacker_get_string(unpacker);
+		chunk->payload.kind = DDNET_MSG_KIND_RCON_LINE;
+		break;
+	case MSG_READY:
+		chunk->payload.kind = DDNET_MSG_KIND_READY;
+		break;
+	case MSG_ENTERGAME:
+		chunk->payload.kind = DDNET_MSG_KIND_ENTERGAME;
+		break;
+	case MSG_INPUT:
+		msg->input.ack_game_tick = unpacker_get_int(unpacker);
+		msg->input.prediction_tick = unpacker_get_int(unpacker);
+		msg->input.size = unpacker_get_int(unpacker);
+		msg->input.direction = unpacker_get_int(unpacker);
+		msg->input.target_x = unpacker_get_int(unpacker);
+		msg->input.target_y = unpacker_get_int(unpacker);
+		msg->input.jump = unpacker_get_int(unpacker);
+		msg->input.fire = unpacker_get_int(unpacker);
+		msg->input.hook = unpacker_get_int(unpacker);
+		msg->input.player_flags = unpacker_get_int(unpacker);
+		msg->input.wanted_weapon = unpacker_get_int(unpacker);
+		msg->input.next_weapon = unpacker_get_int(unpacker);
+		msg->input.prev_weapon = unpacker_get_int(unpacker);
+		chunk->payload.kind = DDNET_MSG_KIND_INPUT;
+		break;
 	case MSG_RCON_CMD:
 		msg->rcon_cmd.command = unpacker_get_string(unpacker);
 		chunk->payload.kind = DDNET_MSG_KIND_RCON_CMD;
@@ -110,9 +146,8 @@ size_t encode_message(Chunk *chunk, uint8_t *buf, Error *err) {
 		packer_add_raw(&packer, msg->map_data.data, msg->map_data.chunk_size);
 		break;
 	case DDNET_MSG_KIND_CON_READY:
-		break;
-	case DDNET_MSG_KIND_RCON_CMD:
-		packer_add_string(&packer, msg->rcon_cmd.command);
+	case DDNET_MSG_KIND_READY:
+	case DDNET_MSG_KIND_ENTERGAME:
 		break;
 	case DDNET_MSG_KIND_CL_STARTINFO:
 		packer_add_string(&packer, msg->start_info.name);
@@ -123,11 +158,39 @@ size_t encode_message(Chunk *chunk, uint8_t *buf, Error *err) {
 		packer_add_int(&packer, (int32_t)msg->start_info.color_body);
 		packer_add_int(&packer, (int32_t)msg->start_info.color_feet);
 		break;
+	case DDNET_MSG_KIND_INPUTTIMING:
+		packer_add_int(&packer, msg->input_timing.intended_tick);
+		packer_add_int(&packer, msg->input_timing.time_left);
+		break;
+	case DDNET_MSG_KIND_RCON_AUTH_STATUS:
+		packer_add_int(&packer, msg->rcon_auth_status.authed);
+		packer_add_int(&packer, msg->rcon_auth_status.cmdlist);
+		break;
+	case DDNET_MSG_KIND_RCON_LINE:
+		packer_add_string(&packer, msg->rcon_line.line);
+		break;
+	case DDNET_MSG_KIND_INPUT:
+		packer_add_int(&packer, msg->input.ack_game_tick);
+		packer_add_int(&packer, msg->input.prediction_tick);
+		packer_add_int(&packer, msg->input.size);
+		packer_add_int(&packer, msg->input.direction);
+		packer_add_int(&packer, msg->input.target_x);
+		packer_add_int(&packer, msg->input.target_y);
+		packer_add_int(&packer, msg->input.jump);
+		packer_add_int(&packer, msg->input.fire);
+		packer_add_int(&packer, msg->input.hook);
+		packer_add_int(&packer, msg->input.player_flags);
+		packer_add_int(&packer, msg->input.wanted_weapon);
+		packer_add_int(&packer, msg->input.next_weapon);
+		packer_add_int(&packer, msg->input.prev_weapon);
+		break;
+	case DDNET_MSG_KIND_RCON_CMD:
+		packer_add_string(&packer, msg->rcon_cmd.command);
+		break;
 	case DDNET_MSG_KIND_SNAP:
 	case DDNET_MSG_KIND_SNAPEMPTY:
 	case DDNET_MSG_KIND_SNAPSINGLE:
 	case DDNET_MSG_KIND_SNAPSMALL:
-	case DDNET_MSG_KIND_INPUT:
 	default:
 		if(err != NULL) {
 			*err = ERR_UNKNOWN_MESSAGE;

@@ -41,6 +41,42 @@ typedef struct {
 	const char *command;
 } MsgRconCmd;
 
+// Sent by the server.
+typedef struct {
+	int32_t intended_tick;
+	int32_t time_left;
+} MsgInputTiming;
+
+// Sent by the server.
+typedef struct {
+	int32_t authed;
+	int32_t cmdlist;
+} MsgRconAuthStatus;
+
+// Sent by the server.
+// Log line that shows up in the clients
+// remote console.
+typedef struct {
+	const char *line;
+} MsgRconLine;
+
+// Sent by the client.
+typedef struct {
+	int32_t ack_game_tick;
+	int32_t prediction_tick;
+	int32_t size;
+	int32_t direction;
+	int32_t target_x;
+	int32_t target_y;
+	int32_t jump;
+	int32_t fire;
+	int32_t hook;
+	int32_t player_flags;
+	int32_t wanted_weapon;
+	int32_t next_weapon;
+	int32_t prev_weapon;
+} MsgInput;
+
 #ifdef __cplusplus
 }
 #endif

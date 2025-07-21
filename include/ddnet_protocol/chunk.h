@@ -76,13 +76,18 @@ typedef enum {
 	DDNET_MSG_KIND_MAP_CHANGE,
 	DDNET_MSG_KIND_MAP_DATA,
 	DDNET_MSG_KIND_CON_READY,
-	DDNET_MSG_KIND_RCON_CMD,
 	DDNET_MSG_KIND_CL_STARTINFO,
 	DDNET_MSG_KIND_SNAP,
 	DDNET_MSG_KIND_SNAPEMPTY,
 	DDNET_MSG_KIND_SNAPSINGLE,
 	DDNET_MSG_KIND_SNAPSMALL,
+	DDNET_MSG_KIND_INPUTTIMING,
+	DDNET_MSG_KIND_RCON_AUTH_STATUS,
+	DDNET_MSG_KIND_RCON_LINE,
+	DDNET_MSG_KIND_READY,
+	DDNET_MSG_KIND_ENTERGAME,
 	DDNET_MSG_KIND_INPUT,
+	DDNET_MSG_KIND_RCON_CMD,
 } DDNetMessageKind;
 
 // Union abstracting away any kind of game or system message
@@ -92,6 +97,10 @@ typedef union {
 	MsgInfo info;
 	MsgMapChange map_change;
 	MsgMapData map_data;
+	MsgInputTiming input_timing;
+	MsgRconAuthStatus rcon_auth_status;
+	MsgRconLine rcon_line;
+	MsgInput input;
 	MsgRconCmd rcon_cmd;
 	MsgClStartInfo start_info;
 } DDNetGenericMessage;

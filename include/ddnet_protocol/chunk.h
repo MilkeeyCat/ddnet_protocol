@@ -88,6 +88,12 @@ typedef enum {
 	DDNET_MSG_KIND_ENTERGAME,
 	DDNET_MSG_KIND_INPUT,
 	DDNET_MSG_KIND_RCON_CMD,
+	DDNET_MSG_KIND_RCON_AUTH,
+	DDNET_MSG_KIND_REQUEST_MAP_DATA,
+	DDNET_MSG_KIND_PING,
+	DDNET_MSG_KIND_PING_REPLY,
+	DDNET_MSG_KIND_RCON_CMD_ADD,
+	DDNET_MSG_KIND_RCON_CMD_REM,
 } DDNetMessageKind;
 
 // Union abstracting away any kind of game or system message
@@ -102,6 +108,10 @@ typedef union {
 	MsgRconLine rcon_line;
 	MsgInput input;
 	MsgRconCmd rcon_cmd;
+	MsgRconAuth rcon_auth;
+	MsgRequestMapData request_map_data;
+	MsgRconCmdAdd rcon_cmd_add;
+	MsgRconCmdRem rcon_cmd_rem;
 	MsgClStartInfo start_info;
 } DDNetGenericMessage;
 

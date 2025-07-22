@@ -132,6 +132,30 @@ void packer_init_msg(Packer *packer, DDNetMessageKind kind) {
 		msg_id = MSG_RCON_CMD;
 		msg_category = DDNET_SYSTEM;
 		break;
+	case DDNET_MSG_KIND_RCON_AUTH:
+		msg_id = MSG_RCON_AUTH;
+		msg_category = DDNET_SYSTEM;
+		break;
+	case DDNET_MSG_KIND_REQUEST_MAP_DATA:
+		msg_id = MSG_REQUEST_MAP_DATA;
+		msg_category = DDNET_SYSTEM;
+		break;
+	case DDNET_MSG_KIND_PING:
+		msg_id = MSG_PING;
+		msg_category = DDNET_SYSTEM;
+		break;
+	case DDNET_MSG_KIND_PING_REPLY:
+		msg_id = MSG_PING_REPLY;
+		msg_category = DDNET_SYSTEM;
+		break;
+	case DDNET_MSG_KIND_RCON_CMD_ADD:
+		msg_id = MSG_RCON_CMD_ADD;
+		msg_category = DDNET_SYSTEM;
+		break;
+	case DDNET_MSG_KIND_RCON_CMD_REM:
+		msg_id = MSG_RCON_CMD_REM;
+		msg_category = DDNET_SYSTEM;
+		break;
 	}
 
 	packer_add_int(packer, (int32_t)((msg_id << 1) | msg_category));

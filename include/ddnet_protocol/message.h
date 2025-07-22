@@ -31,6 +31,15 @@ typedef enum {
 	MSG_ENTERGAME = 15,
 	MSG_INPUT = 16,
 	MSG_RCON_CMD = 17,
+	MSG_RCON_AUTH = 18,
+	MSG_REQUEST_MAP_DATA = 19,
+	MSG_AUTH_START = 20, // unused
+	MSG_AUTH_RESPONSE = 21, // unused
+	MSG_PING = 22,
+	MSG_PING_REPLY = 23,
+	MSG_ERROR = 24, // unused
+	MSG_RCON_CMD_ADD = 25,
+	MSG_RCON_CMD_REM = 26,
 
 	// game messages
 	MSG_CL_STARTINFO = 20,

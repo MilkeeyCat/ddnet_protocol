@@ -39,7 +39,7 @@ static Error decode_system_message(Chunk *chunk, MessageId msg_id, Unpacker *unp
 		chunk->payload.kind = DDNET_MSG_KIND_MAP_CHANGE;
 		break;
 	case MSG_MAP_DATA:
-		msg->map_data.last = unpacker_get_int(unpacker);
+		msg->map_data.last = unpacker_get_bool(unpacker);
 		msg->map_data.map_crc = unpacker_get_int(unpacker);
 		msg->map_data.chunk = unpacker_get_int(unpacker);
 		msg->map_data.chunk_size = unpacker_get_int(unpacker);
@@ -55,8 +55,8 @@ static Error decode_system_message(Chunk *chunk, MessageId msg_id, Unpacker *unp
 		chunk->payload.kind = DDNET_MSG_KIND_INPUTTIMING;
 		break;
 	case MSG_RCON_AUTH_STATUS:
-		msg->rcon_auth_status.authed = unpacker_get_int(unpacker);
-		msg->rcon_auth_status.cmdlist = unpacker_get_int(unpacker);
+		msg->rcon_auth_status.authed = unpacker_get_bool(unpacker);
+		msg->rcon_auth_status.cmdlist = unpacker_get_bool(unpacker);
 		chunk->payload.kind = DDNET_MSG_KIND_RCON_AUTH_STATUS;
 		break;
 	case MSG_RCON_LINE:
@@ -88,6 +88,26 @@ static Error decode_system_message(Chunk *chunk, MessageId msg_id, Unpacker *unp
 	case MSG_RCON_CMD:
 		msg->rcon_cmd.command = unpacker_get_string(unpacker);
 		chunk->payload.kind = DDNET_MSG_KIND_RCON_CMD;
+		break;
+	case MSG_RCON_AUTH:
+		msg->rcon_auth.name = unpacker_get_string(unpacker);
+		msg->rcon_auth.password = unpacker_get_string(unpacker);
+		msg->rcon_auth.send_rcon_cmds = unpacker_get_bool(unpacker);
+		chunk->payload.kind = DDNET_MSG_KIND_RCON_AUTH;
+		break;
+	case MSG_REQUEST_MAP_DATA:
+		msg->request_map_data.chunk = unpacker_get_int(unpacker);
+		chunk->payload.kind = DDNET_MSG_KIND_REQUEST_MAP_DATA;
+		break;
+	case MSG_RCON_CMD_ADD:
+		msg->rcon_cmd_add.name = unpacker_get_string(unpacker);
+		msg->rcon_cmd_add.help = unpacker_get_string(unpacker);
+		msg->rcon_cmd_add.params = unpacker_get_string(unpacker);
+		chunk->payload.kind = DDNET_MSG_KIND_RCON_CMD_ADD;
+		break;
+	case MSG_RCON_CMD_REM:
+		msg->rcon_cmd_rem.name = unpacker_get_string(unpacker);
+		chunk->payload.kind = DDNET_MSG_KIND_RCON_CMD_REM;
 		break;
 	default:
 		return ERR_UNKNOWN_MESSAGE;
@@ -186,6 +206,22 @@ size_t encode_message(Chunk *chunk, uint8_t *buf, Error *err) {
 		break;
 	case DDNET_MSG_KIND_RCON_CMD:
 		packer_add_string(&packer, msg->rcon_cmd.command);
+		break;
+	case DDNET_MSG_KIND_RCON_AUTH:
+		packer_add_string(&packer, msg->rcon_auth.name);
+		packer_add_string(&packer, msg->rcon_auth.password);
+		packer_add_int(&packer, msg->rcon_auth.send_rcon_cmds);
+		break;
+	case DDNET_MSG_KIND_REQUEST_MAP_DATA:
+		packer_add_int(&packer, msg->request_map_data.chunk);
+		break;
+	case DDNET_MSG_KIND_RCON_CMD_ADD:
+		packer_add_string(&packer, msg->rcon_cmd_add.name);
+		packer_add_string(&packer, msg->rcon_cmd_add.help);
+		packer_add_string(&packer, msg->rcon_cmd_add.params);
+		break;
+	case DDNET_MSG_KIND_RCON_CMD_REM:
+		packer_add_string(&packer, msg->rcon_cmd_rem.name);
 		break;
 	case DDNET_MSG_KIND_SNAP:
 	case DDNET_MSG_KIND_SNAPEMPTY:

@@ -28,7 +28,7 @@ typedef struct {
 
 // Sent by the server.
 typedef struct {
-	int32_t last;
+	bool last;
 	int32_t map_crc;
 	int32_t chunk;
 	int32_t chunk_size;
@@ -41,6 +41,38 @@ typedef struct {
 	const char *command;
 } MsgRconCmd;
 
+// Sent by the client.
+typedef struct {
+	// has to be set to an empty string
+	// when trying to login with one of the non user passwords
+	// sv_rcon_password, sv_rcon_mod_password or sv_rcon_helper_password
+	const char *name;
+	const char *password;
+
+	// If set to true the server will send the available
+	// rcon commands to the client.
+	bool send_rcon_cmds;
+} MsgRconAuth;
+
+// Sent by the client.
+// This is sent multiple times during the map download process.
+// The server is supposed to answer with a `DDNET_MSG_KIND_MAP_DATA`
+typedef struct {
+	int32_t chunk;
+} MsgRequestMapData;
+
+// Sent by the server.
+typedef struct {
+	const char *name;
+	const char *help;
+	const char *params;
+} MsgRconCmdAdd;
+
+// Sent by the server.
+typedef struct {
+	const char *name;
+} MsgRconCmdRem;
+
 // Sent by the server.
 typedef struct {
 	int32_t intended_tick;
@@ -49,8 +81,8 @@ typedef struct {
 
 // Sent by the server.
 typedef struct {
-	int32_t authed;
-	int32_t cmdlist;
+	bool authed;
+	bool cmdlist;
 } MsgRconAuthStatus;
 
 // Sent by the server.

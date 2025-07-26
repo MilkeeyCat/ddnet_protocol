@@ -30,7 +30,7 @@ typedef enum {
 // State for the unpacker
 // holds the data to be unpacked
 // and keeps track of how much data was unpacked
-// and also tracks if errors occured
+// and also tracks if errors occurred
 //
 // See also `unpacker_init` and `unpacker_get_int`
 typedef struct {

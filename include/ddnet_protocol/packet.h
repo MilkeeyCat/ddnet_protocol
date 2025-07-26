@@ -43,7 +43,7 @@ typedef enum {
 	// Can not be mixed with the PACKET_FLAG_COMPRESSION!
 	PACKET_FLAG_CONTROL = 1 << 2,
 
-	// Inidicating that the packet is a connection less packet.
+	// Indicating that the packet is a connection less packet.
 	PACKET_FLAG_CONNLESS = 1 << 3,
 
 	// Requesting a resend from the peer.
@@ -143,11 +143,11 @@ Error encode_packet_header(const PacketHeader *header, uint8_t *buf);
 size_t get_packet_payload(PacketHeader *header, const uint8_t *full_data, size_t full_len, uint8_t *payload, size_t payload_len, Error *err);
 
 // Given a pointer to the beginning of a udp payload
-// this determins the type of packet.
+// this determines the type of packet.
 //
 // It returns `NULL` on error. Check the `err` value for more details.
 // Or a pointer to newly allocated memory that holds the parsed packet struct.
-// It is your responsiblity to free it using `free_packet()`
+// It is your responsibility to free it using `free_packet()`
 DDNetPacket decode_packet(const uint8_t *buf, size_t len, Error *err);
 
 // Given a `Packet` struct it will encode a full udp payload

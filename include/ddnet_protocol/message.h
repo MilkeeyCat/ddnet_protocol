@@ -61,6 +61,8 @@ Error decode_message(Chunk *chunk, uint8_t *buf);
 
 size_t encode_message(Chunk *chunk, uint8_t *buf, Error *err);
 
+DDNetMessage ddnet_build_msg_info(const char *password);
+
 #ifdef __cplusplus
 }
 #endif

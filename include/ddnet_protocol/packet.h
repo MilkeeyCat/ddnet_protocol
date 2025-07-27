@@ -120,7 +120,7 @@ typedef struct {
 	union {
 		ControlMessage control;
 		struct {
-			Chunk *data;
+			DDNetChunk *data;
 			size_t len;
 		} chunks;
 	};

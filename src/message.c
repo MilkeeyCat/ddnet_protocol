@@ -4,7 +4,7 @@
 #include "msg_system.h"
 #include "packer.h"
 
-static DDNetError decode_game_message(Chunk *chunk, MessageId msg_id, Unpacker *unpacker) {
+static DDNetError decode_game_message(DDNetChunk *chunk, MessageId msg_id, Unpacker *unpacker) {
 	DDNetGenericMessage *msg = &chunk->payload.msg;
 	switch(msg_id) {
 	case MSG_CL_STARTINFO:
@@ -24,7 +24,7 @@ static DDNetError decode_game_message(Chunk *chunk, MessageId msg_id, Unpacker *
 	return unpacker->err;
 }
 
-static DDNetError decode_system_message(Chunk *chunk, MessageId msg_id, Unpacker *unpacker) {
+static DDNetError decode_system_message(DDNetChunk *chunk, MessageId msg_id, Unpacker *unpacker) {
 	DDNetGenericMessage *msg = &chunk->payload.msg;
 	switch(msg_id) {
 	case MSG_INFO:
@@ -116,7 +116,7 @@ static DDNetError decode_system_message(Chunk *chunk, MessageId msg_id, Unpacker
 	return unpacker->err;
 }
 
-DDNetError decode_message(Chunk *chunk, uint8_t *buf) {
+DDNetError decode_message(DDNetChunk *chunk, uint8_t *buf) {
 	Unpacker unpacker;
 	unpacker_init(&unpacker, buf, chunk->header.size);
 	int32_t msg_and_sys = unpacker_get_int(&unpacker);
@@ -139,7 +139,7 @@ DDNetError decode_message(Chunk *chunk, uint8_t *buf) {
 	return err;
 }
 
-size_t encode_message(Chunk *chunk, uint8_t *buf, DDNetError *err) {
+size_t encode_message(DDNetChunk *chunk, uint8_t *buf, DDNetError *err) {
 	Packer packer;
 	packer_init_msg(&packer, chunk->payload.kind);
 

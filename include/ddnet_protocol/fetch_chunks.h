@@ -10,13 +10,13 @@ extern "C" {
 #include "packet.h"
 #include "token.h"
 
-typedef void (*OnChunk)(void *ctx, Chunk *chunk);
+typedef void (*OnDDNetChunk)(void *ctx, DDNetChunk *chunk);
 
 // Given a buffer containing the packet payload without packet header.
 // It will extract all system and game messages
 // and store them in the given packet struct.
 // And it returns the amount of bytes read.
-size_t fetch_chunks(uint8_t *buf, size_t len, PacketHeader *header, OnChunk callback, void *ctx, DDNetError *err);
+size_t fetch_chunks(uint8_t *buf, size_t len, PacketHeader *header, OnDDNetChunk callback, void *ctx, DDNetError *err);
 
 #ifdef __cplusplus
 }

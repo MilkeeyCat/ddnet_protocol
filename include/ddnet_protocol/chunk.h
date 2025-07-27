@@ -22,12 +22,12 @@ typedef enum {
 	// Vital chunks are reliable.
 	// They contain a sequence number and will be resend
 	// if the peer did not acknowledge that sequence number.
-	CHUNK_FLAG_VITAL = 0b01000000,
+	DDNET_CHUNK_FLAG_VITAL = 0b01000000,
 
 	// If this exact message was already sent the resend flag is set.
 	// This can happen if there is lag or packet loss.
-	CHUNK_FLAG_RESEND = 0b10000000,
-} ChunkFlag;
+	DDNET_CHUNK_FLAG_RESEND = 0b10000000,
+} DDNetChunkFlag;
 
 // Every game or system message is packed in a chunk.
 // Every chunk has a 2 or 3 byte header.
@@ -35,23 +35,23 @@ typedef enum {
 //
 // Be careful! The `sequence` field is only used by vital chunks!
 typedef struct {
-	// Bit flags that can be any combination of the `ChunkFlag` enum.
+	// Bit flags that can be any combination of the `DDNetChunkFlag` enum.
 	uint8_t flags;
 
 	// Size in bytes of the chunk payload.
 	// Excluding the chunk headers size.
 	uint16_t size;
 
-	// Set only if flags & CHUNK_FLAG_VITAL
+	// Set only if flags & DDNET_CHUNK_FLAG_VITAL
 	// Is the amount of vital chunks that were already sent.
 	// But the number flips back to 0 when `MAX_SEQUENCE` is reached.
 	uint16_t sequence;
-} ChunkHeader;
+} DDNetChunkHeader;
 
 // Parses a byte buffer as a chunk header.
 // Consumes 2 or 3 bytes and stores the result in `header`. Returns the number
 // of bytes consumed.
-size_t decode_chunk_header(const uint8_t *buf, ChunkHeader *header);
+size_t decode_chunk_header(const uint8_t *buf, DDNetChunkHeader *header);
 
 // Given a filled header struct it it will pack it into `buf`
 // writing either 2 or 3 bytes depending on the header type.
@@ -59,14 +59,14 @@ size_t decode_chunk_header(const uint8_t *buf, ChunkHeader *header);
 //
 // Example usage:
 // ```C
-// ChunkHeader header = {
-// 	.flags = CHUNK_FLAG_VITAL,
+// DDNetChunkHeader header = {
+// 	.flags = DDNET_CHUNK_FLAG_VITAL,
 // 	.size = 2,
 // 	.sequence = 4};
 // uint8_t buf[8];
 // size_t bytes_written = encode_chunk_header(&header, buf);
 // ```
-size_t encode_chunk_header(const ChunkHeader *header, uint8_t *buf);
+size_t encode_chunk_header(const DDNetChunkHeader *header, uint8_t *buf);
 
 // Be careful this is not the message id
 // that is sent over the network!
@@ -127,9 +127,9 @@ typedef struct {
 // And a chunk payload. The payload contains
 // exactly one net message of either type game or system.
 typedef struct {
-	ChunkHeader header;
+	DDNetChunkHeader header;
 	DDNetMessage payload;
-} Chunk;
+} DDNetChunk;
 
 // Returns true if the passed in message kind is a vital message
 // vital messages are reliable and should be resend if they
@@ -142,7 +142,7 @@ bool ddnet_is_vital_msg(DDNetMessageKind kind);
 // for message in the payload already set
 // This function will fill the chunks header accordingly
 // For now this only means setting the correct size based on the payload
-DDNetError fill_chunk_header(Chunk *chunk);
+DDNetError fill_chunk_header(DDNetChunk *chunk);
 
 #ifdef __cplusplus
 }

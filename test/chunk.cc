@@ -76,7 +76,7 @@ TEST(Chunk, BigMessageId) {
 	// SendMsg(Conn, &FakeMsg, MSGFLAG_VITAL | MSGFLAG_FLUSH);
 	uint8_t bytes[] = {0x40, 0x06, 0x03, 0x87, 0x03, 0x41, 0x42, 0x43, 0x00};
 	uint8_t *buf = &bytes[0];
-	Error err = ERR_NONE;
+	DDNetError err = DDNET_ERR_NONE;
 	PacketHeader header = {
 		.num_chunks = 1};
 	Context ctx = {
@@ -84,7 +84,7 @@ TEST(Chunk, BigMessageId) {
 		.len = 0,
 	};
 	size_t size = fetch_chunks(buf, sizeof(bytes), &header, on_chunk, &ctx, &err);
-	EXPECT_EQ(err, ERR_NONE);
+	EXPECT_EQ(err, DDNET_ERR_NONE);
 	EXPECT_EQ(ctx.len, 1);
 
 	EXPECT_EQ(ctx.chunks[0].header.flags, CHUNK_FLAG_VITAL);

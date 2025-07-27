@@ -3,7 +3,7 @@
 ## Syntax
 
 ```C
-size_t ddnet_huffman_compress(const uint8_t *input, size_t input_len, uint8_t *output, size_t output_len, Error *err);
+size_t ddnet_huffman_compress(const uint8_t *input, size_t input_len, uint8_t *output, size_t output_len, DDNetError *err);
 ```
 
 applies huffman compression to the given `input`
@@ -18,7 +18,7 @@ See also https://chillerdragon.github.io/teeworlds-protocol/06/fundamentals.html
 ## Syntax
 
 ```C
-size_t ddnet_huffman_decompress(const uint8_t *input, size_t input_len, uint8_t *output, size_t output_len, Error *err);
+size_t ddnet_huffman_decompress(const uint8_t *input, size_t input_len, uint8_t *output, size_t output_len, DDNetError *err);
 ```
 
 applies huffman decompression to the given `input`

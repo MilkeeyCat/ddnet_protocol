@@ -6,10 +6,10 @@
 
 TEST(ControlPacket, Keepalive) {
 	uint8_t bytes[] = {0x10, 0x00, 0x00, 0x00, 0x4e, 0xc7, 0x3b, 0x04};
-	Error err = Error::ERR_NONE;
+	DDNetError err = DDNetError::DDNET_ERR_NONE;
 	DDNetPacket packet = decode_packet(bytes, sizeof(bytes), &err);
 
-	EXPECT_EQ(err, Error::ERR_NONE);
+	EXPECT_EQ(err, DDNetError::DDNET_ERR_NONE);
 	EXPECT_EQ(packet.kind, PacketKind::PACKET_CONTROL);
 	EXPECT_EQ(packet.header.flags, PacketFlag::PACKET_FLAG_CONTROL);
 	EXPECT_EQ(packet.header.num_chunks, 0);
@@ -22,10 +22,10 @@ TEST(ControlPacket, Keepalive) {
 
 TEST(ControlPacket, Connect) {
 	uint8_t bytes[] = {0x10, 0x00, 0x00, 0x01, 0x54, 0x4b, 0x45, 0x4e, 0xff, 0xff, 0xff, 0xff};
-	Error err = Error::ERR_NONE;
+	DDNetError err = DDNetError::DDNET_ERR_NONE;
 	DDNetPacket packet = decode_packet(bytes, sizeof(bytes), &err);
 
-	EXPECT_EQ(err, Error::ERR_NONE);
+	EXPECT_EQ(err, DDNetError::DDNET_ERR_NONE);
 	EXPECT_EQ(packet.kind, PacketKind::PACKET_CONTROL);
 	EXPECT_EQ(packet.control.kind, ControlMessageKind::CTRL_MSG_CONNECT);
 	EXPECT_EQ(packet.header.token, 0xffffffff);
@@ -35,10 +35,10 @@ TEST(ControlPacket, Connect) {
 
 TEST(ControlPacket, ConnectAccept) {
 	uint8_t bytes[] = {0x10, 0x00, 0x00, 0x02, 0x54, 0x4b, 0x45, 0x4e, 0x4e, 0xc7, 0x3b, 0x04};
-	Error err = Error::ERR_NONE;
+	DDNetError err = DDNetError::DDNET_ERR_NONE;
 	DDNetPacket packet = decode_packet(bytes, sizeof(bytes), &err);
 
-	EXPECT_EQ(err, Error::ERR_NONE);
+	EXPECT_EQ(err, DDNetError::DDNET_ERR_NONE);
 	EXPECT_EQ(packet.kind, PacketKind::PACKET_CONTROL);
 	EXPECT_EQ(packet.control.kind, ControlMessageKind::CTRL_MSG_CONNECTACCEPT);
 	EXPECT_EQ(packet.header.token, 0x4ec73b04);
@@ -48,10 +48,10 @@ TEST(ControlPacket, ConnectAccept) {
 
 TEST(ControlPacket, Accept) {
 	uint8_t bytes[] = {0x10, 0x00, 0x00, 0x03, 0x4e, 0xc7, 0x3b, 0x04};
-	Error err = Error::ERR_NONE;
+	DDNetError err = DDNetError::DDNET_ERR_NONE;
 	DDNetPacket packet = decode_packet(bytes, sizeof(bytes), &err);
 
-	EXPECT_EQ(err, Error::ERR_NONE);
+	EXPECT_EQ(err, DDNetError::DDNET_ERR_NONE);
 	EXPECT_EQ(packet.kind, PacketKind::PACKET_CONTROL);
 	EXPECT_EQ(packet.control.kind, ControlMessageKind::CTRL_MSG_ACCEPT);
 	EXPECT_EQ(packet.header.token, 0x4ec73b04);
@@ -61,10 +61,10 @@ TEST(ControlPacket, Accept) {
 
 TEST(ControlPacket, Close) {
 	uint8_t bytes[] = {0x10, 0x00, 0x00, 0x04, 0x4e, 0xc7, 0x3b, 0x04};
-	Error err = Error::ERR_NONE;
+	DDNetError err = DDNetError::DDNET_ERR_NONE;
 	DDNetPacket packet = decode_packet(bytes, sizeof(bytes), &err);
 
-	EXPECT_EQ(err, Error::ERR_NONE);
+	EXPECT_EQ(err, DDNetError::DDNET_ERR_NONE);
 	EXPECT_EQ(packet.kind, PacketKind::PACKET_CONTROL);
 	EXPECT_EQ(packet.control.kind, ControlMessageKind::CTRL_MSG_CLOSE);
 	EXPECT_EQ(packet.header.token, 0x4ec73b04);
@@ -74,10 +74,10 @@ TEST(ControlPacket, Close) {
 
 TEST(ControlPacket, CloseWithReason) {
 	uint8_t bytes[] = {0x10, 0x00, 0x00, 0x04, 0x74, 0x6f, 0x6f, 0x20, 0x62, 0x61, 0x64, 0x00, 0x4e, 0xc7, 0x3b, 0x04};
-	Error err = Error::ERR_NONE;
+	DDNetError err = DDNetError::DDNET_ERR_NONE;
 	DDNetPacket packet = decode_packet(bytes, sizeof(bytes), &err);
 
-	EXPECT_EQ(err, Error::ERR_NONE);
+	EXPECT_EQ(err, DDNetError::DDNET_ERR_NONE);
 	EXPECT_EQ(packet.kind, PacketKind::PACKET_CONTROL);
 	EXPECT_EQ(packet.control.kind, ControlMessageKind::CTRL_MSG_CLOSE);
 	EXPECT_EQ(packet.header.token, 0x4ec73b04);
@@ -93,9 +93,9 @@ TEST(ControlPacket, EncodeClose) {
 			.token = 0x4ec73b04},
 		.control = {.kind = CTRL_MSG_CLOSE}};
 	uint8_t bytes[MAX_PACKET_SIZE];
-	Error err = ERR_NONE;
+	DDNetError err = DDNET_ERR_NONE;
 	size_t size = encode_packet(&packet, bytes, sizeof(bytes), &err);
-	EXPECT_EQ(err, ERR_NONE);
+	EXPECT_EQ(err, DDNET_ERR_NONE);
 	uint8_t expected[] = {0x10, 0x00, 0x00, 0x04, 0x4e, 0xc7, 0x3b, 0x04};
 	EXPECT_EQ(size, sizeof(expected));
 	EXPECT_TRUE(std::memcmp(bytes, expected, size) == 0);
@@ -109,9 +109,9 @@ TEST(ControlPacket, EncodeCloseWithReason) {
 			.token = 0x4ec73b04},
 		.control = {.kind = CTRL_MSG_CLOSE, .reason = "too bad"}};
 	uint8_t bytes[MAX_PACKET_SIZE];
-	Error err = ERR_NONE;
+	DDNetError err = DDNET_ERR_NONE;
 	size_t size = encode_packet(&packet, bytes, sizeof(bytes), &err);
-	EXPECT_EQ(err, ERR_NONE);
+	EXPECT_EQ(err, DDNET_ERR_NONE);
 	uint8_t expected[] = {0x10, 0x00, 0x00, 0x04, 0x74, 0x6f, 0x6f, 0x20, 0x62, 0x61, 0x64, 0x00, 0x4e, 0xc7, 0x3b, 0x04};
 	EXPECT_EQ(size, sizeof(expected));
 	EXPECT_TRUE(std::memcmp(bytes, expected, size) == 0);
@@ -125,9 +125,9 @@ TEST(ControlPacket, EncodeConnect) {
 			.token = 0xffffffff},
 		.control = {.kind = CTRL_MSG_CONNECT}};
 	uint8_t bytes[MAX_PACKET_SIZE];
-	Error err = ERR_NONE;
+	DDNetError err = DDNET_ERR_NONE;
 	size_t size = encode_packet(&packet, bytes, sizeof(bytes), &err);
-	EXPECT_EQ(err, ERR_NONE);
+	EXPECT_EQ(err, DDNET_ERR_NONE);
 	uint8_t expected[] = {0x10, 0x00, 0x00, 0x01, 0x54, 0x4b, 0x45, 0x4e, 0xff, 0xff, 0xff, 0xff};
 	EXPECT_EQ(size, sizeof(expected));
 	EXPECT_TRUE(std::memcmp(bytes, expected, size) == 0);

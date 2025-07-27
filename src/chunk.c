@@ -38,14 +38,14 @@ bool ddnet_is_vital_msg(DDNetMessageKind kind) {
 	       kind != DDNET_MSG_KIND_SNAPSMALL;
 }
 
-Error fill_chunk_header(Chunk *chunk) {
+DDNetError fill_chunk_header(Chunk *chunk) {
 	uint8_t chunk_payload[MAX_PACKET_SIZE];
-	Error encode_err = ERR_NONE;
+	DDNetError encode_err = DDNET_ERR_NONE;
 	size_t chunk_payload_len = encode_message(chunk, chunk_payload, &encode_err);
-	if(encode_err != ERR_NONE) {
+	if(encode_err != DDNET_ERR_NONE) {
 		return encode_err;
 	}
 	chunk->header.size = chunk_payload_len;
 	chunk->header.flags = ddnet_is_vital_msg(chunk->payload.kind) ? CHUNK_FLAG_VITAL : 0;
-	return ERR_NONE;
+	return DDNET_ERR_NONE;
 }

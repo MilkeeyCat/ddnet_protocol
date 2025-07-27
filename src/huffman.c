@@ -168,7 +168,7 @@ static void huffman_init(void) {
 	}
 }
 
-size_t ddnet_huffman_compress(const uint8_t *input, size_t input_len, uint8_t *output, size_t output_len, Error *err) {
+size_t ddnet_huffman_compress(const uint8_t *input, size_t input_len, uint8_t *output, size_t output_len, DDNetError *err) {
 	huffman_init();
 	// this macro loads a symbol for a byte into bits and bitcount
 #define HUFFMAN_MACRO_LOADSYMBOL(sym) \
@@ -180,7 +180,7 @@ size_t ddnet_huffman_compress(const uint8_t *input, size_t input_len, uint8_t *o
 	while(bitcount >= 8) { \
 		*dst++ = (uint8_t)(bits & 0xff); \
 		if(dst == dstend) { \
-			*err = ERR_BUFFER_FULL; \
+			*err = DDNET_ERR_BUFFER_FULL; \
 			return -1; \
 		} \
 		bits >>= 8; \
@@ -233,7 +233,7 @@ size_t ddnet_huffman_compress(const uint8_t *input, size_t input_len, uint8_t *o
 #undef HUFFMAN_MACRO_WRITE
 }
 
-size_t ddnet_huffman_decompress(const uint8_t *input, size_t input_len, uint8_t *output, size_t output_len, Error *err) {
+size_t ddnet_huffman_decompress(const uint8_t *input, size_t input_len, uint8_t *output, size_t output_len, DDNetError *err) {
 	huffman_init();
 	// setup buffer pointers
 	uint8_t *dst = output;
@@ -266,7 +266,7 @@ size_t ddnet_huffman_decompress(const uint8_t *input, size_t input_len, uint8_t 
 		}
 
 		if(!node) {
-			*err = ERR_HUFFMAN_NODE_NULL;
+			*err = DDNET_ERR_HUFFMAN_NODE_NULL;
 			return -1;
 		}
 
@@ -296,7 +296,7 @@ size_t ddnet_huffman_decompress(const uint8_t *input, size_t input_len, uint8_t 
 
 				// no more bits, decoding error
 				if(bitcount == 0) {
-					*err = ERR_END_OF_BUFFER;
+					*err = DDNET_ERR_END_OF_BUFFER;
 					return -1;
 				}
 			}
@@ -309,7 +309,7 @@ size_t ddnet_huffman_decompress(const uint8_t *input, size_t input_len, uint8_t 
 
 		// output character
 		if(dst == dstend) {
-			*err = ERR_BUFFER_FULL;
+			*err = DDNET_ERR_BUFFER_FULL;
 			return -1;
 		}
 		*dst++ = node->symbol;

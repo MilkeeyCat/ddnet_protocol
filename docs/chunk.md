@@ -199,7 +199,7 @@ and not resend outdated data such as game state and inputs.
 ## Syntax
 
 ```C
-Error fill_chunk_header(Chunk *chunk);
+DDNetError fill_chunk_header(Chunk *chunk);
 ```
 
 Given an entire chunk that has all values

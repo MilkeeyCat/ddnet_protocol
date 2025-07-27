@@ -135,12 +135,12 @@ typedef struct {
 PacketHeader decode_packet_header(const uint8_t *buf);
 
 // Given a `PacketHeader` as input it writes 3 bytes into `buf`
-Error encode_packet_header(const PacketHeader *header, uint8_t *buf);
+DDNetError encode_packet_header(const PacketHeader *header, uint8_t *buf);
 
 // Extract and decompress packet payload.
 // Given a full raw packet as `full_data`
 // It will extract only the payload into `payload` and return the size of the payload.
-size_t get_packet_payload(PacketHeader *header, const uint8_t *full_data, size_t full_len, uint8_t *payload, size_t payload_len, Error *err);
+size_t get_packet_payload(PacketHeader *header, const uint8_t *full_data, size_t full_len, uint8_t *payload, size_t payload_len, DDNetError *err);
 
 // Given a pointer to the beginning of a udp payload
 // this determines the type of packet.
@@ -148,15 +148,15 @@ size_t get_packet_payload(PacketHeader *header, const uint8_t *full_data, size_t
 // It returns `NULL` on error. Check the `err` value for more details.
 // Or a pointer to newly allocated memory that holds the parsed packet struct.
 // It is your responsibility to free it using `free_packet()`
-DDNetPacket decode_packet(const uint8_t *buf, size_t len, Error *err);
+DDNetPacket decode_packet(const uint8_t *buf, size_t len, DDNetError *err);
 
 // Given a `Packet` struct it will encode a full udp payload
 // the output is written into `buf` which has to be at least `len` big
 // And returns the amount of written bytes
-size_t encode_packet(const DDNetPacket *packet, uint8_t *buf, size_t len, Error *err);
+size_t encode_packet(const DDNetPacket *packet, uint8_t *buf, size_t len, DDNetError *err);
 
 // Frees a packet struct and all of its fields
-Error free_packet(DDNetPacket *packet);
+DDNetError free_packet(DDNetPacket *packet);
 
 #ifdef __cplusplus
 }

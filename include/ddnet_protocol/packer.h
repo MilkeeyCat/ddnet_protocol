@@ -34,7 +34,7 @@ typedef enum {
 //
 // See also `unpacker_init` and `unpacker_get_int`
 typedef struct {
-	Error err;
+	DDNetError err;
 	uint8_t *buf_end;
 	uint8_t *buf;
 } Unpacker;
@@ -47,7 +47,7 @@ typedef struct {
 // holds the currently packed data
 // and also tracks errors
 typedef struct {
-	Error err;
+	DDNetError err;
 	uint8_t *current;
 	uint8_t *end;
 	uint8_t buf[PACKER_BUFFER_SIZE];
@@ -82,15 +82,15 @@ uint8_t *packer_data(Packer *packer);
 
 // Packs `value` as teeworlds varint
 // call `packer_data()` to receive the full packed data
-Error packer_add_int(Packer *packer, int32_t value);
+DDNetError packer_add_int(Packer *packer, int32_t value);
 
 // Packs `value` as plain null terminated C string
 // call `packer_data()` to receive the full packed data
-Error packer_add_string(Packer *packer, const char *value);
+DDNetError packer_add_string(Packer *packer, const char *value);
 
 // Packs `data` as raw data
 // call `packer_data()` to receive the full packed data
-Error packer_add_raw(Packer *packer, const uint8_t *data, size_t size);
+DDNetError packer_add_raw(Packer *packer, const uint8_t *data, size_t size);
 
 // returns a new `Unpacker` instance
 // it keeps track of how much data was already unpacked
@@ -102,7 +102,7 @@ Error packer_add_raw(Packer *packer, const uint8_t *data, size_t size);
 // unpacker_get_int(&unpacker); // => 5
 // unpacker_get_int(&unpacker); // => 1
 // unpacker_get_int(&unpacker); // => 2
-// unpacker.err; // => Error::ERR_NONE
+// unpacker.err; // => DDNetError::DDNET_ERR_NONE
 // ```
 void unpacker_init(Unpacker *packer, uint8_t *buf, size_t len);
 
@@ -118,7 +118,7 @@ size_t unpacker_remaining_size(Unpacker *unpacker);
 // Unpacker unpacker;
 // unpacker_init(&unpacker, bytes, sizeof(bytes));
 // unpacker_get_int(&unpacker); // => 5
-// unpacker.err; // => Error::ERR_NONE
+// unpacker.err; // => DDNetError::DDNET_ERR_NONE
 // ```
 int32_t unpacker_get_int(Unpacker *unpacker);
 
@@ -147,7 +147,7 @@ const char *unpacker_get_string(Unpacker *unpacker);
 // unpacker_init(&unpacker, bytes, sizeof(bytes));
 //
 // unpacker_get_string_sanitized(&unpacker, STRING_SANITIZE_CC); // => foo
-// unpacker.err; // =>  Error::ERR_NONE
+// unpacker.err; // =>  DDNetError::DDNET_ERR_NONE
 // ```
 const char *unpacker_get_string_sanitized(Unpacker *unpacker, StringSanitize sanitize);
 
@@ -155,7 +155,7 @@ const char *unpacker_get_string_sanitized(Unpacker *unpacker, StringSanitize san
 // it returns the next boolean in the unpacker data
 // and also progresses the internal unpacker state to point to the next element
 //
-// Might set the unpacker->err to `ERR_INVALID_BOOL`
+// Might set the unpacker->err to `DDNET_ERR_INVALID_BOOL`
 //
 // ```C
 // uint8_t bytes[] = {0x00, 0x01, 0xcc};
@@ -165,7 +165,7 @@ const char *unpacker_get_string_sanitized(Unpacker *unpacker, StringSanitize san
 // unpacker_get_bool(&unpacker); // => false
 // unpacker_get_bool(&unpacker); // => true
 // unpacker_get_bool(&unpacker); // => false (invalid boolean)
-// unpacker.err; // => Error::ERR_INVALID_BOOL
+// unpacker.err; // => DDNetError::DDNET_ERR_INVALID_BOOL
 // ```
 bool unpacker_get_bool(Unpacker *unpacker);
 
@@ -178,7 +178,7 @@ bool unpacker_get_bool(Unpacker *unpacker);
 // Unpacker unpacker;
 // unpacker_init(&unpacker, bytes, sizeof(bytes));
 // unpacker_get_raw(&unpacker, 1); // => 0x05
-// unpacker.err; // => Error::ERR_NONE
+// unpacker.err; // => DDNetError::DDNET_ERR_NONE
 // ```
 const uint8_t *unpacker_get_raw(Unpacker *unpacker, size_t len);
 

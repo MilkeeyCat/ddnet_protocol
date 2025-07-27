@@ -54,7 +54,7 @@ void str_clean_whitespaces(char *string) {
 }
 
 void packer_init(Packer *packer) {
-	packer->err = ERR_NONE;
+	packer->err = DDNET_ERR_NONE;
 	packer->current = packer->buf;
 	packer->end = packer->buf + (size_t)PACKER_BUFFER_SIZE;
 }
@@ -173,10 +173,10 @@ uint8_t *packer_data(Packer *packer) {
 	return packer->buf;
 }
 
-Error packer_add_int(Packer *packer, int32_t value) {
+DDNetError packer_add_int(Packer *packer, int32_t value) {
 	size_t space = packer_remaining_size(packer);
 	if(space <= 0) {
-		return packer->err = ERR_BUFFER_FULL;
+		return packer->err = DDNET_ERR_BUFFER_FULL;
 	}
 
 	space--;
@@ -195,7 +195,7 @@ Error packer_add_int(Packer *packer, int32_t value) {
 
 	while(value) {
 		if(space <= 0) {
-			return packer->err = ERR_BUFFER_FULL;
+			return packer->err = DDNET_ERR_BUFFER_FULL;
 		}
 		// set extend bit
 		*packer->current |= 0x80;
@@ -208,31 +208,31 @@ Error packer_add_int(Packer *packer, int32_t value) {
 	}
 
 	packer->current++;
-	return ERR_NONE;
+	return DDNET_ERR_NONE;
 }
 
-Error packer_add_string(Packer *packer, const char *value) {
+DDNetError packer_add_string(Packer *packer, const char *value) {
 	size_t len = strlen(value) + 1;
 	if(packer_remaining_size(packer) < len) {
-		return packer->err = ERR_BUFFER_FULL;
+		return packer->err = DDNET_ERR_BUFFER_FULL;
 	}
 	strncpy((char *)packer->current, value, len);
 	packer->current += len;
 
-	return ERR_NONE;
+	return DDNET_ERR_NONE;
 }
 
-Error packer_add_raw(Packer *packer, const uint8_t *data, size_t size) {
+DDNetError packer_add_raw(Packer *packer, const uint8_t *data, size_t size) {
 	if(packer_remaining_size(packer) < size) {
-		return packer->err = ERR_BUFFER_FULL;
+		return packer->err = DDNET_ERR_BUFFER_FULL;
 	}
 	memcpy(packer->current, data, size);
 	packer->current += size;
-	return ERR_NONE;
+	return DDNET_ERR_NONE;
 }
 
 void unpacker_init(Unpacker *unpacker, uint8_t *buf, size_t len) {
-	unpacker->err = ERR_NONE;
+	unpacker->err = DDNET_ERR_NONE;
 	unpacker->buf = buf;
 	unpacker->buf_end = buf + len;
 }
@@ -244,7 +244,7 @@ size_t unpacker_remaining_size(Unpacker *unpacker) {
 int32_t unpacker_get_int(Unpacker *unpacker) {
 	size_t space = unpacker_remaining_size(unpacker);
 	if(space < 1) {
-		unpacker->err = ERR_EMPTY_BUFFER;
+		unpacker->err = DDNET_ERR_EMPTY_BUFFER;
 		return 0;
 	}
 
@@ -256,7 +256,7 @@ int32_t unpacker_get_int(Unpacker *unpacker) {
 			break;
 		}
 		if(--space <= 0) {
-			unpacker->err = ERR_END_OF_BUFFER;
+			unpacker->err = DDNET_ERR_END_OF_BUFFER;
 			return 0;
 		}
 		unpacker->buf++;
@@ -266,7 +266,7 @@ int32_t unpacker_get_int(Unpacker *unpacker) {
 			break;
 		}
 		if(--space <= 0) {
-			unpacker->err = ERR_END_OF_BUFFER;
+			unpacker->err = DDNET_ERR_END_OF_BUFFER;
 			return 0;
 		}
 		unpacker->buf++;
@@ -276,7 +276,7 @@ int32_t unpacker_get_int(Unpacker *unpacker) {
 			break;
 		}
 		if(--space <= 0) {
-			unpacker->err = ERR_END_OF_BUFFER;
+			unpacker->err = DDNET_ERR_END_OF_BUFFER;
 			return 0;
 		}
 		unpacker->buf++;
@@ -286,7 +286,7 @@ int32_t unpacker_get_int(Unpacker *unpacker) {
 			break;
 		}
 		if(--space <= 0) {
-			unpacker->err = ERR_END_OF_BUFFER;
+			unpacker->err = DDNET_ERR_END_OF_BUFFER;
 			return 0;
 		}
 		unpacker->buf++;
@@ -299,7 +299,7 @@ int32_t unpacker_get_int(Unpacker *unpacker) {
 }
 
 const char *unpacker_get_string_sanitized(Unpacker *unpacker, StringSanitize sanitize) {
-	if(unpacker->err != ERR_NONE) {
+	if(unpacker->err != DDNET_ERR_NONE) {
 		return "";
 	}
 
@@ -308,7 +308,7 @@ const char *unpacker_get_string_sanitized(Unpacker *unpacker, StringSanitize san
 	{
 		unpacker->buf++;
 		if(unpacker->buf == unpacker->buf_end) {
-			unpacker->err = ERR_STR_UNEXPECTED_EOF;
+			unpacker->err = DDNET_ERR_STR_UNEXPECTED_EOF;
 			return "";
 		}
 	}
@@ -332,14 +332,14 @@ const char *unpacker_get_string(Unpacker *unpacker) {
 bool unpacker_get_bool(Unpacker *unpacker) {
 	int32_t val = unpacker_get_int(unpacker);
 	if(val != 0 && val != 1) {
-		unpacker->err = ERR_INVALID_BOOL;
+		unpacker->err = DDNET_ERR_INVALID_BOOL;
 	}
 	return val == 1;
 }
 
 const uint8_t *unpacker_get_raw(Unpacker *unpacker, size_t len) {
 	if(unpacker_remaining_size(unpacker) < len) {
-		unpacker->err = ERR_END_OF_BUFFER;
+		unpacker->err = DDNET_ERR_END_OF_BUFFER;
 		return NULL;
 	}
 

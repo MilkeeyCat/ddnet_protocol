@@ -4,7 +4,7 @@
 #include "msg_system.h"
 #include "packer.h"
 
-static Error decode_game_message(Chunk *chunk, MessageId msg_id, Unpacker *unpacker) {
+static DDNetError decode_game_message(Chunk *chunk, MessageId msg_id, Unpacker *unpacker) {
 	DDNetGenericMessage *msg = &chunk->payload.msg;
 	switch(msg_id) {
 	case MSG_CL_STARTINFO:
@@ -18,13 +18,13 @@ static Error decode_game_message(Chunk *chunk, MessageId msg_id, Unpacker *unpac
 		msg->start_info.color_feet = unpacker_get_int(unpacker);
 		break;
 	default:
-		return ERR_UNKNOWN_MESSAGE;
+		return DDNET_ERR_UNKNOWN_MESSAGE;
 	}
 
 	return unpacker->err;
 }
 
-static Error decode_system_message(Chunk *chunk, MessageId msg_id, Unpacker *unpacker) {
+static DDNetError decode_system_message(Chunk *chunk, MessageId msg_id, Unpacker *unpacker) {
 	DDNetGenericMessage *msg = &chunk->payload.msg;
 	switch(msg_id) {
 	case MSG_INFO:
@@ -110,27 +110,27 @@ static Error decode_system_message(Chunk *chunk, MessageId msg_id, Unpacker *unp
 		chunk->payload.kind = DDNET_MSG_KIND_RCON_CMD_REM;
 		break;
 	default:
-		return ERR_UNKNOWN_MESSAGE;
+		return DDNET_ERR_UNKNOWN_MESSAGE;
 	}
 
 	return unpacker->err;
 }
 
-Error decode_message(Chunk *chunk, uint8_t *buf) {
+DDNetError decode_message(Chunk *chunk, uint8_t *buf) {
 	Unpacker unpacker;
 	unpacker_init(&unpacker, buf, chunk->header.size);
 	int32_t msg_and_sys = unpacker_get_int(&unpacker);
 	bool sys = msg_and_sys & 1;
 	MessageId msg_id = msg_and_sys >> 1;
 
-	Error err = ERR_NONE;
+	DDNetError err = DDNET_ERR_NONE;
 	if(sys) {
 		err = decode_system_message(chunk, msg_id, &unpacker);
 	} else {
 		err = decode_game_message(chunk, msg_id, &unpacker);
 	}
 
-	if(err == ERR_UNKNOWN_MESSAGE) {
+	if(err == DDNET_ERR_UNKNOWN_MESSAGE) {
 		chunk->payload.msg.unknown.len = chunk->header.size;
 		chunk->payload.msg.unknown.buf = buf;
 		chunk->payload.kind = DDNET_MSG_KIND_UNKNOWN;
@@ -139,7 +139,7 @@ Error decode_message(Chunk *chunk, uint8_t *buf) {
 	return err;
 }
 
-size_t encode_message(Chunk *chunk, uint8_t *buf, Error *err) {
+size_t encode_message(Chunk *chunk, uint8_t *buf, DDNetError *err) {
 	Packer packer;
 	packer_init_msg(&packer, chunk->payload.kind);
 
@@ -229,11 +229,11 @@ size_t encode_message(Chunk *chunk, uint8_t *buf, Error *err) {
 	case DDNET_MSG_KIND_SNAPSMALL:
 	default:
 		if(err != NULL) {
-			*err = ERR_UNKNOWN_MESSAGE;
+			*err = DDNET_ERR_UNKNOWN_MESSAGE;
 		}
 	}
 
-	if(err != NULL && packer.err != ERR_NONE) {
+	if(err != NULL && packer.err != DDNET_ERR_NONE) {
 		*err = packer.err;
 
 		return 0;

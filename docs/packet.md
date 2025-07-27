@@ -181,7 +181,7 @@ https://github.com/MilkeeyCat/ddnet_protocol/issues/54
 ## Syntax
 
 ```C
-Error encode_packet_header(const PacketHeader *header, uint8_t *buf);
+DDNetError encode_packet_header(const PacketHeader *header, uint8_t *buf);
 ```
 
 Given a `PacketHeader` as input it writes 3 bytes into `buf`
@@ -191,7 +191,7 @@ Given a `PacketHeader` as input it writes 3 bytes into `buf`
 ## Syntax
 
 ```C
-size_t get_packet_payload(PacketHeader *header, const uint8_t *full_data, size_t full_len, uint8_t *payload, size_t payload_len, Error *err);
+size_t get_packet_payload(PacketHeader *header, const uint8_t *full_data, size_t full_len, uint8_t *payload, size_t payload_len, DDNetError *err);
 ```
 
 Extract and decompress packet payload.
@@ -203,7 +203,7 @@ It will extract only the payload into `payload` and return the size of the paylo
 ## Syntax
 
 ```C
-DDNetPacket decode_packet(const uint8_t *buf, size_t len, Error *err);
+DDNetPacket decode_packet(const uint8_t *buf, size_t len, DDNetError *err);
 ```
 
 Given a pointer to the beginning of a udp payload
@@ -218,7 +218,7 @@ It is your responsibility to free it using `free_packet()`
 ## Syntax
 
 ```C
-size_t encode_packet(const DDNetPacket *packet, uint8_t *buf, size_t len, Error *err);
+size_t encode_packet(const DDNetPacket *packet, uint8_t *buf, size_t len, DDNetError *err);
 ```
 
 Given a `Packet` struct it will encode a full udp payload
@@ -230,7 +230,7 @@ And returns the amount of written bytes
 ## Syntax
 
 ```C
-Error free_packet(DDNetPacket *packet);
+DDNetError free_packet(DDNetPacket *packet);
 ```
 
 Frees a packet struct and all of its fields

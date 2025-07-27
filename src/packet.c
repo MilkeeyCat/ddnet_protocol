@@ -15,14 +15,14 @@ PacketHeader decode_packet_header(const uint8_t *buf) {
 	};
 }
 
-Error encode_packet_header(const PacketHeader *header, uint8_t *buf) {
+DDNetError encode_packet_header(const PacketHeader *header, uint8_t *buf) {
 	if(header->ack >= MAX_SEQUENCE) {
-		return ERR_ACK_OUT_OF_BOUNDS;
+		return DDNET_ERR_ACK_OUT_OF_BOUNDS;
 	}
 	buf[0] = ((header->flags << 2) & 0xfc | ((header->ack >> 8)) & 0x3);
 	buf[1] = header->ack & 0xff;
 	buf[2] = header->num_chunks;
-	return ERR_NONE;
+	return DDNET_ERR_NONE;
 }
 
 typedef struct {
@@ -36,7 +36,7 @@ static void on_chunk(void *ctx, Chunk *chunk) {
 	memcpy(&context->chunks[context->len++], chunk, sizeof(Chunk));
 }
 
-size_t get_packet_payload(PacketHeader *header, const uint8_t *full_data, size_t full_len, uint8_t *payload, size_t payload_len, Error *err) {
+size_t get_packet_payload(PacketHeader *header, const uint8_t *full_data, size_t full_len, uint8_t *payload, size_t payload_len, DDNetError *err) {
 	full_data += PACKET_HEADER_SIZE;
 	full_len -= PACKET_HEADER_SIZE;
 	if(header->flags & PACKET_FLAG_COMPRESSION) {
@@ -46,12 +46,12 @@ size_t get_packet_payload(PacketHeader *header, const uint8_t *full_data, size_t
 	return full_len;
 }
 
-DDNetPacket decode_packet(const uint8_t *buf, size_t len, Error *err) {
+DDNetPacket decode_packet(const uint8_t *buf, size_t len, DDNetError *err) {
 	DDNetPacket packet = {};
 
 	if(len < PACKET_HEADER_SIZE || len > MAX_PACKET_SIZE) {
 		if(err) {
-			*err = ERR_INVALID_PACKET;
+			*err = DDNET_ERR_INVALID_PACKET;
 		}
 
 		return packet;
@@ -59,9 +59,9 @@ DDNetPacket decode_packet(const uint8_t *buf, size_t len, Error *err) {
 
 	packet.header = decode_packet_header(buf);
 	packet.payload = malloc(MAX_PACKET_SIZE);
-	Error payload_err = ERR_NONE;
+	DDNetError payload_err = DDNET_ERR_NONE;
 	packet.payload_len = get_packet_payload(&packet.header, buf, len, packet.payload, MAX_PACKET_SIZE, &payload_err);
-	if(payload_err != ERR_NONE) {
+	if(payload_err != DDNET_ERR_NONE) {
 		if(err) {
 			*err = payload_err;
 		}
@@ -78,10 +78,10 @@ DDNetPacket decode_packet(const uint8_t *buf, size_t len, Error *err) {
 			.chunks = malloc(sizeof(Chunk) * packet.header.num_chunks),
 			.len = 0,
 		};
-		Error chunk_err = ERR_NONE;
+		DDNetError chunk_err = DDNET_ERR_NONE;
 		size_t size = fetch_chunks(packet.payload, packet.payload_len, &packet.header, on_chunk, &ctx, &chunk_err);
 		size_t space = packet.payload_len - size;
-		if(chunk_err != ERR_NONE) {
+		if(chunk_err != DDNET_ERR_NONE) {
 			if(err) {
 				*err = chunk_err;
 			}
@@ -100,7 +100,7 @@ DDNetPacket decode_packet(const uint8_t *buf, size_t len, Error *err) {
 		// https://github.com/MilkeeyCat/ddnet_protocol/issues/48
 		if(space < sizeof(Token)) {
 			if(err) {
-				*err = ERR_MISSING_DDNET_SECURITY_TOKEN;
+				*err = DDNET_ERR_MISSING_DDNET_SECURITY_TOKEN;
 			}
 
 			return packet;
@@ -111,7 +111,7 @@ DDNetPacket decode_packet(const uint8_t *buf, size_t len, Error *err) {
 			// and the ddnet security token
 			// but there are still bytes left!
 			if(err) {
-				*err = ERR_REMAINING_BYTES_IN_BUFFER;
+				*err = DDNET_ERR_REMAINING_BYTES_IN_BUFFER;
 			}
 
 			return packet;
@@ -123,9 +123,9 @@ DDNetPacket decode_packet(const uint8_t *buf, size_t len, Error *err) {
 	return packet;
 }
 
-size_t encode_packet(const DDNetPacket *packet, uint8_t *buf, size_t len, Error *err) {
+size_t encode_packet(const DDNetPacket *packet, uint8_t *buf, size_t len, DDNetError *err) {
 	if(len < PACKET_HEADER_SIZE) {
-		*err = ERR_BUFFER_FULL;
+		*err = DDNET_ERR_BUFFER_FULL;
 		return 0;
 	}
 
@@ -151,15 +151,15 @@ size_t encode_packet(const DDNetPacket *packet, uint8_t *buf, size_t len, Error 
 		break;
 	}
 
-	*err = ERR_INVALID_PACKET;
+	*err = DDNET_ERR_INVALID_PACKET;
 	return 0;
 }
 
-Error free_packet(DDNetPacket *packet) {
+DDNetError free_packet(DDNetPacket *packet) {
 	if(packet->kind == PACKET_NORMAL) {
 		free(packet->chunks.data);
 	}
 	free(packet->payload);
 
-	return ERR_NONE;
+	return DDNET_ERR_NONE;
 }

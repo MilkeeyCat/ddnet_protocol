@@ -16,7 +16,7 @@ typedef void (*OnChunk)(void *ctx, Chunk *chunk);
 // It will extract all system and game messages
 // and store them in the given packet struct.
 // And it returns the amount of bytes read.
-size_t fetch_chunks(uint8_t *buf, size_t len, PacketHeader *header, OnChunk callback, void *ctx, Error *err);
+size_t fetch_chunks(uint8_t *buf, size_t len, PacketHeader *header, OnChunk callback, void *ctx, DDNetError *err);
 
 #ifdef __cplusplus
 }

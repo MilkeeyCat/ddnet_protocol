@@ -3,7 +3,7 @@
 #include "message.h"
 #include "packet.h"
 
-size_t fetch_chunks(uint8_t *buf, size_t len, PacketHeader *header, OnChunk callback, void *ctx, Error *err) {
+size_t fetch_chunks(uint8_t *buf, size_t len, PacketHeader *header, OnChunk callback, void *ctx, DDNetError *err) {
 	uint8_t *start = buf;
 	uint8_t *end = buf + len;
 	uint8_t num_chunks = 0;
@@ -23,7 +23,7 @@ size_t fetch_chunks(uint8_t *buf, size_t len, PacketHeader *header, OnChunk call
 		// so we can assume that it is an invalid message
 		if(space < 4) {
 			if(err) {
-				*err = ERR_END_OF_BUFFER;
+				*err = DDNET_ERR_END_OF_BUFFER;
 			}
 
 			return 0;
@@ -35,7 +35,7 @@ size_t fetch_chunks(uint8_t *buf, size_t len, PacketHeader *header, OnChunk call
 		space = end - buf;
 		if(space < chunk_header.size) {
 			if(err) {
-				*err = ERR_END_OF_BUFFER;
+				*err = DDNET_ERR_END_OF_BUFFER;
 			}
 
 			return 0;
@@ -43,11 +43,11 @@ size_t fetch_chunks(uint8_t *buf, size_t len, PacketHeader *header, OnChunk call
 
 		Chunk chunk;
 		chunk.header = chunk_header;
-		Error chunk_err = decode_message(&chunk, buf);
+		DDNetError chunk_err = decode_message(&chunk, buf);
 		callback(ctx, &chunk);
 		num_chunks++;
 		// unknown message ids are not a fatal error in teeworlds
-		if(chunk_err != ERR_NONE && chunk_err != ERR_UNKNOWN_MESSAGE) {
+		if(chunk_err != DDNET_ERR_NONE && chunk_err != DDNET_ERR_UNKNOWN_MESSAGE) {
 			if(err) {
 				*err = chunk_err;
 			}
@@ -59,7 +59,7 @@ size_t fetch_chunks(uint8_t *buf, size_t len, PacketHeader *header, OnChunk call
 
 	if(num_chunks < header->num_chunks) {
 		if(err) {
-			*err = ERR_END_OF_BUFFER;
+			*err = DDNET_ERR_END_OF_BUFFER;
 		}
 
 		return 0;

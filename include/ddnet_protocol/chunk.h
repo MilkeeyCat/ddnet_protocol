@@ -142,7 +142,7 @@ bool ddnet_is_vital_msg(DDNetMessageKind kind);
 // for message in the payload already set
 // This function will fill the chunks header accordingly
 // For now this only means setting the correct size based on the payload
-Error fill_chunk_header(Chunk *chunk);
+DDNetError fill_chunk_header(Chunk *chunk);
 
 #ifdef __cplusplus
 }

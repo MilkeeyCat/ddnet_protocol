@@ -21,16 +21,16 @@ TEST(Packer, SingleByteInts) {
 	EXPECT_EQ(packer_size(&packer), 0);
 
 	packer_add_int(&packer, 0);
-	EXPECT_EQ(packer.err, Error::ERR_NONE);
+	EXPECT_EQ(packer.err, DDNetError::DDNET_ERR_NONE);
 
 	packer_add_int(&packer, 1);
-	EXPECT_EQ(packer.err, Error::ERR_NONE);
+	EXPECT_EQ(packer.err, DDNetError::DDNET_ERR_NONE);
 
 	uint8_t bytes[] = {0x00, 0x01};
 	EXPECT_TRUE(std::memcmp(packer_data(&packer), bytes, packer_size(&packer)) == 0);
 
 	EXPECT_EQ(packer_size(&packer), 2);
-	EXPECT_EQ(packer.err, Error::ERR_NONE);
+	EXPECT_EQ(packer.err, DDNetError::DDNET_ERR_NONE);
 }
 
 TEST(Packer, MultiByteInts) {
@@ -42,7 +42,7 @@ TEST(Packer, MultiByteInts) {
 
 	packer_add_int(&packer, 64);
 	EXPECT_EQ(packer_size(&packer), 2);
-	EXPECT_EQ(packer.err, Error::ERR_NONE);
+	EXPECT_EQ(packer.err, DDNetError::DDNET_ERR_NONE);
 	{
 		uint8_t bytes[] = {0x80, 0x01};
 		EXPECT_TRUE(std::memcmp(packer_data(&packer), bytes, packer_size(&packer)) == 0);
@@ -50,7 +50,7 @@ TEST(Packer, MultiByteInts) {
 
 	packer_add_int(&packer, -66663);
 	EXPECT_EQ(packer_size(&packer), 5);
-	EXPECT_EQ(packer.err, Error::ERR_NONE);
+	EXPECT_EQ(packer.err, DDNetError::DDNET_ERR_NONE);
 	{
 		uint8_t bytes[] = {0x80, 0x01, 0xe6, 0x91, 0x08};
 		EXPECT_TRUE(std::memcmp(packer_data(&packer), bytes, packer_size(&packer)) == 0);
@@ -62,12 +62,12 @@ TEST(Packer, Strings) {
 	packer_init(&packer);
 
 	packer_add_string(&packer, "");
-	EXPECT_EQ(packer.err, Error::ERR_NONE);
+	EXPECT_EQ(packer.err, DDNetError::DDNET_ERR_NONE);
 	EXPECT_EQ(packer_size(&packer), 1);
 	EXPECT_STREQ((char *)packer_data(&packer), "");
 
 	packer_add_string(&packer, "foo");
-	EXPECT_EQ(packer.err, Error::ERR_NONE);
+	EXPECT_EQ(packer.err, DDNetError::DDNET_ERR_NONE);
 	EXPECT_EQ(packer_size(&packer), 5);
 	EXPECT_STREQ((char *)packer_data(&packer), "");
 	EXPECT_STREQ((char *)packer_data(&packer) + 1, "foo");
@@ -78,7 +78,7 @@ TEST(Packer, StringsAndInts) {
 	packer_init(&packer);
 
 	packer_add_int(&packer, 2);
-	EXPECT_EQ(packer.err, Error::ERR_NONE);
+	EXPECT_EQ(packer.err, DDNetError::DDNET_ERR_NONE);
 	EXPECT_EQ(packer_size(&packer), 1);
 	{
 		uint8_t bytes[] = {0x02};
@@ -86,7 +86,7 @@ TEST(Packer, StringsAndInts) {
 	}
 
 	packer_add_string(&packer, "");
-	EXPECT_EQ(packer.err, Error::ERR_NONE);
+	EXPECT_EQ(packer.err, DDNetError::DDNET_ERR_NONE);
 	EXPECT_EQ(packer_size(&packer), 2);
 	{
 		uint8_t bytes[] = {0x02, 0x00};
@@ -94,7 +94,7 @@ TEST(Packer, StringsAndInts) {
 	}
 
 	packer_add_string(&packer, "foo");
-	EXPECT_EQ(packer.err, Error::ERR_NONE);
+	EXPECT_EQ(packer.err, DDNetError::DDNET_ERR_NONE);
 	EXPECT_EQ(packer_size(&packer), 6);
 	{
 		uint8_t bytes[] = {0x02, 0x00, 'f', 'o', 'o', 0x00};
@@ -102,7 +102,7 @@ TEST(Packer, StringsAndInts) {
 	}
 
 	packer_add_int(&packer, 6);
-	EXPECT_EQ(packer.err, Error::ERR_NONE);
+	EXPECT_EQ(packer.err, DDNetError::DDNET_ERR_NONE);
 	{
 		uint8_t bytes[] = {0x02, 0x00, 'f', 'o', 'o', 0x00, 0x06};
 		EXPECT_TRUE(std::memcmp(packer_data(&packer), bytes, packer_size(&packer)) == 0);
@@ -115,11 +115,11 @@ TEST(Unpacker, SingleByteInts) {
 	unpacker_init(&unpacker, bytes, sizeof(bytes));
 	EXPECT_EQ(unpacker_remaining_size(&unpacker), 3);
 	EXPECT_EQ(unpacker_get_int(&unpacker), 5);
-	EXPECT_EQ(unpacker.err, Error::ERR_NONE);
+	EXPECT_EQ(unpacker.err, DDNetError::DDNET_ERR_NONE);
 	EXPECT_EQ(unpacker_get_int(&unpacker), 1);
-	EXPECT_EQ(unpacker.err, Error::ERR_NONE);
+	EXPECT_EQ(unpacker.err, DDNetError::DDNET_ERR_NONE);
 	EXPECT_EQ(unpacker_get_int(&unpacker), 2);
-	EXPECT_EQ(unpacker.err, Error::ERR_NONE);
+	EXPECT_EQ(unpacker.err, DDNetError::DDNET_ERR_NONE);
 }
 
 TEST(Unpacker, MultiByteInts) {
@@ -128,10 +128,10 @@ TEST(Unpacker, MultiByteInts) {
 	unpacker_init(&unpacker, bytes, sizeof(bytes));
 
 	EXPECT_EQ(unpacker_get_int(&unpacker), 64);
-	EXPECT_EQ(unpacker.err, Error::ERR_NONE);
+	EXPECT_EQ(unpacker.err, DDNetError::DDNET_ERR_NONE);
 
 	EXPECT_EQ(unpacker_get_int(&unpacker), 65);
-	EXPECT_EQ(unpacker.err, Error::ERR_NONE);
+	EXPECT_EQ(unpacker.err, DDNetError::DDNET_ERR_NONE);
 }
 
 TEST(Unpacker, InvalidMultiByteInts) {
@@ -140,10 +140,10 @@ TEST(Unpacker, InvalidMultiByteInts) {
 	unpacker_init(&unpacker, bytes, sizeof(bytes));
 
 	EXPECT_EQ(unpacker_get_int(&unpacker), 64);
-	EXPECT_EQ(unpacker.err, Error::ERR_NONE);
+	EXPECT_EQ(unpacker.err, DDNetError::DDNET_ERR_NONE);
 
 	EXPECT_EQ(unpacker_get_int(&unpacker), 0);
-	EXPECT_EQ(unpacker.err, Error::ERR_END_OF_BUFFER);
+	EXPECT_EQ(unpacker.err, DDNetError::DDNET_ERR_END_OF_BUFFER);
 }
 
 TEST(Unpacker, NegativeIntsSingleByte) {
@@ -152,10 +152,10 @@ TEST(Unpacker, NegativeIntsSingleByte) {
 	unpacker_init(&unpacker, bytes, sizeof(bytes));
 
 	EXPECT_EQ(unpacker_get_int(&unpacker), -63);
-	EXPECT_EQ(unpacker.err, Error::ERR_NONE);
+	EXPECT_EQ(unpacker.err, DDNetError::DDNET_ERR_NONE);
 
 	EXPECT_EQ(unpacker_get_int(&unpacker), -64);
-	EXPECT_EQ(unpacker.err, Error::ERR_NONE);
+	EXPECT_EQ(unpacker.err, DDNetError::DDNET_ERR_NONE);
 }
 
 TEST(Unpacker, NegativeIntsMultiByte) {
@@ -164,7 +164,7 @@ TEST(Unpacker, NegativeIntsMultiByte) {
 	unpacker_init(&unpacker, bytes, sizeof(bytes));
 
 	EXPECT_EQ(unpacker_get_int(&unpacker), -65);
-	EXPECT_EQ(unpacker.err, Error::ERR_NONE);
+	EXPECT_EQ(unpacker.err, DDNetError::DDNET_ERR_NONE);
 }
 
 TEST(Unpacker, Strings) {
@@ -173,13 +173,13 @@ TEST(Unpacker, Strings) {
 	unpacker_init(&unpacker, bytes, sizeof(bytes));
 
 	EXPECT_STREQ(unpacker_get_string(&unpacker), "foo");
-	EXPECT_EQ(unpacker.err, Error::ERR_NONE);
+	EXPECT_EQ(unpacker.err, DDNetError::DDNET_ERR_NONE);
 	EXPECT_STREQ(unpacker_get_string(&unpacker), "bar");
-	EXPECT_EQ(unpacker.err, Error::ERR_NONE);
+	EXPECT_EQ(unpacker.err, DDNetError::DDNET_ERR_NONE);
 	EXPECT_STREQ(unpacker_get_string(&unpacker), "A  "); // expect sanitize by default
-	EXPECT_EQ(unpacker.err, Error::ERR_NONE);
+	EXPECT_EQ(unpacker.err, DDNetError::DDNET_ERR_NONE);
 	EXPECT_STREQ(unpacker_get_string(&unpacker), "");
-	EXPECT_EQ(unpacker.err, Error::ERR_STR_UNEXPECTED_EOF);
+	EXPECT_EQ(unpacker.err, DDNetError::DDNET_ERR_STR_UNEXPECTED_EOF);
 }
 
 TEST(Unpacker, StringsSanitized) {
@@ -188,11 +188,11 @@ TEST(Unpacker, StringsSanitized) {
 	unpacker_init(&unpacker, bytes, sizeof(bytes));
 
 	EXPECT_STREQ(unpacker_get_string_sanitized(&unpacker, STRING_SANITIZE_NONE), "foo");
-	EXPECT_EQ(unpacker.err, Error::ERR_NONE);
+	EXPECT_EQ(unpacker.err, DDNetError::DDNET_ERR_NONE);
 	EXPECT_STREQ(unpacker_get_string_sanitized(&unpacker, STRING_SANITIZE_CC), "ba   r");
-	EXPECT_EQ(unpacker.err, Error::ERR_NONE);
+	EXPECT_EQ(unpacker.err, DDNetError::DDNET_ERR_NONE);
 	EXPECT_STREQ(unpacker_get_string_sanitized(&unpacker, STRING_SKIP_START_WHITESPACES), "x");
-	EXPECT_EQ(unpacker.err, Error::ERR_NONE);
+	EXPECT_EQ(unpacker.err, DDNetError::DDNET_ERR_NONE);
 }
 
 TEST(Unpacker, Booleans) {
@@ -201,13 +201,13 @@ TEST(Unpacker, Booleans) {
 	unpacker_init(&unpacker, bytes, sizeof(bytes));
 
 	EXPECT_EQ(unpacker_get_bool(&unpacker), false);
-	EXPECT_EQ(unpacker.err, Error::ERR_NONE);
+	EXPECT_EQ(unpacker.err, DDNetError::DDNET_ERR_NONE);
 	EXPECT_EQ(unpacker_get_bool(&unpacker), true);
-	EXPECT_EQ(unpacker.err, Error::ERR_NONE);
+	EXPECT_EQ(unpacker.err, DDNetError::DDNET_ERR_NONE);
 	EXPECT_EQ(unpacker_get_bool(&unpacker), false);
-	EXPECT_EQ(unpacker.err, Error::ERR_INVALID_BOOL); // 2 is out of range for bool
+	EXPECT_EQ(unpacker.err, DDNetError::DDNET_ERR_INVALID_BOOL); // 2 is out of range for bool
 	EXPECT_EQ(unpacker_get_bool(&unpacker), false);
-	EXPECT_EQ(unpacker.err, Error::ERR_END_OF_BUFFER); // 0xcc has extension bit set for int
+	EXPECT_EQ(unpacker.err, DDNetError::DDNET_ERR_END_OF_BUFFER); // 0xcc has extension bit set for int
 }
 
 TEST(Unpacker, Raw) {
@@ -217,8 +217,8 @@ TEST(Unpacker, Raw) {
 
 	unpacker_get_int(&unpacker);
 	EXPECT_TRUE(std::memcmp(unpacker_get_raw(&unpacker, 3), &bytes[1], 3) == 0);
-	EXPECT_EQ(unpacker.err, Error::ERR_NONE);
+	EXPECT_EQ(unpacker.err, DDNetError::DDNET_ERR_NONE);
 
 	EXPECT_EQ(unpacker_get_raw(&unpacker, 10), nullptr);
-	EXPECT_EQ(unpacker.err, Error::ERR_END_OF_BUFFER);
+	EXPECT_EQ(unpacker.err, DDNetError::DDNET_ERR_END_OF_BUFFER);
 }

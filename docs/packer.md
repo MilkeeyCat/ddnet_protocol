@@ -51,7 +51,7 @@ received from the peer
 
 ```C
 typedef struct {
-	Error err;
+	DDNetError err;
 	uint8_t *buf_end;
 	uint8_t *buf;
 } Unpacker;
@@ -81,7 +81,7 @@ used by the `Packer`
 
 ```C
 typedef struct {
-	Error err;
+	DDNetError err;
 	uint8_t *current;
 	uint8_t *end;
 	uint8_t buf[PACKER_BUFFER_SIZE];
@@ -159,7 +159,7 @@ use in combination with `packer_size()`
 ## Syntax
 
 ```C
-Error packer_add_int(Packer *packer, int32_t value);
+DDNetError packer_add_int(Packer *packer, int32_t value);
 ```
 
 Packs `value` as teeworlds varint
@@ -170,7 +170,7 @@ call `packer_data()` to receive the full packed data
 ## Syntax
 
 ```C
-Error packer_add_string(Packer *packer, const char *value);
+DDNetError packer_add_string(Packer *packer, const char *value);
 ```
 
 Packs `value` as plain null terminated C string
@@ -181,7 +181,7 @@ call `packer_data()` to receive the full packed data
 ## Syntax
 
 ```C
-Error packer_add_raw(Packer *packer, const uint8_t *data, size_t size);
+DDNetError packer_add_raw(Packer *packer, const uint8_t *data, size_t size);
 ```
 
 Packs `data` as raw data
@@ -205,7 +205,7 @@ unpacker_init(&unpacker, bytes, sizeof(bytes));
 unpacker_get_int(&unpacker); // => 5
 unpacker_get_int(&unpacker); // => 1
 unpacker_get_int(&unpacker); // => 2
-unpacker.err; // => Error::ERR_NONE
+unpacker.err; // => DDNetError::DDNET_ERR_NONE
 ```
 
 # unpacker_remaining_size
@@ -235,7 +235,7 @@ uint8_t bytes[] = {0x05};
 Unpacker unpacker;
 unpacker_init(&unpacker, bytes, sizeof(bytes));
 unpacker_get_int(&unpacker); // => 5
-unpacker.err; // => Error::ERR_NONE
+unpacker.err; // => DDNetError::DDNET_ERR_NONE
 ```
 
 # unpacker_get_string
@@ -278,7 +278,7 @@ Unpacker unpacker;
 unpacker_init(&unpacker, bytes, sizeof(bytes));
 
 unpacker_get_string_sanitized(&unpacker, STRING_SANITIZE_CC); // => foo
-unpacker.err; // =>  Error::ERR_NONE
+unpacker.err; // =>  DDNetError::DDNET_ERR_NONE
 ```
 
 # unpacker_get_bool
@@ -293,7 +293,7 @@ Use `unpacker_init` to get the value for `Unpacker *unpacker`
 it returns the next boolean in the unpacker data
 and also progresses the internal unpacker state to point to the next element
 
-Might set the unpacker->err to `ERR_INVALID_BOOL`
+Might set the unpacker->err to `DDNET_ERR_INVALID_BOOL`
 
 ```C
 uint8_t bytes[] = {0x00, 0x01, 0xcc};
@@ -303,7 +303,7 @@ unpacker_init(&unpacker, bytes, sizeof(bytes));
 unpacker_get_bool(&unpacker); // => false
 unpacker_get_bool(&unpacker); // => true
 unpacker_get_bool(&unpacker); // => false (invalid boolean)
-unpacker.err; // => Error::ERR_INVALID_BOOL
+unpacker.err; // => DDNetError::DDNET_ERR_INVALID_BOOL
 ```
 
 # unpacker_get_raw
@@ -323,6 +323,6 @@ uint8_t bytes[] = {0x05};
 Unpacker unpacker;
 unpacker_init(&unpacker, bytes, sizeof(bytes));
 unpacker_get_raw(&unpacker, 1); // => 0x05
-unpacker.err; // => Error::ERR_NONE
+unpacker.err; // => DDNetError::DDNET_ERR_NONE
 ```
 

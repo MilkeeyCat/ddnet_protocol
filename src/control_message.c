@@ -3,7 +3,7 @@
 #include "packet.h"
 #include "token.h"
 
-size_t decode_control(const uint8_t *buf, size_t len, ControlMessage *msg, Error *err) {
+size_t decode_control(const uint8_t *buf, size_t len, ControlMessage *msg, DDNetError *err) {
 	msg->kind = buf[0];
 	msg->reason = NULL;
 
@@ -14,7 +14,7 @@ size_t decode_control(const uint8_t *buf, size_t len, ControlMessage *msg, Error
 
 		if(token_magic != TOKEN_MAGIC) {
 			if(err) {
-				*err = ERR_INVALID_TOKEN_MAGIC;
+				*err = DDNET_ERR_INVALID_TOKEN_MAGIC;
 			}
 
 			return 0;
@@ -35,7 +35,7 @@ size_t decode_control(const uint8_t *buf, size_t len, ControlMessage *msg, Error
 		break;
 	default:
 		if(err) {
-			*err = ERR_INVALID_CONTROL_MESSAGE;
+			*err = DDNET_ERR_INVALID_CONTROL_MESSAGE;
 		}
 
 		return 0;
@@ -44,7 +44,7 @@ size_t decode_control(const uint8_t *buf, size_t len, ControlMessage *msg, Error
 	return 1;
 }
 
-size_t encode_control(const ControlMessage *msg, uint8_t *buf, Error *err) {
+size_t encode_control(const ControlMessage *msg, uint8_t *buf, DDNetError *err) {
 	Packer packer;
 	packer_init(&packer);
 	buf[0] = msg->kind;
@@ -54,7 +54,7 @@ size_t encode_control(const ControlMessage *msg, uint8_t *buf, Error *err) {
 	case CTRL_MSG_CONNECTACCEPT:
 		if(err) {
 			// TODO: implement
-			*err = ERR_INVALID_CONTROL_MESSAGE;
+			*err = DDNET_ERR_INVALID_CONTROL_MESSAGE;
 		}
 		break;
 	case CTRL_MSG_ACCEPT:

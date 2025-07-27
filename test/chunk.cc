@@ -11,10 +11,10 @@
 
 TEST(Chunk, HeaderVital) {
 	uint8_t bytes[] = {0x44, 0x04, 0x01, 0x00};
-	ChunkHeader header;
+	DDNetChunkHeader header;
 	size_t header_size = decode_chunk_header(bytes, &header);
 
-	EXPECT_EQ(header.flags, CHUNK_FLAG_VITAL);
+	EXPECT_EQ(header.flags, DDNET_CHUNK_FLAG_VITAL);
 	EXPECT_EQ(header.size, 68);
 	EXPECT_EQ(header.sequence, 1);
 	EXPECT_EQ(header_size, 3);
@@ -23,7 +23,7 @@ TEST(Chunk, HeaderVital) {
 TEST(Chunk, HeaderNotVital) {
 	uint8_t bytes[] = {0x02, 0x01, 0x00};
 	uint8_t *buf = &bytes[0];
-	ChunkHeader header;
+	DDNetChunkHeader header;
 	size_t header_size = decode_chunk_header(buf, &header);
 
 	EXPECT_EQ(header.flags, 0x00);
@@ -33,7 +33,7 @@ TEST(Chunk, HeaderNotVital) {
 }
 
 TEST(Chunk, PackNonVitalHeader) {
-	ChunkHeader header = {
+	DDNetChunkHeader header = {
 		.flags = 0,
 		.size = 2};
 	uint8_t output[8];
@@ -44,8 +44,8 @@ TEST(Chunk, PackNonVitalHeader) {
 }
 
 TEST(Chunk, PackVitalHeader) {
-	ChunkHeader header = {
-		.flags = CHUNK_FLAG_VITAL,
+	DDNetChunkHeader header = {
+		.flags = DDNET_CHUNK_FLAG_VITAL,
 		.size = 2,
 		.sequence = 4};
 	uint8_t output[8];
@@ -57,14 +57,14 @@ TEST(Chunk, PackVitalHeader) {
 
 namespace {
 typedef struct {
-	Chunk *chunks;
+	DDNetChunk *chunks;
 	size_t len;
 } Context;
 
-void on_chunk(void *ctx, Chunk *chunk) {
+void on_chunk(void *ctx, DDNetChunk *chunk) {
 	Context *context = (Context *)ctx;
 
-	memcpy(&context->chunks[context->len++], chunk, sizeof(Chunk));
+	memcpy(&context->chunks[context->len++], chunk, sizeof(DDNetChunk));
 }
 } // namespace
 
@@ -80,14 +80,14 @@ TEST(Chunk, BigMessageId) {
 	PacketHeader header = {
 		.num_chunks = 1};
 	Context ctx = {
-		.chunks = (Chunk *)malloc(sizeof(Chunk) * header.num_chunks),
+		.chunks = (DDNetChunk *)malloc(sizeof(DDNetChunk) * header.num_chunks),
 		.len = 0,
 	};
 	size_t size = fetch_chunks(buf, sizeof(bytes), &header, on_chunk, &ctx, &err);
 	EXPECT_EQ(err, DDNET_ERR_NONE);
 	EXPECT_EQ(ctx.len, 1);
 
-	EXPECT_EQ(ctx.chunks[0].header.flags, CHUNK_FLAG_VITAL);
+	EXPECT_EQ(ctx.chunks[0].header.flags, DDNET_CHUNK_FLAG_VITAL);
 	EXPECT_EQ(ctx.chunks[0].header.sequence, 3);
 	EXPECT_EQ(ctx.chunks[0].header.size, 6);
 	free(ctx.chunks);

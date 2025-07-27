@@ -3,7 +3,7 @@
 #include "message.h"
 #include "packet.h"
 
-size_t fetch_chunks(uint8_t *buf, size_t len, PacketHeader *header, OnChunk callback, void *ctx, DDNetError *err) {
+size_t fetch_chunks(uint8_t *buf, size_t len, PacketHeader *header, OnDDNetChunk callback, void *ctx, DDNetError *err) {
 	uint8_t *start = buf;
 	uint8_t *end = buf + len;
 	uint8_t num_chunks = 0;
@@ -29,7 +29,7 @@ size_t fetch_chunks(uint8_t *buf, size_t len, PacketHeader *header, OnChunk call
 			return 0;
 		}
 
-		ChunkHeader chunk_header;
+		DDNetChunkHeader chunk_header;
 		buf += decode_chunk_header(buf, &chunk_header);
 
 		space = end - buf;
@@ -41,7 +41,7 @@ size_t fetch_chunks(uint8_t *buf, size_t len, PacketHeader *header, OnChunk call
 			return 0;
 		}
 
-		Chunk chunk;
+		DDNetChunk chunk;
 		chunk.header = chunk_header;
 		DDNetError chunk_err = decode_message(&chunk, buf);
 		callback(ctx, &chunk);

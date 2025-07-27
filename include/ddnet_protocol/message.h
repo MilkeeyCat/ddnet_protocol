@@ -57,9 +57,9 @@ typedef enum {
 // `buf` which has to point to the beginning of the chunk payload
 //
 // this function could also be called decode_chunk_payload()
-DDNetError decode_message(Chunk *chunk, uint8_t *buf);
+DDNetError decode_message(DDNetChunk *chunk, uint8_t *buf);
 
-size_t encode_message(Chunk *chunk, uint8_t *buf, DDNetError *err);
+size_t encode_message(DDNetChunk *chunk, uint8_t *buf, DDNetError *err);
 
 #ifdef __cplusplus
 }

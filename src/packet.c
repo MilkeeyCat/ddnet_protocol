@@ -26,14 +26,14 @@ DDNetError encode_packet_header(const PacketHeader *header, uint8_t *buf) {
 }
 
 typedef struct {
-	Chunk *chunks;
+	DDNetChunk *chunks;
 	size_t len;
 } Context;
 
-static void on_chunk(void *ctx, Chunk *chunk) {
+static void on_chunk(void *ctx, DDNetChunk *chunk) {
 	Context *context = ctx;
 
-	memcpy(&context->chunks[context->len++], chunk, sizeof(Chunk));
+	memcpy(&context->chunks[context->len++], chunk, sizeof(DDNetChunk));
 }
 
 size_t get_packet_payload(PacketHeader *header, const uint8_t *full_data, size_t full_len, uint8_t *payload, size_t payload_len, DDNetError *err) {
@@ -75,7 +75,7 @@ DDNetPacket decode_packet(const uint8_t *buf, size_t len, DDNetError *err) {
 	} else {
 		packet.kind = PACKET_NORMAL;
 		Context ctx = {
-			.chunks = malloc(sizeof(Chunk) * packet.header.num_chunks),
+			.chunks = malloc(sizeof(DDNetChunk) * packet.header.num_chunks),
 			.len = 0,
 		};
 		DDNetError chunk_err = DDNET_ERR_NONE;

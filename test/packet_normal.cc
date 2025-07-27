@@ -62,10 +62,10 @@ TEST(NormalPacket, PackInfo) {
 	DDNetPacket packet = {
 		.kind = PACKET_NORMAL,
 		.header = {.num_chunks = 1, .token = 0x3de3948d}};
-	packet.chunks.data = (Chunk *)malloc(sizeof(Chunk) * packet.header.num_chunks);
+	packet.chunks.data = (DDNetChunk *)malloc(sizeof(DDNetChunk) * packet.header.num_chunks);
 	packet.chunks.len = packet.header.num_chunks;
 
-	packet.chunks.data[0].header.flags = CHUNK_FLAG_VITAL;
+	packet.chunks.data[0].header.flags = DDNET_CHUNK_FLAG_VITAL;
 	packet.chunks.data[0].header.sequence = 3;
 	packet.chunks.data[0].payload.kind = DDNET_MSG_KIND_INFO;
 	packet.chunks.data[0].payload.msg.info.password = "";
@@ -203,7 +203,7 @@ TEST(NormalPacket, UnknownFakeMessage) {
 	EXPECT_EQ(packet.chunks.data[0].payload.msg.unknown.buf[3], 'B');
 	EXPECT_EQ(packet.chunks.data[0].payload.msg.unknown.buf[4], 'C');
 	EXPECT_EQ(packet.chunks.data[0].payload.msg.unknown.buf[5], 0x00); // null term
-	EXPECT_EQ(packet.chunks.data[0].header.flags, CHUNK_FLAG_VITAL);
+	EXPECT_EQ(packet.chunks.data[0].header.flags, DDNET_CHUNK_FLAG_VITAL);
 	EXPECT_EQ(packet.chunks.data[0].header.sequence, 3);
 	EXPECT_EQ(packet.chunks.data[0].header.size, 6);
 

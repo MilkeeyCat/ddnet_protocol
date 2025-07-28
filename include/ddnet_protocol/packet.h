@@ -7,6 +7,7 @@ extern "C" {
 #include "chunk.h"
 #include "common.h"
 #include "errors.h"
+#include "session.h"
 #include "token.h"
 
 // minimum size in bytes required for a valid packet header
@@ -83,6 +84,8 @@ typedef struct {
 	// One chunk contains one net message.
 	// If it is a control packet the number of chunks should
 	// be always zero.
+	//
+	// Should be kept in sync with `DDNetPacket`s `packet.chunks.len`
 	uint8_t num_chunks;
 
 	// DDNet security token. Is a 4 byte random integer
@@ -120,7 +123,16 @@ typedef struct {
 	union {
 		ControlMessage control;
 		struct {
+			// should be either `NULL`
+			// or point to memory of size `chunks.len * sizeof(Chunk)`
 			DDNetChunk *data;
+
+			// should be either `0`
+			// or match the allocated size of `chunks.data` in `sizeof(Chunk)`
+			// otherwise you might run into segfaults
+			//
+			// should match `header.num_chunks` or is a protocol issue
+			// and the peer might not understand you correctly
 			size_t len;
 		} chunks;
 	};
@@ -154,6 +166,17 @@ DDNetPacket decode_packet(const uint8_t *buf, size_t len, DDNetError *err);
 // the output is written into `buf` which has to be at least `len` big
 // And returns the amount of written bytes
 size_t encode_packet(const DDNetPacket *packet, uint8_t *buf, size_t len, DDNetError *err);
+
+// Convenience function to initialize a `packet` struct.
+// Creates a normal ddnet packet. If you need a connless or control packet
+// You have to build it by hand.
+// Fills the passed `packet` struct based on the messages and session passed in.
+// It will read and write to the `session` struct passed in.
+//
+// The ``messages`` will be copied into the ``packet``.
+// new memory will be allocated for that operation.
+// It is your responsibility to free it using `free_packet()`
+DDNetError ddnet_build_packet(DDNetPacket *packet, const DDNetMessage messages[], uint8_t messages_len, DDNetSession *session);
 
 // Frees a packet struct and all of its fields
 DDNetError free_packet(DDNetPacket *packet);

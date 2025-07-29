@@ -24,7 +24,7 @@ jobs:
       run: |
         mkdir clang-tidy
         cd clang-tidy
-        cmake -G Ninja -DCMAKE_CXX_CLANG_TIDY="clang-tidy;-warnings-as-errors=*" -DCMAKE_C_CLANG_TIDY="clang-tidy;-warnings-as-errors=*" \
+        cmake -G Ninja -DCMAKE_CXX_CLANG_TIDY="clang-tidy;-warnings-as-errors=*;-header-filter=.*" -DCMAKE_C_CLANG_TIDY="clang-tidy;-warnings-as-errors=*;-header-filter=.*" \
           -DCMAKE_BUILD_TYPE=Debug \
           -Werror=dev ..
         cmake --build . --config Debug

@@ -26,7 +26,6 @@ build.ninja
 cmake_install.cmake
 cmake_uninstall.cmake
 compile_commands.json
-libddnet_protocol.a
 
 # make build
 
@@ -48,3 +47,9 @@ compiler_depend.ts
 progress.marks
 progress.make
 compiler_depend.internal
+
+# binaries
+
+libddnet_protocol.a
+*/examples/huffman
+*/examples/huffman.exe

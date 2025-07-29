@@ -45,8 +45,8 @@ size_t decode_control(const uint8_t *buf, size_t len, ControlMessage *msg, DDNet
 }
 
 size_t encode_control(const ControlMessage *msg, uint8_t *buf, DDNetError *err) {
-	Packer packer;
-	packer_init(&packer);
+	DDNetPacker packer;
+	ddnet_packer_init(&packer);
 	buf[0] = msg->kind;
 
 	switch(msg->kind) {
@@ -64,12 +64,12 @@ size_t encode_control(const ControlMessage *msg, uint8_t *buf, DDNetError *err) 
 		return sizeof(Token) + 1;
 	case CTRL_MSG_CLOSE:
 		if(msg->reason && msg->reason[0]) {
-			packer_add_string(&packer, msg->reason);
+			ddnet_packer_add_string(&packer, msg->reason);
 		}
 		break;
 	};
-	if(packer_size(&packer) > 0) {
-		memcpy(buf + 1, packer_data(&packer), packer_size(&packer));
+	if(ddnet_packer_size(&packer) > 0) {
+		memcpy(buf + 1, ddnet_packer_data(&packer), ddnet_packer_size(&packer));
 	}
-	return packer_size(&packer) + 1;
+	return ddnet_packer_size(&packer) + 1;
 }

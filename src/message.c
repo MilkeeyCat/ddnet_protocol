@@ -4,18 +4,18 @@
 #include "msg_system.h"
 #include "packer.h"
 
-static DDNetError decode_game_message(DDNetChunk *chunk, MessageId msg_id, Unpacker *unpacker) {
+static DDNetError decode_game_message(DDNetChunk *chunk, MessageId msg_id, DDNetUnpacker *unpacker) {
 	DDNetGenericMessage *msg = &chunk->payload.msg;
 	switch(msg_id) {
 	case MSG_CL_STARTINFO:
 		chunk->payload.kind = DDNET_MSG_KIND_CL_STARTINFO;
-		msg->start_info.name = unpacker_get_string(unpacker);
-		msg->start_info.clan = unpacker_get_string(unpacker);
-		msg->start_info.country = unpacker_get_int(unpacker);
-		msg->start_info.skin = unpacker_get_string(unpacker);
-		msg->start_info.use_custom_color = unpacker_get_bool(unpacker);
-		msg->start_info.color_body = unpacker_get_int(unpacker);
-		msg->start_info.color_feet = unpacker_get_int(unpacker);
+		msg->start_info.name = ddnet_unpacker_get_string(unpacker);
+		msg->start_info.clan = ddnet_unpacker_get_string(unpacker);
+		msg->start_info.country = ddnet_unpacker_get_int(unpacker);
+		msg->start_info.skin = ddnet_unpacker_get_string(unpacker);
+		msg->start_info.use_custom_color = ddnet_unpacker_get_bool(unpacker);
+		msg->start_info.color_body = ddnet_unpacker_get_int(unpacker);
+		msg->start_info.color_feet = ddnet_unpacker_get_int(unpacker);
 		break;
 	default:
 		return DDNET_ERR_UNKNOWN_MESSAGE;
@@ -24,43 +24,43 @@ static DDNetError decode_game_message(DDNetChunk *chunk, MessageId msg_id, Unpac
 	return unpacker->err;
 }
 
-static DDNetError decode_system_message(DDNetChunk *chunk, MessageId msg_id, Unpacker *unpacker) {
+static DDNetError decode_system_message(DDNetChunk *chunk, MessageId msg_id, DDNetUnpacker *unpacker) {
 	DDNetGenericMessage *msg = &chunk->payload.msg;
 	switch(msg_id) {
 	case MSG_INFO:
-		msg->info.version = unpacker_get_string(unpacker);
-		msg->info.password = unpacker_get_string(unpacker);
+		msg->info.version = ddnet_unpacker_get_string(unpacker);
+		msg->info.password = ddnet_unpacker_get_string(unpacker);
 		chunk->payload.kind = DDNET_MSG_KIND_INFO;
 		break;
 	case MSG_MAP_CHANGE:
-		msg->map_change.name = unpacker_get_string(unpacker);
-		msg->map_change.crc = unpacker_get_int(unpacker);
-		msg->map_change.size = unpacker_get_int(unpacker);
+		msg->map_change.name = ddnet_unpacker_get_string(unpacker);
+		msg->map_change.crc = ddnet_unpacker_get_int(unpacker);
+		msg->map_change.size = ddnet_unpacker_get_int(unpacker);
 		chunk->payload.kind = DDNET_MSG_KIND_MAP_CHANGE;
 		break;
 	case MSG_MAP_DATA:
-		msg->map_data.last = unpacker_get_bool(unpacker);
-		msg->map_data.map_crc = unpacker_get_int(unpacker);
-		msg->map_data.chunk = unpacker_get_int(unpacker);
-		msg->map_data.chunk_size = unpacker_get_int(unpacker);
-		msg->map_data.data = unpacker_get_raw(unpacker, msg->map_data.chunk_size);
+		msg->map_data.last = ddnet_unpacker_get_bool(unpacker);
+		msg->map_data.map_crc = ddnet_unpacker_get_int(unpacker);
+		msg->map_data.chunk = ddnet_unpacker_get_int(unpacker);
+		msg->map_data.chunk_size = ddnet_unpacker_get_int(unpacker);
+		msg->map_data.data = ddnet_unpacker_get_raw(unpacker, msg->map_data.chunk_size);
 		chunk->payload.kind = DDNET_MSG_KIND_MAP_CHANGE;
 		break;
 	case MSG_CON_READY:
 		chunk->payload.kind = DDNET_MSG_KIND_CON_READY;
 		break;
 	case MSG_INPUTTIMING:
-		msg->input_timing.intended_tick = unpacker_get_int(unpacker);
-		msg->input_timing.time_left = unpacker_get_int(unpacker);
+		msg->input_timing.intended_tick = ddnet_unpacker_get_int(unpacker);
+		msg->input_timing.time_left = ddnet_unpacker_get_int(unpacker);
 		chunk->payload.kind = DDNET_MSG_KIND_INPUTTIMING;
 		break;
 	case MSG_RCON_AUTH_STATUS:
-		msg->rcon_auth_status.authed = unpacker_get_bool(unpacker);
-		msg->rcon_auth_status.cmdlist = unpacker_get_bool(unpacker);
+		msg->rcon_auth_status.authed = ddnet_unpacker_get_bool(unpacker);
+		msg->rcon_auth_status.cmdlist = ddnet_unpacker_get_bool(unpacker);
 		chunk->payload.kind = DDNET_MSG_KIND_RCON_AUTH_STATUS;
 		break;
 	case MSG_RCON_LINE:
-		msg->rcon_line.line = unpacker_get_string(unpacker);
+		msg->rcon_line.line = ddnet_unpacker_get_string(unpacker);
 		chunk->payload.kind = DDNET_MSG_KIND_RCON_LINE;
 		break;
 	case MSG_READY:
@@ -70,43 +70,43 @@ static DDNetError decode_system_message(DDNetChunk *chunk, MessageId msg_id, Unp
 		chunk->payload.kind = DDNET_MSG_KIND_ENTERGAME;
 		break;
 	case MSG_INPUT:
-		msg->input.ack_game_tick = unpacker_get_int(unpacker);
-		msg->input.prediction_tick = unpacker_get_int(unpacker);
-		msg->input.size = unpacker_get_int(unpacker);
-		msg->input.direction = unpacker_get_int(unpacker);
-		msg->input.target_x = unpacker_get_int(unpacker);
-		msg->input.target_y = unpacker_get_int(unpacker);
-		msg->input.jump = unpacker_get_int(unpacker);
-		msg->input.fire = unpacker_get_int(unpacker);
-		msg->input.hook = unpacker_get_int(unpacker);
-		msg->input.player_flags = unpacker_get_int(unpacker);
-		msg->input.wanted_weapon = unpacker_get_int(unpacker);
-		msg->input.next_weapon = unpacker_get_int(unpacker);
-		msg->input.prev_weapon = unpacker_get_int(unpacker);
+		msg->input.ack_game_tick = ddnet_unpacker_get_int(unpacker);
+		msg->input.prediction_tick = ddnet_unpacker_get_int(unpacker);
+		msg->input.size = ddnet_unpacker_get_int(unpacker);
+		msg->input.direction = ddnet_unpacker_get_int(unpacker);
+		msg->input.target_x = ddnet_unpacker_get_int(unpacker);
+		msg->input.target_y = ddnet_unpacker_get_int(unpacker);
+		msg->input.jump = ddnet_unpacker_get_int(unpacker);
+		msg->input.fire = ddnet_unpacker_get_int(unpacker);
+		msg->input.hook = ddnet_unpacker_get_int(unpacker);
+		msg->input.player_flags = ddnet_unpacker_get_int(unpacker);
+		msg->input.wanted_weapon = ddnet_unpacker_get_int(unpacker);
+		msg->input.next_weapon = ddnet_unpacker_get_int(unpacker);
+		msg->input.prev_weapon = ddnet_unpacker_get_int(unpacker);
 		chunk->payload.kind = DDNET_MSG_KIND_INPUT;
 		break;
 	case MSG_RCON_CMD:
-		msg->rcon_cmd.command = unpacker_get_string(unpacker);
+		msg->rcon_cmd.command = ddnet_unpacker_get_string(unpacker);
 		chunk->payload.kind = DDNET_MSG_KIND_RCON_CMD;
 		break;
 	case MSG_RCON_AUTH:
-		msg->rcon_auth.name = unpacker_get_string(unpacker);
-		msg->rcon_auth.password = unpacker_get_string(unpacker);
-		msg->rcon_auth.send_rcon_cmds = unpacker_get_bool(unpacker);
+		msg->rcon_auth.name = ddnet_unpacker_get_string(unpacker);
+		msg->rcon_auth.password = ddnet_unpacker_get_string(unpacker);
+		msg->rcon_auth.send_rcon_cmds = ddnet_unpacker_get_bool(unpacker);
 		chunk->payload.kind = DDNET_MSG_KIND_RCON_AUTH;
 		break;
 	case MSG_REQUEST_MAP_DATA:
-		msg->request_map_data.chunk = unpacker_get_int(unpacker);
+		msg->request_map_data.chunk = ddnet_unpacker_get_int(unpacker);
 		chunk->payload.kind = DDNET_MSG_KIND_REQUEST_MAP_DATA;
 		break;
 	case MSG_RCON_CMD_ADD:
-		msg->rcon_cmd_add.name = unpacker_get_string(unpacker);
-		msg->rcon_cmd_add.help = unpacker_get_string(unpacker);
-		msg->rcon_cmd_add.params = unpacker_get_string(unpacker);
+		msg->rcon_cmd_add.name = ddnet_unpacker_get_string(unpacker);
+		msg->rcon_cmd_add.help = ddnet_unpacker_get_string(unpacker);
+		msg->rcon_cmd_add.params = ddnet_unpacker_get_string(unpacker);
 		chunk->payload.kind = DDNET_MSG_KIND_RCON_CMD_ADD;
 		break;
 	case MSG_RCON_CMD_REM:
-		msg->rcon_cmd_rem.name = unpacker_get_string(unpacker);
+		msg->rcon_cmd_rem.name = ddnet_unpacker_get_string(unpacker);
 		chunk->payload.kind = DDNET_MSG_KIND_RCON_CMD_REM;
 		break;
 	default:
@@ -117,9 +117,9 @@ static DDNetError decode_system_message(DDNetChunk *chunk, MessageId msg_id, Unp
 }
 
 DDNetError decode_message(DDNetChunk *chunk, uint8_t *buf) {
-	Unpacker unpacker;
-	unpacker_init(&unpacker, buf, chunk->header.size);
-	int32_t msg_and_sys = unpacker_get_int(&unpacker);
+	DDNetUnpacker unpacker;
+	ddnet_unpacker_init(&unpacker, buf, chunk->header.size);
+	int32_t msg_and_sys = ddnet_unpacker_get_int(&unpacker);
 	bool sys = msg_and_sys & 1;
 	MessageId msg_id = msg_and_sys >> 1;
 
@@ -140,8 +140,8 @@ DDNetError decode_message(DDNetChunk *chunk, uint8_t *buf) {
 }
 
 size_t encode_message(DDNetChunk *chunk, uint8_t *buf, DDNetError *err) {
-	Packer packer;
-	packer_init_msg(&packer, chunk->payload.kind);
+	DDNetPacker packer;
+	ddnet_packer_init_msg(&packer, chunk->payload.kind);
 
 	DDNetGenericMessage *msg = &chunk->payload.msg;
 
@@ -150,78 +150,78 @@ size_t encode_message(DDNetChunk *chunk, uint8_t *buf, DDNetError *err) {
 		memcpy(buf, chunk->payload.msg.unknown.buf, chunk->payload.msg.unknown.len);
 		return msg->unknown.len;
 	case DDNET_MSG_KIND_INFO:
-		packer_add_string(&packer, msg->info.version);
-		packer_add_string(&packer, msg->info.password);
+		ddnet_packer_add_string(&packer, msg->info.version);
+		ddnet_packer_add_string(&packer, msg->info.password);
 		break;
 	case DDNET_MSG_KIND_MAP_CHANGE:
-		packer_add_string(&packer, msg->map_change.name);
-		packer_add_int(&packer, msg->map_change.crc);
-		packer_add_int(&packer, msg->map_change.size);
+		ddnet_packer_add_string(&packer, msg->map_change.name);
+		ddnet_packer_add_int(&packer, msg->map_change.crc);
+		ddnet_packer_add_int(&packer, msg->map_change.size);
 		break;
 	case DDNET_MSG_KIND_MAP_DATA:
-		packer_add_int(&packer, msg->map_data.last);
-		packer_add_int(&packer, msg->map_data.map_crc);
-		packer_add_int(&packer, msg->map_data.chunk);
-		packer_add_int(&packer, msg->map_data.chunk_size);
-		packer_add_raw(&packer, msg->map_data.data, msg->map_data.chunk_size);
+		ddnet_packer_add_int(&packer, msg->map_data.last);
+		ddnet_packer_add_int(&packer, msg->map_data.map_crc);
+		ddnet_packer_add_int(&packer, msg->map_data.chunk);
+		ddnet_packer_add_int(&packer, msg->map_data.chunk_size);
+		ddnet_packer_add_raw(&packer, msg->map_data.data, msg->map_data.chunk_size);
 		break;
 	case DDNET_MSG_KIND_CON_READY:
 	case DDNET_MSG_KIND_READY:
 	case DDNET_MSG_KIND_ENTERGAME:
 		break;
 	case DDNET_MSG_KIND_CL_STARTINFO:
-		packer_add_string(&packer, msg->start_info.name);
-		packer_add_string(&packer, msg->start_info.clan);
-		packer_add_int(&packer, (int32_t)msg->start_info.country);
-		packer_add_string(&packer, msg->start_info.skin);
-		packer_add_int(&packer, msg->start_info.use_custom_color);
-		packer_add_int(&packer, (int32_t)msg->start_info.color_body);
-		packer_add_int(&packer, (int32_t)msg->start_info.color_feet);
+		ddnet_packer_add_string(&packer, msg->start_info.name);
+		ddnet_packer_add_string(&packer, msg->start_info.clan);
+		ddnet_packer_add_int(&packer, (int32_t)msg->start_info.country);
+		ddnet_packer_add_string(&packer, msg->start_info.skin);
+		ddnet_packer_add_int(&packer, msg->start_info.use_custom_color);
+		ddnet_packer_add_int(&packer, (int32_t)msg->start_info.color_body);
+		ddnet_packer_add_int(&packer, (int32_t)msg->start_info.color_feet);
 		break;
 	case DDNET_MSG_KIND_INPUTTIMING:
-		packer_add_int(&packer, msg->input_timing.intended_tick);
-		packer_add_int(&packer, msg->input_timing.time_left);
+		ddnet_packer_add_int(&packer, msg->input_timing.intended_tick);
+		ddnet_packer_add_int(&packer, msg->input_timing.time_left);
 		break;
 	case DDNET_MSG_KIND_RCON_AUTH_STATUS:
-		packer_add_int(&packer, msg->rcon_auth_status.authed);
-		packer_add_int(&packer, msg->rcon_auth_status.cmdlist);
+		ddnet_packer_add_int(&packer, msg->rcon_auth_status.authed);
+		ddnet_packer_add_int(&packer, msg->rcon_auth_status.cmdlist);
 		break;
 	case DDNET_MSG_KIND_RCON_LINE:
-		packer_add_string(&packer, msg->rcon_line.line);
+		ddnet_packer_add_string(&packer, msg->rcon_line.line);
 		break;
 	case DDNET_MSG_KIND_INPUT:
-		packer_add_int(&packer, msg->input.ack_game_tick);
-		packer_add_int(&packer, msg->input.prediction_tick);
-		packer_add_int(&packer, msg->input.size);
-		packer_add_int(&packer, msg->input.direction);
-		packer_add_int(&packer, msg->input.target_x);
-		packer_add_int(&packer, msg->input.target_y);
-		packer_add_int(&packer, msg->input.jump);
-		packer_add_int(&packer, msg->input.fire);
-		packer_add_int(&packer, msg->input.hook);
-		packer_add_int(&packer, msg->input.player_flags);
-		packer_add_int(&packer, msg->input.wanted_weapon);
-		packer_add_int(&packer, msg->input.next_weapon);
-		packer_add_int(&packer, msg->input.prev_weapon);
+		ddnet_packer_add_int(&packer, msg->input.ack_game_tick);
+		ddnet_packer_add_int(&packer, msg->input.prediction_tick);
+		ddnet_packer_add_int(&packer, msg->input.size);
+		ddnet_packer_add_int(&packer, msg->input.direction);
+		ddnet_packer_add_int(&packer, msg->input.target_x);
+		ddnet_packer_add_int(&packer, msg->input.target_y);
+		ddnet_packer_add_int(&packer, msg->input.jump);
+		ddnet_packer_add_int(&packer, msg->input.fire);
+		ddnet_packer_add_int(&packer, msg->input.hook);
+		ddnet_packer_add_int(&packer, msg->input.player_flags);
+		ddnet_packer_add_int(&packer, msg->input.wanted_weapon);
+		ddnet_packer_add_int(&packer, msg->input.next_weapon);
+		ddnet_packer_add_int(&packer, msg->input.prev_weapon);
 		break;
 	case DDNET_MSG_KIND_RCON_CMD:
-		packer_add_string(&packer, msg->rcon_cmd.command);
+		ddnet_packer_add_string(&packer, msg->rcon_cmd.command);
 		break;
 	case DDNET_MSG_KIND_RCON_AUTH:
-		packer_add_string(&packer, msg->rcon_auth.name);
-		packer_add_string(&packer, msg->rcon_auth.password);
-		packer_add_int(&packer, msg->rcon_auth.send_rcon_cmds);
+		ddnet_packer_add_string(&packer, msg->rcon_auth.name);
+		ddnet_packer_add_string(&packer, msg->rcon_auth.password);
+		ddnet_packer_add_int(&packer, msg->rcon_auth.send_rcon_cmds);
 		break;
 	case DDNET_MSG_KIND_REQUEST_MAP_DATA:
-		packer_add_int(&packer, msg->request_map_data.chunk);
+		ddnet_packer_add_int(&packer, msg->request_map_data.chunk);
 		break;
 	case DDNET_MSG_KIND_RCON_CMD_ADD:
-		packer_add_string(&packer, msg->rcon_cmd_add.name);
-		packer_add_string(&packer, msg->rcon_cmd_add.help);
-		packer_add_string(&packer, msg->rcon_cmd_add.params);
+		ddnet_packer_add_string(&packer, msg->rcon_cmd_add.name);
+		ddnet_packer_add_string(&packer, msg->rcon_cmd_add.help);
+		ddnet_packer_add_string(&packer, msg->rcon_cmd_add.params);
 		break;
 	case DDNET_MSG_KIND_RCON_CMD_REM:
-		packer_add_string(&packer, msg->rcon_cmd_rem.name);
+		ddnet_packer_add_string(&packer, msg->rcon_cmd_rem.name);
 		break;
 	case DDNET_MSG_KIND_SNAP:
 	case DDNET_MSG_KIND_SNAPEMPTY:
@@ -239,9 +239,9 @@ size_t encode_message(DDNetChunk *chunk, uint8_t *buf, DDNetError *err) {
 		return 0;
 	}
 
-	memcpy(buf, packer_data(&packer), packer_size(&packer));
+	memcpy(buf, ddnet_packer_data(&packer), ddnet_packer_size(&packer));
 
-	return packer_size(&packer);
+	return ddnet_packer_size(&packer);
 }
 
 DDNetMessage ddnet_build_msg_info(const char *password) {

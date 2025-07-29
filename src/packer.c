@@ -53,14 +53,14 @@ void str_clean_whitespaces(char *string) {
 	}
 }
 
-void packer_init(Packer *packer) {
+void ddnet_packer_init(DDNetPacker *packer) {
 	packer->err = DDNET_ERR_NONE;
 	packer->current = packer->buf;
-	packer->end = packer->buf + (size_t)PACKER_BUFFER_SIZE;
+	packer->end = packer->buf + (size_t)DDNET_PACKER_BUFFER_SIZE;
 }
 
-void packer_init_msg(Packer *packer, DDNetMessageKind kind) {
-	packer_init(packer);
+void ddnet_packer_init_msg(DDNetPacker *packer, DDNetMessageKind kind) {
+	ddnet_packer_init(packer);
 
 	MessageId msg_id;
 	DDNetMessageCategory msg_category;
@@ -158,23 +158,23 @@ void packer_init_msg(Packer *packer, DDNetMessageKind kind) {
 		break;
 	}
 
-	packer_add_int(packer, (int32_t)((msg_id << 1) | msg_category));
+	ddnet_packer_add_int(packer, (int32_t)((msg_id << 1) | msg_category));
 }
 
-size_t packer_size(Packer *packer) {
+size_t ddnet_packer_size(DDNetPacker *packer) {
 	return packer->current - packer->buf;
 }
 
-size_t packer_remaining_size(Packer *packer) {
+size_t ddnet_packer_remaining_size(DDNetPacker *packer) {
 	return packer->end - packer->current;
 }
 
-uint8_t *packer_data(Packer *packer) {
+uint8_t *ddnet_packer_data(DDNetPacker *packer) {
 	return packer->buf;
 }
 
-DDNetError packer_add_int(Packer *packer, int32_t value) {
-	size_t space = packer_remaining_size(packer);
+DDNetError ddnet_packer_add_int(DDNetPacker *packer, int32_t value) {
+	size_t space = ddnet_packer_remaining_size(packer);
 	if(space <= 0) {
 		return packer->err = DDNET_ERR_BUFFER_FULL;
 	}
@@ -211,9 +211,9 @@ DDNetError packer_add_int(Packer *packer, int32_t value) {
 	return DDNET_ERR_NONE;
 }
 
-DDNetError packer_add_string(Packer *packer, const char *value) {
+DDNetError ddnet_packer_add_string(DDNetPacker *packer, const char *value) {
 	size_t len = strlen(value) + 1;
-	if(packer_remaining_size(packer) < len) {
+	if(ddnet_packer_remaining_size(packer) < len) {
 		return packer->err = DDNET_ERR_BUFFER_FULL;
 	}
 	strncpy((char *)packer->current, value, len);
@@ -222,8 +222,8 @@ DDNetError packer_add_string(Packer *packer, const char *value) {
 	return DDNET_ERR_NONE;
 }
 
-DDNetError packer_add_raw(Packer *packer, const uint8_t *data, size_t size) {
-	if(packer_remaining_size(packer) < size) {
+DDNetError ddnet_packer_add_raw(DDNetPacker *packer, const uint8_t *data, size_t size) {
+	if(ddnet_packer_remaining_size(packer) < size) {
 		return packer->err = DDNET_ERR_BUFFER_FULL;
 	}
 	memcpy(packer->current, data, size);
@@ -231,18 +231,18 @@ DDNetError packer_add_raw(Packer *packer, const uint8_t *data, size_t size) {
 	return DDNET_ERR_NONE;
 }
 
-void unpacker_init(Unpacker *unpacker, uint8_t *buf, size_t len) {
+void ddnet_unpacker_init(DDNetUnpacker *unpacker, uint8_t *buf, size_t len) {
 	unpacker->err = DDNET_ERR_NONE;
 	unpacker->buf = buf;
 	unpacker->buf_end = buf + len;
 }
 
-size_t unpacker_remaining_size(Unpacker *unpacker) {
+size_t ddnet_unpacker_remaining_size(DDNetUnpacker *unpacker) {
 	return unpacker->buf_end - unpacker->buf;
 }
 
-int32_t unpacker_get_int(Unpacker *unpacker) {
-	size_t space = unpacker_remaining_size(unpacker);
+int32_t ddnet_unpacker_get_int(DDNetUnpacker *unpacker) {
+	size_t space = ddnet_unpacker_remaining_size(unpacker);
 	if(space < 1) {
 		unpacker->err = DDNET_ERR_EMPTY_BUFFER;
 		return 0;
@@ -298,7 +298,7 @@ int32_t unpacker_get_int(Unpacker *unpacker) {
 	return value;
 }
 
-const char *unpacker_get_string_sanitized(Unpacker *unpacker, StringSanitize sanitize) {
+const char *ddnet_unpacker_get_string_sanitized(DDNetUnpacker *unpacker, StringSanitize sanitize) {
 	if(unpacker->err != DDNET_ERR_NONE) {
 		return "";
 	}
@@ -325,20 +325,20 @@ const char *unpacker_get_string_sanitized(Unpacker *unpacker, StringSanitize san
 	return str;
 }
 
-const char *unpacker_get_string(Unpacker *unpacker) {
-	return unpacker_get_string_sanitized(unpacker, STRING_SANITIZE);
+const char *ddnet_unpacker_get_string(DDNetUnpacker *unpacker) {
+	return ddnet_unpacker_get_string_sanitized(unpacker, STRING_SANITIZE);
 }
 
-bool unpacker_get_bool(Unpacker *unpacker) {
-	int32_t val = unpacker_get_int(unpacker);
+bool ddnet_unpacker_get_bool(DDNetUnpacker *unpacker) {
+	int32_t val = ddnet_unpacker_get_int(unpacker);
 	if(val != 0 && val != 1) {
 		unpacker->err = DDNET_ERR_INVALID_BOOL;
 	}
 	return val == 1;
 }
 
-const uint8_t *unpacker_get_raw(Unpacker *unpacker, size_t len) {
-	if(unpacker_remaining_size(unpacker) < len) {
+const uint8_t *ddnet_unpacker_get_raw(DDNetUnpacker *unpacker, size_t len) {
+	if(ddnet_unpacker_remaining_size(unpacker) < len) {
 		unpacker->err = DDNET_ERR_END_OF_BUFFER;
 		return NULL;
 	}

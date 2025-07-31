@@ -42,6 +42,9 @@ typedef enum {
 	DDNET_MSG_RCON_CMD_REM = 26,
 
 	// game messages
+	DDNET_MSG_SV_MOTD = 1,
+	DDNET_MSG_SV_BROADCAST = 2,
+	DDNET_MSG_SV_CHAT = 3,
 	DDNET_MSG_CL_STARTINFO = 20,
 } DDNetMessageId;
 

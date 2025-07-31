@@ -71,7 +71,7 @@ DDNetPacket ddnet_decode_packet(const uint8_t *buf, size_t len, DDNetError *err)
 	if(packet.header.flags & DDNET_PACKET_FLAG_CONTROL) {
 		packet.kind = DDNET_PACKET_CONTROL;
 		size_t size = decode_control(packet.payload, packet.payload_len, &packet.control, err); // NOLINT(clang-analyzer-unix.Malloc)
-		packet.header.token = read_token(packet.payload + size);
+		packet.header.token = ddnet_read_token(packet.payload + size);
 	} else {
 		packet.kind = DDNET_PACKET_NORMAL;
 		Context ctx = {
@@ -98,7 +98,7 @@ DDNetPacket ddnet_decode_packet(const uint8_t *buf, size_t len, DDNetError *err)
 		//
 		// because pure teeworlds is not in scope we throw an error
 		// https://github.com/MilkeeyCat/ddnet_protocol/issues/48
-		if(space < sizeof(Token)) {
+		if(space < sizeof(DDNetToken)) {
 			if(err) {
 				*err = DDNET_ERR_MISSING_DDNET_SECURITY_TOKEN;
 			}
@@ -106,7 +106,7 @@ DDNetPacket ddnet_decode_packet(const uint8_t *buf, size_t len, DDNetError *err)
 			return packet;
 		}
 
-		if(space > sizeof(Token)) {
+		if(space > sizeof(DDNetToken)) {
 			// we did already parse the expected amount of chunks
 			// and the ddnet security token
 			// but there are still bytes left!
@@ -117,7 +117,7 @@ DDNetPacket ddnet_decode_packet(const uint8_t *buf, size_t len, DDNetError *err)
 			return packet;
 		}
 
-		packet.header.token = read_token(packet.payload + size);
+		packet.header.token = ddnet_read_token(packet.payload + size);
 	}
 
 	return packet;
@@ -139,13 +139,13 @@ size_t ddnet_encode_packet(const DDNetPacket *packet, uint8_t *buf, size_t len, 
 			buf += encode_chunk_header(&packet->chunks.data[i].header, buf);
 			buf += encode_message(&packet->chunks.data[i], buf, err);
 		}
-		write_token(packet->header.token, buf);
-		buf += sizeof(Token);
+		ddnet_write_token(packet->header.token, buf);
+		buf += sizeof(DDNetToken);
 		return buf - start;
 	case DDNET_PACKET_CONTROL:
 		buf += encode_control(&packet->control, buf, err);
-		write_token(packet->header.token, buf);
-		buf += sizeof(Token);
+		ddnet_write_token(packet->header.token, buf);
+		buf += sizeof(DDNetToken);
 		return buf - start;
 	case DDNET_PACKET_CONNLESS:
 		break;

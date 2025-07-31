@@ -7,7 +7,7 @@
 #include "message.h"
 #include "token.h"
 
-PacketHeader decode_packet_header(const uint8_t *buf) {
+PacketHeader ddnet_decode_packet_header(const uint8_t *buf) {
 	return (PacketHeader){
 		.flags = buf[0] >> 2,
 		.ack = ((buf[0] & 0x3) << 8) | buf[1],
@@ -15,7 +15,7 @@ PacketHeader decode_packet_header(const uint8_t *buf) {
 	};
 }
 
-DDNetError encode_packet_header(const PacketHeader *header, uint8_t *buf) {
+DDNetError ddnet_encode_packet_header(const PacketHeader *header, uint8_t *buf) {
 	if(header->ack >= MAX_SEQUENCE) {
 		return DDNET_ERR_ACK_OUT_OF_BOUNDS;
 	}
@@ -36,17 +36,17 @@ static void on_chunk(void *ctx, DDNetChunk *chunk) {
 	memcpy(&context->chunks[context->len++], chunk, sizeof(DDNetChunk));
 }
 
-size_t get_packet_payload(PacketHeader *header, const uint8_t *full_data, size_t full_len, uint8_t *payload, size_t payload_len, DDNetError *err) {
+size_t ddnet_get_packet_payload(PacketHeader *header, const uint8_t *full_data, size_t full_len, uint8_t *payload, size_t payload_len, DDNetError *err) {
 	full_data += PACKET_HEADER_SIZE;
 	full_len -= PACKET_HEADER_SIZE;
-	if(header->flags & PACKET_FLAG_COMPRESSION) {
+	if(header->flags & DDNET_PACKET_FLAG_COMPRESSION) {
 		return ddnet_huffman_decompress(full_data, full_len, payload, payload_len, err);
 	}
 	memcpy(payload, full_data, full_len);
 	return full_len;
 }
 
-DDNetPacket decode_packet(const uint8_t *buf, size_t len, DDNetError *err) {
+DDNetPacket ddnet_decode_packet(const uint8_t *buf, size_t len, DDNetError *err) {
 	DDNetPacket packet = {};
 
 	if(len < PACKET_HEADER_SIZE || len > MAX_PACKET_SIZE) {
@@ -57,10 +57,10 @@ DDNetPacket decode_packet(const uint8_t *buf, size_t len, DDNetError *err) {
 		return packet;
 	}
 
-	packet.header = decode_packet_header(buf);
+	packet.header = ddnet_decode_packet_header(buf);
 	packet.payload = malloc(MAX_PACKET_SIZE);
 	DDNetError payload_err = DDNET_ERR_NONE;
-	packet.payload_len = get_packet_payload(&packet.header, buf, len, packet.payload, MAX_PACKET_SIZE, &payload_err);
+	packet.payload_len = ddnet_get_packet_payload(&packet.header, buf, len, packet.payload, MAX_PACKET_SIZE, &payload_err);
 	if(payload_err != DDNET_ERR_NONE) {
 		if(err) {
 			*err = payload_err;
@@ -68,12 +68,12 @@ DDNetPacket decode_packet(const uint8_t *buf, size_t len, DDNetError *err) {
 		return packet;
 	}
 
-	if(packet.header.flags & PACKET_FLAG_CONTROL) {
-		packet.kind = PACKET_CONTROL;
+	if(packet.header.flags & DDNET_PACKET_FLAG_CONTROL) {
+		packet.kind = DDNET_PACKET_CONTROL;
 		size_t size = decode_control(packet.payload, packet.payload_len, &packet.control, err); // NOLINT(clang-analyzer-unix.Malloc)
 		packet.header.token = read_token(packet.payload + size);
 	} else {
-		packet.kind = PACKET_NORMAL;
+		packet.kind = DDNET_PACKET_NORMAL;
 		Context ctx = {
 			.chunks = malloc(sizeof(DDNetChunk) * packet.header.num_chunks),
 			.len = 0,
@@ -123,18 +123,18 @@ DDNetPacket decode_packet(const uint8_t *buf, size_t len, DDNetError *err) {
 	return packet;
 }
 
-size_t encode_packet(const DDNetPacket *packet, uint8_t *buf, size_t len, DDNetError *err) {
+size_t ddnet_encode_packet(const DDNetPacket *packet, uint8_t *buf, size_t len, DDNetError *err) {
 	if(len < PACKET_HEADER_SIZE) {
 		*err = DDNET_ERR_BUFFER_FULL;
 		return 0;
 	}
 
 	uint8_t *start = buf;
-	encode_packet_header(&packet->header, buf);
+	ddnet_encode_packet_header(&packet->header, buf);
 	buf += PACKET_HEADER_SIZE;
 
 	switch(packet->kind) {
-	case PACKET_NORMAL:
+	case DDNET_PACKET_NORMAL:
 		for(size_t i = 0; i < packet->chunks.len; i++) {
 			buf += encode_chunk_header(&packet->chunks.data[i].header, buf);
 			buf += encode_message(&packet->chunks.data[i], buf, err);
@@ -142,12 +142,12 @@ size_t encode_packet(const DDNetPacket *packet, uint8_t *buf, size_t len, DDNetE
 		write_token(packet->header.token, buf);
 		buf += sizeof(Token);
 		return buf - start;
-	case PACKET_CONTROL:
+	case DDNET_PACKET_CONTROL:
 		buf += encode_control(&packet->control, buf, err);
 		write_token(packet->header.token, buf);
 		buf += sizeof(Token);
 		return buf - start;
-	case PACKET_CONNLESS:
+	case DDNET_PACKET_CONNLESS:
 		break;
 	}
 
@@ -156,7 +156,7 @@ size_t encode_packet(const DDNetPacket *packet, uint8_t *buf, size_t len, DDNetE
 }
 
 DDNetError ddnet_build_packet(DDNetPacket *packet, const DDNetMessage messages[], uint8_t messages_len, DDNetSession *session) {
-	packet->kind = PACKET_NORMAL;
+	packet->kind = DDNET_PACKET_NORMAL;
 	packet->header.flags = 0;
 	packet->header.token = session->token;
 	packet->header.ack = session->ack;
@@ -179,8 +179,8 @@ DDNetError ddnet_build_packet(DDNetPacket *packet, const DDNetMessage messages[]
 	return DDNET_ERR_NONE;
 }
 
-DDNetError free_packet(DDNetPacket *packet) {
-	if(packet->kind == PACKET_NORMAL) {
+DDNetError ddnet_free_packet(DDNetPacket *packet) {
+	if(packet->kind == DDNET_PACKET_NORMAL) {
 		free(packet->chunks.data);
 	}
 	free(packet->payload);

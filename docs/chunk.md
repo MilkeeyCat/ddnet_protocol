@@ -100,7 +100,6 @@ typedef enum {
 	DDNET_MSG_KIND_MAP_CHANGE,
 	DDNET_MSG_KIND_MAP_DATA,
 	DDNET_MSG_KIND_CON_READY,
-	DDNET_MSG_KIND_CL_STARTINFO,
 	DDNET_MSG_KIND_SNAP,
 	DDNET_MSG_KIND_SNAPEMPTY,
 	DDNET_MSG_KIND_SNAPSINGLE,
@@ -118,6 +117,10 @@ typedef enum {
 	DDNET_MSG_KIND_PING_REPLY,
 	DDNET_MSG_KIND_RCON_CMD_ADD,
 	DDNET_MSG_KIND_RCON_CMD_REM,
+	DDNET_MSG_KIND_SV_MOTD,
+	DDNET_MSG_KIND_SV_BROADCAST,
+	DDNET_MSG_KIND_SV_CHAT,
+	DDNET_MSG_KIND_CL_STARTINFO,
 } DDNetMessageKind;
 ```
 
@@ -130,7 +133,11 @@ that is sent over the network!
 
 ```C
 typedef union {
+	// ddnet_protocol specific message to represent
+	// a unknown message
+	// this message kind does not exist in the reference implementation
 	DDNetMsgUnknown unknown;
+	// system messages
 	DDNetMsgInfo info;
 	DDNetMsgMapChange map_change;
 	DDNetMsgMapData map_data;
@@ -143,6 +150,10 @@ typedef union {
 	DDNetMsgRequestMapData request_map_data;
 	DDNetMsgRconCmdAdd rcon_cmd_add;
 	DDNetMsgRconCmdRem rcon_cmd_rem;
+	// game messages
+	DDNetMsgSvMotd motd;
+	DDNetMsgSvBroadcast broadcast;
+	DDNetMsgSvChat chat;
 	DDNetMsgClStartInfo start_info;
 } DDNetGenericMessage;
 ```

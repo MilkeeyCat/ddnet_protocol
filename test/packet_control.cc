@@ -10,12 +10,12 @@ TEST(ControlPacket, Keepalive) {
 	DDNetPacket packet = ddnet_decode_packet(bytes, sizeof(bytes), &err);
 
 	EXPECT_EQ(err, DDNetError::DDNET_ERR_NONE);
-	EXPECT_EQ(packet.kind, PacketKind::DDNET_PACKET_CONTROL);
-	EXPECT_EQ(packet.header.flags, PacketFlag::DDNET_PACKET_FLAG_CONTROL);
+	EXPECT_EQ(packet.kind, DDNetPacketKind::DDNET_PACKET_CONTROL);
+	EXPECT_EQ(packet.header.flags, DDNetPacketFlag::DDNET_PACKET_FLAG_CONTROL);
 	EXPECT_EQ(packet.header.num_chunks, 0);
 	EXPECT_EQ(packet.header.ack, 0);
 	EXPECT_EQ(packet.header.token, 0x4ec73b04);
-	EXPECT_EQ(packet.control.kind, ControlMessageKind::DDNET_CTRL_MSG_KEEPALIVE);
+	EXPECT_EQ(packet.control.kind, DDNetControlMessageKind::DDNET_CTRL_MSG_KEEPALIVE);
 	EXPECT_TRUE(packet.control.reason == nullptr);
 	ddnet_free_packet(&packet);
 }
@@ -26,8 +26,8 @@ TEST(ControlPacket, Connect) {
 	DDNetPacket packet = ddnet_decode_packet(bytes, sizeof(bytes), &err);
 
 	EXPECT_EQ(err, DDNetError::DDNET_ERR_NONE);
-	EXPECT_EQ(packet.kind, PacketKind::DDNET_PACKET_CONTROL);
-	EXPECT_EQ(packet.control.kind, ControlMessageKind::DDNET_CTRL_MSG_CONNECT);
+	EXPECT_EQ(packet.kind, DDNetPacketKind::DDNET_PACKET_CONTROL);
+	EXPECT_EQ(packet.control.kind, DDNetControlMessageKind::DDNET_CTRL_MSG_CONNECT);
 	EXPECT_EQ(packet.header.token, 0xffffffff);
 	EXPECT_TRUE(packet.control.reason == nullptr);
 	ddnet_free_packet(&packet);
@@ -39,8 +39,8 @@ TEST(ControlPacket, ConnectAccept) {
 	DDNetPacket packet = ddnet_decode_packet(bytes, sizeof(bytes), &err);
 
 	EXPECT_EQ(err, DDNetError::DDNET_ERR_NONE);
-	EXPECT_EQ(packet.kind, PacketKind::DDNET_PACKET_CONTROL);
-	EXPECT_EQ(packet.control.kind, ControlMessageKind::DDNET_CTRL_MSG_CONNECTACCEPT);
+	EXPECT_EQ(packet.kind, DDNetPacketKind::DDNET_PACKET_CONTROL);
+	EXPECT_EQ(packet.control.kind, DDNetControlMessageKind::DDNET_CTRL_MSG_CONNECTACCEPT);
 	EXPECT_EQ(packet.header.token, 0x4ec73b04);
 	EXPECT_TRUE(packet.control.reason == nullptr);
 	ddnet_free_packet(&packet);
@@ -52,8 +52,8 @@ TEST(ControlPacket, Accept) {
 	DDNetPacket packet = ddnet_decode_packet(bytes, sizeof(bytes), &err);
 
 	EXPECT_EQ(err, DDNetError::DDNET_ERR_NONE);
-	EXPECT_EQ(packet.kind, PacketKind::DDNET_PACKET_CONTROL);
-	EXPECT_EQ(packet.control.kind, ControlMessageKind::DDNET_CTRL_MSG_ACCEPT);
+	EXPECT_EQ(packet.kind, DDNetPacketKind::DDNET_PACKET_CONTROL);
+	EXPECT_EQ(packet.control.kind, DDNetControlMessageKind::DDNET_CTRL_MSG_ACCEPT);
 	EXPECT_EQ(packet.header.token, 0x4ec73b04);
 	EXPECT_TRUE(packet.control.reason == nullptr);
 	ddnet_free_packet(&packet);
@@ -65,8 +65,8 @@ TEST(ControlPacket, Close) {
 	DDNetPacket packet = ddnet_decode_packet(bytes, sizeof(bytes), &err);
 
 	EXPECT_EQ(err, DDNetError::DDNET_ERR_NONE);
-	EXPECT_EQ(packet.kind, PacketKind::DDNET_PACKET_CONTROL);
-	EXPECT_EQ(packet.control.kind, ControlMessageKind::DDNET_CTRL_MSG_CLOSE);
+	EXPECT_EQ(packet.kind, DDNetPacketKind::DDNET_PACKET_CONTROL);
+	EXPECT_EQ(packet.control.kind, DDNetControlMessageKind::DDNET_CTRL_MSG_CLOSE);
 	EXPECT_EQ(packet.header.token, 0x4ec73b04);
 	EXPECT_TRUE(packet.control.reason == nullptr);
 	ddnet_free_packet(&packet);
@@ -78,8 +78,8 @@ TEST(ControlPacket, CloseWithReason) {
 	DDNetPacket packet = ddnet_decode_packet(bytes, sizeof(bytes), &err);
 
 	EXPECT_EQ(err, DDNetError::DDNET_ERR_NONE);
-	EXPECT_EQ(packet.kind, PacketKind::DDNET_PACKET_CONTROL);
-	EXPECT_EQ(packet.control.kind, ControlMessageKind::DDNET_CTRL_MSG_CLOSE);
+	EXPECT_EQ(packet.kind, DDNetPacketKind::DDNET_PACKET_CONTROL);
+	EXPECT_EQ(packet.control.kind, DDNetControlMessageKind::DDNET_CTRL_MSG_CLOSE);
 	EXPECT_EQ(packet.header.token, 0x4ec73b04);
 	EXPECT_STREQ(packet.control.reason, "too bad");
 	ddnet_free_packet(&packet);
@@ -87,7 +87,7 @@ TEST(ControlPacket, CloseWithReason) {
 
 TEST(ControlPacket, EncodeClose) {
 	DDNetPacket packet = {
-		.kind = PacketKind::DDNET_PACKET_CONTROL,
+		.kind = DDNetPacketKind::DDNET_PACKET_CONTROL,
 		.header = {
 			.flags = DDNET_PACKET_FLAG_CONTROL,
 			.token = 0x4ec73b04},
@@ -103,7 +103,7 @@ TEST(ControlPacket, EncodeClose) {
 
 TEST(ControlPacket, EncodeCloseWithReason) {
 	DDNetPacket packet = {
-		.kind = PacketKind::DDNET_PACKET_CONTROL,
+		.kind = DDNetPacketKind::DDNET_PACKET_CONTROL,
 		.header = {
 			.flags = DDNET_PACKET_FLAG_CONTROL,
 			.token = 0x4ec73b04},
@@ -119,7 +119,7 @@ TEST(ControlPacket, EncodeCloseWithReason) {
 
 TEST(ControlPacket, EncodeConnect) {
 	DDNetPacket packet = {
-		.kind = PacketKind::DDNET_PACKET_CONTROL,
+		.kind = DDNetPacketKind::DDNET_PACKET_CONTROL,
 		.header = {
 			.flags = DDNET_PACKET_FLAG_CONTROL,
 			.token = 0xffffffff},

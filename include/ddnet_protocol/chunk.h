@@ -99,20 +99,20 @@ typedef enum {
 // Union abstracting away any kind of game or system message
 // Check the DDNetMessageKind to know which one to use
 typedef union {
-	MsgUnknown unknown;
-	MsgInfo info;
-	MsgMapChange map_change;
-	MsgMapData map_data;
-	MsgInputTiming input_timing;
-	MsgRconAuthStatus rcon_auth_status;
-	MsgRconLine rcon_line;
-	MsgInput input;
-	MsgRconCmd rcon_cmd;
-	MsgRconAuth rcon_auth;
-	MsgRequestMapData request_map_data;
-	MsgRconCmdAdd rcon_cmd_add;
-	MsgRconCmdRem rcon_cmd_rem;
-	MsgClStartInfo start_info;
+	DDNetMsgUnknown unknown;
+	DDNetMsgInfo info;
+	DDNetMsgMapChange map_change;
+	DDNetMsgMapData map_data;
+	DDNetMsgInputTiming input_timing;
+	DDNetMsgRconAuthStatus rcon_auth_status;
+	DDNetMsgRconLine rcon_line;
+	DDNetMsgInput input;
+	DDNetMsgRconCmd rcon_cmd;
+	DDNetMsgRconAuth rcon_auth;
+	DDNetMsgRequestMapData request_map_data;
+	DDNetMsgRconCmdAdd rcon_cmd_add;
+	DDNetMsgRconCmdRem rcon_cmd_rem;
+	DDNetMsgClStartInfo start_info;
 } DDNetGenericMessage;
 
 // To access the net message struct check the `kind`

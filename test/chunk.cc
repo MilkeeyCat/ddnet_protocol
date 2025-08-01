@@ -83,7 +83,7 @@ TEST(Chunk, BigMessageId) {
 		.chunks = (DDNetChunk *)malloc(sizeof(DDNetChunk) * header.num_chunks),
 		.len = 0,
 	};
-	size_t size = fetch_chunks(buf, sizeof(bytes), &header, on_chunk, &ctx, &err);
+	size_t size = ddnet_fetch_chunks(buf, sizeof(bytes), &header, on_chunk, &ctx, &err);
 	EXPECT_EQ(err, DDNET_ERR_NONE);
 	EXPECT_EQ(ctx.len, 1);
 

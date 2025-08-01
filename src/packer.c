@@ -4,7 +4,7 @@
 #include "errors.h"
 #include "message.h"
 
-void str_sanitize_cc(char *string) {
+void ddnet_str_sanitize_cc(char *string) {
 	uint8_t *str = (uint8_t *)string;
 	while(*str) {
 		if(*str < 32) {
@@ -14,7 +14,7 @@ void str_sanitize_cc(char *string) {
 	}
 }
 
-void str_sanitize(char *string) {
+void ddnet_str_sanitize(char *string) {
 	uint8_t *str = (uint8_t *)string;
 	while(*str) {
 		if(*str < 32 && !(*str == '\r') && !(*str == '\n') && !(*str == '\t')) {
@@ -24,7 +24,7 @@ void str_sanitize(char *string) {
 	}
 }
 
-void str_clean_whitespaces(char *string) {
+void ddnet_str_clean_whitespaces(char *string) {
 	char *read = string;
 	char *write = string;
 
@@ -62,98 +62,98 @@ void ddnet_packer_init(DDNetPacker *packer) {
 void ddnet_packer_init_msg(DDNetPacker *packer, DDNetMessageKind kind) {
 	ddnet_packer_init(packer);
 
-	MessageId msg_id;
+	DDNetMessageId msg_id;
 	DDNetMessageCategory msg_category;
 
 	switch(kind) {
 	case DDNET_MSG_KIND_UNKNOWN:
 		return;
 	case DDNET_MSG_KIND_INFO:
-		msg_id = MSG_INFO;
+		msg_id = DDNET_MSG_INFO;
 		msg_category = DDNET_SYSTEM;
 		break;
 	case DDNET_MSG_KIND_MAP_CHANGE:
-		msg_id = MSG_MAP_CHANGE;
+		msg_id = DDNET_MSG_MAP_CHANGE;
 		msg_category = DDNET_SYSTEM;
 		break;
 	case DDNET_MSG_KIND_MAP_DATA:
-		msg_id = MSG_MAP_DATA;
+		msg_id = DDNET_MSG_MAP_DATA;
 		msg_category = DDNET_SYSTEM;
 		break;
 	case DDNET_MSG_KIND_CON_READY:
-		msg_id = MSG_CON_READY;
+		msg_id = DDNET_MSG_CON_READY;
 		msg_category = DDNET_SYSTEM;
 		break;
 	case DDNET_MSG_KIND_CL_STARTINFO:
-		msg_id = MSG_CL_STARTINFO;
+		msg_id = DDNET_MSG_CL_STARTINFO;
 		msg_category = DDNET_GAME;
 		break;
 	case DDNET_MSG_KIND_SNAP:
-		msg_id = MSG_SNAP;
+		msg_id = DDNET_MSG_SNAP;
 		msg_category = DDNET_SYSTEM;
 		break;
 	case DDNET_MSG_KIND_SNAPEMPTY:
-		msg_id = MSG_SNAPEMPTY;
+		msg_id = DDNET_MSG_SNAPEMPTY;
 		msg_category = DDNET_SYSTEM;
 		break;
 	case DDNET_MSG_KIND_SNAPSINGLE:
-		msg_id = MSG_SNAPSINGLE;
+		msg_id = DDNET_MSG_SNAPSINGLE;
 		msg_category = DDNET_SYSTEM;
 		break;
 	case DDNET_MSG_KIND_SNAPSMALL:
-		msg_id = MSG_SNAPSMALL;
+		msg_id = DDNET_MSG_SNAPSMALL;
 		msg_category = DDNET_SYSTEM;
 		break;
 	case DDNET_MSG_KIND_INPUTTIMING:
-		msg_id = MSG_INPUTTIMING;
+		msg_id = DDNET_MSG_INPUTTIMING;
 		msg_category = DDNET_SYSTEM;
 		break;
 	case DDNET_MSG_KIND_RCON_AUTH_STATUS:
-		msg_id = MSG_RCON_AUTH_STATUS;
+		msg_id = DDNET_MSG_RCON_AUTH_STATUS;
 		msg_category = DDNET_SYSTEM;
 		break;
 	case DDNET_MSG_KIND_RCON_LINE:
-		msg_id = MSG_RCON_LINE;
+		msg_id = DDNET_MSG_RCON_LINE;
 		msg_category = DDNET_SYSTEM;
 		break;
 	case DDNET_MSG_KIND_READY:
-		msg_id = MSG_READY;
+		msg_id = DDNET_MSG_READY;
 		msg_category = DDNET_SYSTEM;
 		break;
 	case DDNET_MSG_KIND_ENTERGAME:
-		msg_id = MSG_ENTERGAME;
+		msg_id = DDNET_MSG_ENTERGAME;
 		msg_category = DDNET_SYSTEM;
 		break;
 	case DDNET_MSG_KIND_INPUT:
-		msg_id = MSG_INPUT;
+		msg_id = DDNET_MSG_INPUT;
 		msg_category = DDNET_SYSTEM;
 		break;
 	case DDNET_MSG_KIND_RCON_CMD:
-		msg_id = MSG_RCON_CMD;
+		msg_id = DDNET_MSG_RCON_CMD;
 		msg_category = DDNET_SYSTEM;
 		break;
 	case DDNET_MSG_KIND_RCON_AUTH:
-		msg_id = MSG_RCON_AUTH;
+		msg_id = DDNET_MSG_RCON_AUTH;
 		msg_category = DDNET_SYSTEM;
 		break;
 	case DDNET_MSG_KIND_REQUEST_MAP_DATA:
-		msg_id = MSG_REQUEST_MAP_DATA;
+		msg_id = DDNET_MSG_REQUEST_MAP_DATA;
 		msg_category = DDNET_SYSTEM;
 		break;
 	case DDNET_MSG_KIND_PING:
-		msg_id = MSG_PING;
+		msg_id = DDNET_MSG_PING;
 		msg_category = DDNET_SYSTEM;
 		break;
 	case DDNET_MSG_KIND_PING_REPLY:
-		msg_id = MSG_PING_REPLY;
+		msg_id = DDNET_MSG_PING_REPLY;
 		msg_category = DDNET_SYSTEM;
 		break;
 	case DDNET_MSG_KIND_RCON_CMD_ADD:
-		msg_id = MSG_RCON_CMD_ADD;
+		msg_id = DDNET_MSG_RCON_CMD_ADD;
 		msg_category = DDNET_SYSTEM;
 		break;
 	case DDNET_MSG_KIND_RCON_CMD_REM:
-		msg_id = MSG_RCON_CMD_REM;
+		msg_id = DDNET_MSG_RCON_CMD_REM;
 		msg_category = DDNET_SYSTEM;
 		break;
 	}
@@ -298,7 +298,7 @@ int32_t ddnet_unpacker_get_int(DDNetUnpacker *unpacker) {
 	return value;
 }
 
-const char *ddnet_unpacker_get_string_sanitized(DDNetUnpacker *unpacker, StringSanitize sanitize) {
+const char *ddnet_unpacker_get_string_sanitized(DDNetUnpacker *unpacker, DDNetStringSanitize sanitize) {
 	if(unpacker->err != DDNET_ERR_NONE) {
 		return "";
 	}
@@ -314,19 +314,19 @@ const char *ddnet_unpacker_get_string_sanitized(DDNetUnpacker *unpacker, StringS
 	}
 	unpacker->buf++;
 
-	if(sanitize & STRING_SANITIZE) {
-		str_sanitize(str);
-	} else if(sanitize & STRING_SANITIZE_CC) {
-		str_sanitize_cc(str);
+	if(sanitize & DDNET_STRING_SANITIZE) {
+		ddnet_str_sanitize(str);
+	} else if(sanitize & DDNET_STRING_SANITIZE_CC) {
+		ddnet_str_sanitize_cc(str);
 	}
-	if(sanitize & STRING_SKIP_START_WHITESPACES) {
-		str_clean_whitespaces(str);
+	if(sanitize & DDNET_STRING_SKIP_START_WHITESPACES) {
+		ddnet_str_clean_whitespaces(str);
 	}
 	return str;
 }
 
 const char *ddnet_unpacker_get_string(DDNetUnpacker *unpacker) {
-	return ddnet_unpacker_get_string_sanitized(unpacker, STRING_SANITIZE);
+	return ddnet_unpacker_get_string_sanitized(unpacker, DDNET_STRING_SANITIZE);
 }
 
 bool ddnet_unpacker_get_bool(DDNetUnpacker *unpacker) {

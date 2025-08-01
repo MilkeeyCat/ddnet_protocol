@@ -11,20 +11,20 @@ extern "C" {
 typedef struct {
 	const uint8_t *buf;
 	size_t len;
-} MsgUnknown;
+} DDNetMsgUnknown;
 
 // Sent by the client.
 typedef struct {
 	const char *version;
 	const char *password;
-} MsgInfo;
+} DDNetMsgInfo;
 
 // Sent by the server.
 typedef struct {
 	const char *name;
 	int32_t crc;
 	int32_t size;
-} MsgMapChange;
+} DDNetMsgMapChange;
 
 // Sent by the server.
 typedef struct {
@@ -33,13 +33,13 @@ typedef struct {
 	int32_t chunk;
 	int32_t chunk_size;
 	const uint8_t *data;
-} MsgMapData;
+} DDNetMsgMapData;
 
 // Sent by the client.
 // The `command` will be executed in the server console.
 typedef struct {
 	const char *command;
-} MsgRconCmd;
+} DDNetMsgRconCmd;
 
 // Sent by the client.
 typedef struct {
@@ -52,45 +52,45 @@ typedef struct {
 	// If set to true the server will send the available
 	// rcon commands to the client.
 	bool send_rcon_cmds;
-} MsgRconAuth;
+} DDNetMsgRconAuth;
 
 // Sent by the client.
 // This is sent multiple times during the map download process.
 // The server is supposed to answer with a `DDNET_MSG_KIND_MAP_DATA`
 typedef struct {
 	int32_t chunk;
-} MsgRequestMapData;
+} DDNetMsgRequestMapData;
 
 // Sent by the server.
 typedef struct {
 	const char *name;
 	const char *help;
 	const char *params;
-} MsgRconCmdAdd;
+} DDNetMsgRconCmdAdd;
 
 // Sent by the server.
 typedef struct {
 	const char *name;
-} MsgRconCmdRem;
+} DDNetMsgRconCmdRem;
 
 // Sent by the server.
 typedef struct {
 	int32_t intended_tick;
 	int32_t time_left;
-} MsgInputTiming;
+} DDNetMsgInputTiming;
 
 // Sent by the server.
 typedef struct {
 	bool authed;
 	bool cmdlist;
-} MsgRconAuthStatus;
+} DDNetMsgRconAuthStatus;
 
 // Sent by the server.
 // Log line that shows up in the clients
 // remote console.
 typedef struct {
 	const char *line;
-} MsgRconLine;
+} DDNetMsgRconLine;
 
 // Sent by the client.
 typedef struct {
@@ -107,7 +107,7 @@ typedef struct {
 	int32_t wanted_weapon;
 	int32_t next_weapon;
 	int32_t prev_weapon;
-} MsgInput;
+} DDNetMsgInput;
 
 #ifdef __cplusplus
 }

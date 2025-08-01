@@ -39,9 +39,9 @@ bool ddnet_is_vital_msg(DDNetMessageKind kind) {
 }
 
 DDNetError fill_chunk_header(DDNetChunk *chunk) {
-	uint8_t chunk_payload[MAX_PACKET_SIZE];
+	uint8_t chunk_payload[DDNET_MAX_PACKET_SIZE];
 	DDNetError encode_err = DDNET_ERR_NONE;
-	size_t chunk_payload_len = encode_message(chunk, chunk_payload, &encode_err);
+	size_t chunk_payload_len = ddnet_encode_message(chunk, chunk_payload, &encode_err);
 	if(encode_err != DDNET_ERR_NONE) {
 		return encode_err;
 	}

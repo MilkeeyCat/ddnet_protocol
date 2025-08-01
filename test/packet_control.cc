@@ -92,7 +92,7 @@ TEST(ControlPacket, EncodeClose) {
 			.flags = DDNET_PACKET_FLAG_CONTROL,
 			.token = 0x4ec73b04},
 		.control = {.kind = DDNET_CTRL_MSG_CLOSE}};
-	uint8_t bytes[MAX_PACKET_SIZE];
+	uint8_t bytes[DDNET_MAX_PACKET_SIZE];
 	DDNetError err = DDNET_ERR_NONE;
 	size_t size = ddnet_encode_packet(&packet, bytes, sizeof(bytes), &err);
 	EXPECT_EQ(err, DDNET_ERR_NONE);
@@ -108,7 +108,7 @@ TEST(ControlPacket, EncodeCloseWithReason) {
 			.flags = DDNET_PACKET_FLAG_CONTROL,
 			.token = 0x4ec73b04},
 		.control = {.kind = DDNET_CTRL_MSG_CLOSE, .reason = "too bad"}};
-	uint8_t bytes[MAX_PACKET_SIZE];
+	uint8_t bytes[DDNET_MAX_PACKET_SIZE];
 	DDNetError err = DDNET_ERR_NONE;
 	size_t size = ddnet_encode_packet(&packet, bytes, sizeof(bytes), &err);
 	EXPECT_EQ(err, DDNET_ERR_NONE);
@@ -124,7 +124,7 @@ TEST(ControlPacket, EncodeConnect) {
 			.flags = DDNET_PACKET_FLAG_CONTROL,
 			.token = 0xffffffff},
 		.control = {.kind = DDNET_CTRL_MSG_CONNECT}};
-	uint8_t bytes[MAX_PACKET_SIZE];
+	uint8_t bytes[DDNET_MAX_PACKET_SIZE];
 	DDNetError err = DDNET_ERR_NONE;
 	size_t size = ddnet_encode_packet(&packet, bytes, sizeof(bytes), &err);
 	EXPECT_EQ(err, DDNET_ERR_NONE);

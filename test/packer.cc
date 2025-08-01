@@ -187,11 +187,11 @@ TEST(Unpacker, StringsSanitized) {
 	DDNetUnpacker unpacker;
 	ddnet_unpacker_init(&unpacker, bytes, sizeof(bytes));
 
-	EXPECT_STREQ(ddnet_unpacker_get_string_sanitized(&unpacker, STRING_SANITIZE_NONE), "foo");
+	EXPECT_STREQ(ddnet_unpacker_get_string_sanitized(&unpacker, DDNET_STRING_SANITIZE_NONE), "foo");
 	EXPECT_EQ(unpacker.err, DDNetError::DDNET_ERR_NONE);
-	EXPECT_STREQ(ddnet_unpacker_get_string_sanitized(&unpacker, STRING_SANITIZE_CC), "ba   r");
+	EXPECT_STREQ(ddnet_unpacker_get_string_sanitized(&unpacker, DDNET_STRING_SANITIZE_CC), "ba   r");
 	EXPECT_EQ(unpacker.err, DDNetError::DDNET_ERR_NONE);
-	EXPECT_STREQ(ddnet_unpacker_get_string_sanitized(&unpacker, STRING_SKIP_START_WHITESPACES), "x");
+	EXPECT_STREQ(ddnet_unpacker_get_string_sanitized(&unpacker, DDNET_STRING_SKIP_START_WHITESPACES), "x");
 	EXPECT_EQ(unpacker.err, DDNetError::DDNET_ERR_NONE);
 }
 

@@ -14,7 +14,7 @@ typedef struct {
 	bool use_custom_color;
 	size_t color_body;
 	size_t color_feet;
-} MsgClStartInfo;
+} DDNetMsgClStartInfo;
 
 #ifdef __cplusplus
 }

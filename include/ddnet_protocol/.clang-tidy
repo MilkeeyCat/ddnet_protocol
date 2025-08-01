@@ -15,3 +15,5 @@ CheckOptions:
     value:           DDNet
   - key:             readability-identifier-naming.EnumConstantPrefix
     value:           DDNET_
+  - key:             readability-identifier-naming.MacroDefinitionPrefix
+    value:           DDNET_

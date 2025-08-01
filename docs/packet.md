@@ -91,7 +91,7 @@ typedef struct {
 	// to avoid spoofing.
 	// The token is placed at the end of the packet payload.
 	// But conceptually it belongs into the header.
-	Token token;
+	DDNetToken token;
 } PacketHeader;
 ```
 
@@ -107,7 +107,7 @@ PacketHeader header;
 header.flags = DDNET_PACKET_FLAG_CONTROL | DDNET_PACKET_FLAG_RESEND;
 header.ack = 10;
 header.num_chunks = 0; // control packets have no chunks
-header.token = TOKEN_MAGIC;
+header.token = DDNET_TOKEN_MAGIC;
 ```
 
 # ControlMessageKind

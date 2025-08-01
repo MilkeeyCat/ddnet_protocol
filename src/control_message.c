@@ -10,9 +10,9 @@ size_t decode_control(const uint8_t *buf, size_t len, ControlMessage *msg, DDNet
 	switch(msg->kind) {
 	case DDNET_CTRL_MSG_CONNECT:
 	case DDNET_CTRL_MSG_CONNECTACCEPT: {
-		const Token token_magic = read_token(&buf[1]);
+		const DDNetToken token_magic = ddnet_read_token(&buf[1]);
 
-		if(token_magic != TOKEN_MAGIC) {
+		if(token_magic != DDNET_TOKEN_MAGIC) {
 			if(err) {
 				*err = DDNET_ERR_INVALID_TOKEN_MAGIC;
 			}
@@ -20,10 +20,10 @@ size_t decode_control(const uint8_t *buf, size_t len, ControlMessage *msg, DDNet
 			return 0;
 		}
 
-		return sizeof(Token) + 1;
+		return sizeof(DDNetToken) + 1;
 	}
 	case DDNET_CTRL_MSG_CLOSE:
-		if(len - 1 > sizeof(Token)) {
+		if(len - 1 > sizeof(DDNetToken)) {
 			msg->reason = (const char *)&buf[1];
 
 			return strlen(msg->reason) + 1 + 1;
@@ -60,8 +60,8 @@ size_t encode_control(const ControlMessage *msg, uint8_t *buf, DDNetError *err) 
 	case DDNET_CTRL_MSG_ACCEPT:
 		break;
 	case DDNET_CTRL_MSG_CONNECT:
-		write_token(TOKEN_MAGIC, buf + 1);
-		return sizeof(Token) + 1;
+		ddnet_write_token(DDNET_TOKEN_MAGIC, buf + 1);
+		return sizeof(DDNetToken) + 1;
 	case DDNET_CTRL_MSG_CLOSE:
 		if(msg->reason && msg->reason[0]) {
 			ddnet_packer_add_string(&packer, msg->reason);

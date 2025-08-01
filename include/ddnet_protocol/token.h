@@ -10,7 +10,7 @@ extern "C" {
 // to avoid ip spoofing
 //
 // See https://chillerdragon.github.io/teeworlds-protocol/06/fundamentals.html#tokens
-typedef uint32_t Token;
+typedef uint32_t DDNetToken;
 
 // unsigned 32 bit integer
 // that holds the magic value "TKEN"
@@ -27,21 +27,21 @@ typedef uint32_t Token;
 // because the 0.6 release of teeworlds
 // had no security tokens
 // and we (ddnet) are 0.6 compatible
-extern const Token TOKEN_MAGIC;
+extern const DDNetToken DDNET_TOKEN_MAGIC;
 
 // the token value that represents the absence of a token
 // sent during the token handshake as a placeholder
-extern const Token TOKEN_NONE;
+extern const DDNetToken DDNET_TOKEN_NONE;
 
 // reads the first 4 bytes of `buf`
 // and converts it into `Token` which
 // is one uint32_t
 //
 // the data in `buf` is expected to be in network endianness
-Token read_token(const uint8_t *buf);
+DDNetToken ddnet_read_token(const uint8_t *buf);
 
 // writes 4 bytes token into `buf`
-void write_token(Token token, uint8_t *buf);
+void ddnet_write_token(DDNetToken token, uint8_t *buf);
 
 #ifdef __cplusplus
 }

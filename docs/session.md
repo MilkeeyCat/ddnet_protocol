@@ -27,7 +27,7 @@ typedef struct {
 	// But conceptually it belongs into the packet header.
 	// The token is determined by the server and both
 	// client and server use the same value for one session.
-	Token token;
+	DDNetToken token;
 } DDNetSession;
 ```
 

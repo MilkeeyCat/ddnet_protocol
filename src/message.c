@@ -4,10 +4,10 @@
 #include "msg_system.h"
 #include "packer.h"
 
-static DDNetError decode_game_message(DDNetChunk *chunk, MessageId msg_id, DDNetUnpacker *unpacker) {
+static DDNetError decode_game_message(DDNetChunk *chunk, DDNetMessageId msg_id, DDNetUnpacker *unpacker) {
 	DDNetGenericMessage *msg = &chunk->payload.msg;
 	switch(msg_id) {
-	case MSG_CL_STARTINFO:
+	case DDNET_MSG_CL_STARTINFO:
 		chunk->payload.kind = DDNET_MSG_KIND_CL_STARTINFO;
 		msg->start_info.name = ddnet_unpacker_get_string(unpacker);
 		msg->start_info.clan = ddnet_unpacker_get_string(unpacker);
@@ -24,21 +24,21 @@ static DDNetError decode_game_message(DDNetChunk *chunk, MessageId msg_id, DDNet
 	return unpacker->err;
 }
 
-static DDNetError decode_system_message(DDNetChunk *chunk, MessageId msg_id, DDNetUnpacker *unpacker) {
+static DDNetError decode_system_message(DDNetChunk *chunk, DDNetMessageId msg_id, DDNetUnpacker *unpacker) {
 	DDNetGenericMessage *msg = &chunk->payload.msg;
 	switch(msg_id) {
-	case MSG_INFO:
+	case DDNET_MSG_INFO:
 		msg->info.version = ddnet_unpacker_get_string(unpacker);
 		msg->info.password = ddnet_unpacker_get_string(unpacker);
 		chunk->payload.kind = DDNET_MSG_KIND_INFO;
 		break;
-	case MSG_MAP_CHANGE:
+	case DDNET_MSG_MAP_CHANGE:
 		msg->map_change.name = ddnet_unpacker_get_string(unpacker);
 		msg->map_change.crc = ddnet_unpacker_get_int(unpacker);
 		msg->map_change.size = ddnet_unpacker_get_int(unpacker);
 		chunk->payload.kind = DDNET_MSG_KIND_MAP_CHANGE;
 		break;
-	case MSG_MAP_DATA:
+	case DDNET_MSG_MAP_DATA:
 		msg->map_data.last = ddnet_unpacker_get_bool(unpacker);
 		msg->map_data.map_crc = ddnet_unpacker_get_int(unpacker);
 		msg->map_data.chunk = ddnet_unpacker_get_int(unpacker);
@@ -46,30 +46,30 @@ static DDNetError decode_system_message(DDNetChunk *chunk, MessageId msg_id, DDN
 		msg->map_data.data = ddnet_unpacker_get_raw(unpacker, msg->map_data.chunk_size);
 		chunk->payload.kind = DDNET_MSG_KIND_MAP_CHANGE;
 		break;
-	case MSG_CON_READY:
+	case DDNET_MSG_CON_READY:
 		chunk->payload.kind = DDNET_MSG_KIND_CON_READY;
 		break;
-	case MSG_INPUTTIMING:
+	case DDNET_MSG_INPUTTIMING:
 		msg->input_timing.intended_tick = ddnet_unpacker_get_int(unpacker);
 		msg->input_timing.time_left = ddnet_unpacker_get_int(unpacker);
 		chunk->payload.kind = DDNET_MSG_KIND_INPUTTIMING;
 		break;
-	case MSG_RCON_AUTH_STATUS:
+	case DDNET_MSG_RCON_AUTH_STATUS:
 		msg->rcon_auth_status.authed = ddnet_unpacker_get_bool(unpacker);
 		msg->rcon_auth_status.cmdlist = ddnet_unpacker_get_bool(unpacker);
 		chunk->payload.kind = DDNET_MSG_KIND_RCON_AUTH_STATUS;
 		break;
-	case MSG_RCON_LINE:
+	case DDNET_MSG_RCON_LINE:
 		msg->rcon_line.line = ddnet_unpacker_get_string(unpacker);
 		chunk->payload.kind = DDNET_MSG_KIND_RCON_LINE;
 		break;
-	case MSG_READY:
+	case DDNET_MSG_READY:
 		chunk->payload.kind = DDNET_MSG_KIND_READY;
 		break;
-	case MSG_ENTERGAME:
+	case DDNET_MSG_ENTERGAME:
 		chunk->payload.kind = DDNET_MSG_KIND_ENTERGAME;
 		break;
-	case MSG_INPUT:
+	case DDNET_MSG_INPUT:
 		msg->input.ack_game_tick = ddnet_unpacker_get_int(unpacker);
 		msg->input.prediction_tick = ddnet_unpacker_get_int(unpacker);
 		msg->input.size = ddnet_unpacker_get_int(unpacker);
@@ -85,27 +85,27 @@ static DDNetError decode_system_message(DDNetChunk *chunk, MessageId msg_id, DDN
 		msg->input.prev_weapon = ddnet_unpacker_get_int(unpacker);
 		chunk->payload.kind = DDNET_MSG_KIND_INPUT;
 		break;
-	case MSG_RCON_CMD:
+	case DDNET_MSG_RCON_CMD:
 		msg->rcon_cmd.command = ddnet_unpacker_get_string(unpacker);
 		chunk->payload.kind = DDNET_MSG_KIND_RCON_CMD;
 		break;
-	case MSG_RCON_AUTH:
+	case DDNET_MSG_RCON_AUTH:
 		msg->rcon_auth.name = ddnet_unpacker_get_string(unpacker);
 		msg->rcon_auth.password = ddnet_unpacker_get_string(unpacker);
 		msg->rcon_auth.send_rcon_cmds = ddnet_unpacker_get_bool(unpacker);
 		chunk->payload.kind = DDNET_MSG_KIND_RCON_AUTH;
 		break;
-	case MSG_REQUEST_MAP_DATA:
+	case DDNET_MSG_REQUEST_MAP_DATA:
 		msg->request_map_data.chunk = ddnet_unpacker_get_int(unpacker);
 		chunk->payload.kind = DDNET_MSG_KIND_REQUEST_MAP_DATA;
 		break;
-	case MSG_RCON_CMD_ADD:
+	case DDNET_MSG_RCON_CMD_ADD:
 		msg->rcon_cmd_add.name = ddnet_unpacker_get_string(unpacker);
 		msg->rcon_cmd_add.help = ddnet_unpacker_get_string(unpacker);
 		msg->rcon_cmd_add.params = ddnet_unpacker_get_string(unpacker);
 		chunk->payload.kind = DDNET_MSG_KIND_RCON_CMD_ADD;
 		break;
-	case MSG_RCON_CMD_REM:
+	case DDNET_MSG_RCON_CMD_REM:
 		msg->rcon_cmd_rem.name = ddnet_unpacker_get_string(unpacker);
 		chunk->payload.kind = DDNET_MSG_KIND_RCON_CMD_REM;
 		break;
@@ -116,12 +116,12 @@ static DDNetError decode_system_message(DDNetChunk *chunk, MessageId msg_id, DDN
 	return unpacker->err;
 }
 
-DDNetError decode_message(DDNetChunk *chunk, uint8_t *buf) {
+DDNetError ddnet_decode_message(DDNetChunk *chunk, uint8_t *buf) {
 	DDNetUnpacker unpacker;
 	ddnet_unpacker_init(&unpacker, buf, chunk->header.size);
 	int32_t msg_and_sys = ddnet_unpacker_get_int(&unpacker);
 	bool sys = msg_and_sys & 1;
-	MessageId msg_id = msg_and_sys >> 1;
+	DDNetMessageId msg_id = msg_and_sys >> 1;
 
 	DDNetError err = DDNET_ERR_NONE;
 	if(sys) {
@@ -139,7 +139,7 @@ DDNetError decode_message(DDNetChunk *chunk, uint8_t *buf) {
 	return err;
 }
 
-size_t encode_message(DDNetChunk *chunk, uint8_t *buf, DDNetError *err) {
+size_t ddnet_encode_message(DDNetChunk *chunk, uint8_t *buf, DDNetError *err) {
 	DDNetPacker packer;
 	ddnet_packer_init_msg(&packer, chunk->payload.kind);
 

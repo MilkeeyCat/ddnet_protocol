@@ -12,7 +12,7 @@ TEST(NormalPacket, HeaderOk) {
 	header.ack = 0;
 	header.flags = DDNET_PACKET_FLAG_RESEND;
 	header.num_chunks = 1;
-	uint8_t bytes[PACKET_HEADER_SIZE];
+	uint8_t bytes[DDNET_PACKET_HEADER_SIZE];
 	DDNetError err = ddnet_encode_packet_header(&header, bytes);
 	EXPECT_EQ(err, DDNET_ERR_NONE);
 	EXPECT_EQ(bytes[0], 0x40);
@@ -25,7 +25,7 @@ TEST(NormalPacket, HeaderAckOob) {
 	header.ack = MAX_SEQUENCE + 2;
 	header.flags = DDNET_PACKET_FLAG_RESEND;
 	header.num_chunks = 1;
-	uint8_t bytes[PACKET_HEADER_SIZE] = {};
+	uint8_t bytes[DDNET_PACKET_HEADER_SIZE] = {};
 	DDNetError err = ddnet_encode_packet_header(&header, bytes);
 	EXPECT_EQ(err, DDNET_ERR_ACK_OUT_OF_BOUNDS);
 	EXPECT_EQ(bytes[0], 0x00);
@@ -53,7 +53,7 @@ TEST(NormalPacket, Info) {
 
 	EXPECT_EQ(packet.chunks.data[0].payload.kind, DDNET_MSG_KIND_INFO);
 	EXPECT_EQ(packet.chunks.data[0].header.sequence, 3);
-	MsgInfo info = packet.chunks.data[0].payload.msg.info;
+	DDNetMsgInfo info = packet.chunks.data[0].payload.msg.info;
 	EXPECT_STREQ(info.version, "0.6 626fce9a778df4d4");
 	EXPECT_STREQ(info.password, "");
 
@@ -80,7 +80,7 @@ TEST(NormalPacket, PackInfo) {
 	fill_chunk_header(&packet.chunks.data[0]);
 	EXPECT_EQ(packet.chunks.data[0].header.size, 23);
 
-	uint8_t buf[MAX_PACKET_SIZE];
+	uint8_t buf[DDNET_MAX_PACKET_SIZE];
 	DDNetError err = DDNET_ERR_NONE;
 	size_t len = ddnet_encode_packet(&packet, buf, sizeof(buf), &err);
 	EXPECT_EQ(err, DDNET_ERR_NONE);
@@ -102,7 +102,7 @@ TEST(NormalPacket, PackInfoWithBuilder) {
 	DDNetError err = ddnet_build_packet(&packet, messages, (sizeof(messages) / sizeof(messages[0])), &session);
 	EXPECT_EQ(err, DDNET_ERR_NONE);
 	EXPECT_EQ(session.sequence, 3); // incremented by build_packet because info is vital
-	uint8_t buf[MAX_PACKET_SIZE];
+	uint8_t buf[DDNET_MAX_PACKET_SIZE];
 	size_t len = ddnet_encode_packet(&packet, buf, sizeof(buf), &err);
 	EXPECT_EQ(err, DDNET_ERR_NONE);
 	uint8_t expected[] = {
@@ -155,7 +155,7 @@ TEST(NormalPacket, StartInfoAndRconCmd) {
 	EXPECT_EQ(packet.header.token, 0x3de3948d);
 
 	EXPECT_EQ(packet.chunks.data[0].payload.kind, DDNET_MSG_KIND_CL_STARTINFO);
-	MsgClStartInfo start_info = packet.chunks.data[0].payload.msg.start_info;
+	DDNetMsgClStartInfo start_info = packet.chunks.data[0].payload.msg.start_info;
 	EXPECT_STREQ(start_info.name, "ChillerDragon");
 	EXPECT_STREQ(start_info.clan, "|*KoG*|");
 	EXPECT_EQ(start_info.country, 64);
@@ -240,7 +240,7 @@ TEST(NormalPacket, UnknownFakeMessage) {
 
 TEST(NormalPacket, PackEmpty) {
 	DDNetPacket packet = {.kind = PacketKind::DDNET_PACKET_NORMAL};
-	uint8_t bytes[MAX_PACKET_SIZE];
+	uint8_t bytes[DDNET_MAX_PACKET_SIZE];
 	DDNetError err = DDNET_ERR_NONE;
 	size_t size = ddnet_encode_packet(&packet, bytes, sizeof(bytes), &err);
 	EXPECT_EQ(err, DDNET_ERR_NONE);
@@ -252,7 +252,7 @@ TEST(NormalPacket, PackEmpty) {
 TEST(NormalPacket, PackEmptyWithAck) {
 	DDNetPacket packet = {.kind = PacketKind::DDNET_PACKET_NORMAL};
 	packet.header.ack = 2;
-	uint8_t bytes[MAX_PACKET_SIZE];
+	uint8_t bytes[DDNET_MAX_PACKET_SIZE];
 	DDNetError err = DDNET_ERR_NONE;
 	size_t size = ddnet_encode_packet(&packet, bytes, sizeof(bytes), &err);
 	EXPECT_EQ(err, DDNET_ERR_NONE);

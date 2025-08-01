@@ -11,10 +11,10 @@ extern "C" {
 #include "token.h"
 
 // minimum size in bytes required for a valid packet header
-#define PACKET_HEADER_SIZE 3
+#define DDNET_PACKET_HEADER_SIZE 3
 
 // maximum amount of total packet size
-#define MAX_PACKET_SIZE 1400
+#define DDNET_MAX_PACKET_SIZE 1400
 
 // internal enum for packet types
 // not sent over the network

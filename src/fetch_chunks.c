@@ -3,7 +3,7 @@
 #include "message.h"
 #include "packet.h"
 
-size_t fetch_chunks(uint8_t *buf, size_t len, PacketHeader *header, OnDDNetChunk callback, void *ctx, DDNetError *err) {
+size_t ddnet_fetch_chunks(uint8_t *buf, size_t len, PacketHeader *header, OnDDNetChunk callback, void *ctx, DDNetError *err) {
 	uint8_t *start = buf;
 	uint8_t *end = buf + len;
 	uint8_t num_chunks = 0;
@@ -43,7 +43,7 @@ size_t fetch_chunks(uint8_t *buf, size_t len, PacketHeader *header, OnDDNetChunk
 
 		DDNetChunk chunk;
 		chunk.header = chunk_header;
-		DDNetError chunk_err = decode_message(&chunk, buf);
+		DDNetError chunk_err = ddnet_decode_message(&chunk, buf);
 		callback(ctx, &chunk);
 		num_chunks++;
 		// unknown message ids are not a fatal error in teeworlds

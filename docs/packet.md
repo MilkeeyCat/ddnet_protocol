@@ -1,19 +1,19 @@
-# PACKET_HEADER_SIZE
+# DDNET_PACKET_HEADER_SIZE
 
 ## Syntax
 
 ```C
-#define PACKET_HEADER_SIZE 3
+#define DDNET_PACKET_HEADER_SIZE 3
 ```
 
 minimum size in bytes required for a valid packet header
 
-# MAX_PACKET_SIZE
+# DDNET_MAX_PACKET_SIZE
 
 ## Syntax
 
 ```C
-#define MAX_PACKET_SIZE 1400
+#define DDNET_MAX_PACKET_SIZE 1400
 ```
 
 maximum amount of total packet size

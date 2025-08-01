@@ -11,39 +11,39 @@ extern "C" {
 // that is sent over the network.
 typedef enum {
 	// used for ddnet extensions
-	MSG_NULL = 0,
+	DDNET_MSG_NULL = 0,
 
 	// system messages
-	MSG_INFO = 1,
-	MSG_MAP_CHANGE = 2,
-	MSG_MAP_DATA = 3,
-	MSG_CON_READY = 4,
-	MSG_SNAP = 5,
-	MSG_SNAPEMPTY = 6,
-	MSG_SNAPSINGLE = 7,
-	MSG_SNAPSMALL = 8,
-	MSG_INPUTTIMING = 9,
-	MSG_RCON_AUTH_STATUS = 10,
-	MSG_RCON_LINE = 11,
-	MSG_AUTH_CHALLENGE = 12, // unused
-	MSG_AUTH_RESULT = 13, // unused
-	MSG_READY = 14,
-	MSG_ENTERGAME = 15,
-	MSG_INPUT = 16,
-	MSG_RCON_CMD = 17,
-	MSG_RCON_AUTH = 18,
-	MSG_REQUEST_MAP_DATA = 19,
-	MSG_AUTH_START = 20, // unused
-	MSG_AUTH_RESPONSE = 21, // unused
-	MSG_PING = 22,
-	MSG_PING_REPLY = 23,
-	MSG_ERROR = 24, // unused
-	MSG_RCON_CMD_ADD = 25,
-	MSG_RCON_CMD_REM = 26,
+	DDNET_MSG_INFO = 1,
+	DDNET_MSG_MAP_CHANGE = 2,
+	DDNET_MSG_MAP_DATA = 3,
+	DDNET_MSG_CON_READY = 4,
+	DDNET_MSG_SNAP = 5,
+	DDNET_MSG_SNAPEMPTY = 6,
+	DDNET_MSG_SNAPSINGLE = 7,
+	DDNET_MSG_SNAPSMALL = 8,
+	DDNET_MSG_INPUTTIMING = 9,
+	DDNET_MSG_RCON_AUTH_STATUS = 10,
+	DDNET_MSG_RCON_LINE = 11,
+	DDNET_MSG_AUTH_CHALLENGE = 12, // unused
+	DDNET_MSG_AUTH_RESULT = 13, // unused
+	DDNET_MSG_READY = 14,
+	DDNET_MSG_ENTERGAME = 15,
+	DDNET_MSG_INPUT = 16,
+	DDNET_MSG_RCON_CMD = 17,
+	DDNET_MSG_RCON_AUTH = 18,
+	DDNET_MSG_REQUEST_MAP_DATA = 19,
+	DDNET_MSG_AUTH_START = 20, // unused
+	DDNET_MSG_AUTH_RESPONSE = 21, // unused
+	DDNET_MSG_PING = 22,
+	DDNET_MSG_PING_REPLY = 23,
+	DDNET_MSG_ERROR = 24, // unused
+	DDNET_MSG_RCON_CMD_ADD = 25,
+	DDNET_MSG_RCON_CMD_REM = 26,
 
 	// game messages
-	MSG_CL_STARTINFO = 20,
-} MessageId;
+	DDNET_MSG_CL_STARTINFO = 20,
+} DDNetMessageId;
 
 // Every chunk contains either a system or game message
 // This type is set as a bit flag in the first byte of the chunk payload
@@ -56,10 +56,10 @@ typedef enum {
 // and its `msg` will be filled based on the content of
 // `buf` which has to point to the beginning of the chunk payload
 //
-// this function could also be called decode_chunk_payload()
-DDNetError decode_message(DDNetChunk *chunk, uint8_t *buf);
+// this function could also be called ddnet_decode_chunk_payload()
+DDNetError ddnet_decode_message(DDNetChunk *chunk, uint8_t *buf);
 
-size_t encode_message(DDNetChunk *chunk, uint8_t *buf, DDNetError *err);
+size_t ddnet_encode_message(DDNetChunk *chunk, uint8_t *buf, DDNetError *err);
 
 DDNetMessage ddnet_build_msg_info(const char *password);
 

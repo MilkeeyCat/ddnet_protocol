@@ -9,23 +9,23 @@ extern "C" {
 #include "message.h"
 
 // Replaces all characters below ASCII 32 with whitespace.
-void str_sanitize_cc(char *string);
+void ddnet_str_sanitize_cc(char *string);
 
 // Replaces all characters below ASCII 32 except \r, \n and \t with whitespace.
-void str_sanitize(char *string);
+void ddnet_str_sanitize(char *string);
 
 // Removes leading and trailing spaces and limits the use of multiple spaces.
-void str_clean_whitespaces(char *string);
+void ddnet_str_clean_whitespaces(char *string);
 
 // used by `ddnet_unpacker_get_string_sanitized()`
 // to strip unwanted characters from the strings
 // received from the peer
 typedef enum {
-	STRING_SANITIZE_NONE = 0,
-	STRING_SANITIZE = 1 << 0,
-	STRING_SANITIZE_CC = 1 << 1,
-	STRING_SKIP_START_WHITESPACES = 1 << 2,
-} StringSanitize;
+	DDNET_STRING_SANITIZE_NONE = 0,
+	DDNET_STRING_SANITIZE = 1 << 0,
+	DDNET_STRING_SANITIZE_CC = 1 << 1,
+	DDNET_STRING_SKIP_START_WHITESPACES = 1 << 2,
+} DDNetStringSanitize;
 
 // State for the unpacker
 // holds the data to be unpacked
@@ -133,7 +133,7 @@ int32_t ddnet_unpacker_get_int(DDNetUnpacker *unpacker);
 // uint8_t bytes[] = {'f', 'o', 0x03, 'o', 0x00};
 // DDNetUnpacker unpacker;
 // ddnet_unpacker_init(&unpacker, bytes, sizeof(bytes));
-// ddnet_unpacker_get_string_sanitized(&unpacker, STRING_SANITIZE_NONE);
+// ddnet_unpacker_get_string_sanitized(&unpacker, DDNET_STRING_SANITIZE_NONE);
 // ```
 const char *ddnet_unpacker_get_string(DDNetUnpacker *unpacker);
 
@@ -146,10 +146,10 @@ const char *ddnet_unpacker_get_string(DDNetUnpacker *unpacker);
 // DDNetUnpacker unpacker;
 // ddnet_unpacker_init(&unpacker, bytes, sizeof(bytes));
 //
-// ddnet_unpacker_get_string_sanitized(&unpacker, STRING_SANITIZE_CC); // => foo
+// ddnet_unpacker_get_string_sanitized(&unpacker, DDNET_STRING_SANITIZE_CC); // => foo
 // unpacker.err; // =>  DDNetError::DDNET_ERR_NONE
 // ```
-const char *ddnet_unpacker_get_string_sanitized(DDNetUnpacker *unpacker, StringSanitize sanitize);
+const char *ddnet_unpacker_get_string_sanitized(DDNetUnpacker *unpacker, DDNetStringSanitize sanitize);
 
 // Use `ddnet_unpacker_init` to get the value for `DDNetUnpacker *unpacker`
 // it returns the next boolean in the unpacker data

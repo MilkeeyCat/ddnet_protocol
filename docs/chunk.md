@@ -1,9 +1,9 @@
-# MAX_SEQUENCE
+# DDNET_MAX_SEQUENCE
 
 ## Syntax
 
 ```C
-#define MAX_SEQUENCE (1 << 10)
+#define DDNET_MAX_SEQUENCE (1 << 10)
 ```
 
 The sequence and acknowledge number can never
@@ -44,7 +44,7 @@ typedef struct {
 	uint16_t size;
 	// Set only if flags & DDNET_CHUNK_FLAG_VITAL
 	// Is the amount of vital chunks that were already sent.
-	// But the number flips back to 0 when `MAX_SEQUENCE` is reached.
+	// But the number flips back to 0 when `DDNET_MAX_SEQUENCE` is reached.
 	uint16_t sequence;
 } DDNetChunkHeader;
 ```
@@ -55,24 +55,24 @@ This struct is the parsed representation of this header.
 
 Be careful! The `sequence` field is only used by vital chunks!
 
-# decode_chunk_header
+# ddnet_decode_chunk_header
 
 ## Syntax
 
 ```C
-size_t decode_chunk_header(const uint8_t *buf, DDNetChunkHeader *header);
+size_t ddnet_decode_chunk_header(const uint8_t *buf, DDNetChunkHeader *header);
 ```
 
 Parses a byte buffer as a chunk header.
 Consumes 2 or 3 bytes and stores the result in `header`. Returns the number
 of bytes consumed.
 
-# encode_chunk_header
+# ddnet_encode_chunk_header
 
 ## Syntax
 
 ```C
-size_t encode_chunk_header(const DDNetChunkHeader *header, uint8_t *buf);
+size_t ddnet_encode_chunk_header(const DDNetChunkHeader *header, uint8_t *buf);
 ```
 
 Given a filled header struct it it will pack it into `buf`
@@ -86,7 +86,7 @@ DDNetChunkHeader header = {
 	.size = 2,
 	.sequence = 4};
 uint8_t buf[8];
-size_t bytes_written = encode_chunk_header(&header, buf);
+size_t bytes_written = ddnet_encode_chunk_header(&header, buf);
 ```
 
 # DDNetMessageKind
@@ -194,12 +194,12 @@ are not acknowledged by the peer.
 Not all messages are vital to improve performance
 and not resend outdated data such as game state and inputs.
 
-# fill_chunk_header
+# ddnet_fill_chunk_header
 
 ## Syntax
 
 ```C
-DDNetError fill_chunk_header(DDNetChunk *chunk);
+DDNetError ddnet_fill_chunk_header(DDNetChunk *chunk);
 ```
 
 Given an entire chunk that has all values

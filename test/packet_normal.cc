@@ -22,7 +22,7 @@ TEST(NormalPacket, HeaderOk) {
 
 TEST(NormalPacket, HeaderAckOob) {
 	PacketHeader header;
-	header.ack = MAX_SEQUENCE + 2;
+	header.ack = DDNET_MAX_SEQUENCE + 2;
 	header.flags = DDNET_PACKET_FLAG_RESEND;
 	header.num_chunks = 1;
 	uint8_t bytes[DDNET_PACKET_HEADER_SIZE] = {};
@@ -73,11 +73,11 @@ TEST(NormalPacket, PackInfo) {
 	packet.chunks.data[0].payload.msg.info.password = "";
 	packet.chunks.data[0].payload.msg.info.version = "short version";
 
-	fill_chunk_header(&packet.chunks.data[0]);
+	ddnet_fill_chunk_header(&packet.chunks.data[0]);
 	EXPECT_EQ(packet.chunks.data[0].header.size, 16);
 
 	packet.chunks.data[0].payload.msg.info.version = "0.6 626fce9a778df4d4";
-	fill_chunk_header(&packet.chunks.data[0]);
+	ddnet_fill_chunk_header(&packet.chunks.data[0]);
 	EXPECT_EQ(packet.chunks.data[0].header.size, 23);
 
 	uint8_t buf[DDNET_MAX_PACKET_SIZE];

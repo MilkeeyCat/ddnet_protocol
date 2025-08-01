@@ -3,7 +3,7 @@
 #include "message.h"
 #include "packet.h"
 
-size_t decode_chunk_header(const uint8_t *buf, DDNetChunkHeader *header) {
+size_t ddnet_decode_chunk_header(const uint8_t *buf, DDNetChunkHeader *header) {
 	header->flags = buf[0] & 0b11000000;
 	header->size = ((buf[0] & 0b00111111) << 4) | (buf[1] & ((1 << 4) - 1));
 	header->sequence = 0;
@@ -17,7 +17,7 @@ size_t decode_chunk_header(const uint8_t *buf, DDNetChunkHeader *header) {
 	return 2;
 }
 
-size_t encode_chunk_header(const DDNetChunkHeader *header, uint8_t *buf) {
+size_t ddnet_encode_chunk_header(const DDNetChunkHeader *header, uint8_t *buf) {
 	buf[0] = header->flags & 0b11000000 | ((header->size >> 4) & 0b00111111);
 	buf[1] = (header->size & 0b00001111);
 	if(header->flags & DDNET_CHUNK_FLAG_VITAL) {
@@ -38,7 +38,7 @@ bool ddnet_is_vital_msg(DDNetMessageKind kind) {
 	       kind != DDNET_MSG_KIND_SNAPSMALL;
 }
 
-DDNetError fill_chunk_header(DDNetChunk *chunk) {
+DDNetError ddnet_fill_chunk_header(DDNetChunk *chunk) {
 	uint8_t chunk_payload[DDNET_MAX_PACKET_SIZE];
 	DDNetError encode_err = DDNET_ERR_NONE;
 	size_t chunk_payload_len = ddnet_encode_message(chunk, chunk_payload, &encode_err);

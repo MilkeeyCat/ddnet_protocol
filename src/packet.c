@@ -16,7 +16,7 @@ PacketHeader ddnet_decode_packet_header(const uint8_t *buf) {
 }
 
 DDNetError ddnet_encode_packet_header(const PacketHeader *header, uint8_t *buf) {
-	if(header->ack >= MAX_SEQUENCE) {
+	if(header->ack >= DDNET_MAX_SEQUENCE) {
 		return DDNET_ERR_ACK_OUT_OF_BOUNDS;
 	}
 	buf[0] = ((header->flags << 2) & 0xfc | ((header->ack >> 8)) & 0x3);
@@ -136,7 +136,7 @@ size_t ddnet_encode_packet(const DDNetPacket *packet, uint8_t *buf, size_t len, 
 	switch(packet->kind) {
 	case DDNET_PACKET_NORMAL:
 		for(size_t i = 0; i < packet->chunks.len; i++) {
-			buf += encode_chunk_header(&packet->chunks.data[i].header, buf);
+			buf += ddnet_encode_chunk_header(&packet->chunks.data[i].header, buf);
 			buf += ddnet_encode_message(&packet->chunks.data[i], buf, err);
 		}
 		ddnet_write_token(packet->header.token, buf);
@@ -167,7 +167,7 @@ DDNetError ddnet_build_packet(DDNetPacket *packet, const DDNetMessage messages[]
 		const DDNetMessage *msg = &messages[i];
 		packet->chunks.data[i].payload.kind = msg->kind;
 		packet->chunks.data[i].payload.msg = msg->msg;
-		DDNetError chunk_err = fill_chunk_header(&packet->chunks.data[i]);
+		DDNetError chunk_err = ddnet_fill_chunk_header(&packet->chunks.data[i]);
 		if(packet->chunks.data[i].header.flags & DDNET_CHUNK_FLAG_VITAL) {
 			session->sequence++;
 		}

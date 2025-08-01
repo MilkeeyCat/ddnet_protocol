@@ -11,7 +11,7 @@ extern "C" {
 
 // The sequence and acknowledge number can never
 // be higher than 1024
-#define MAX_SEQUENCE (1 << 10)
+#define DDNET_MAX_SEQUENCE (1 << 10)
 
 // These flags are used by the chunk header.
 // Vital chunks contain a sequence number
@@ -44,14 +44,14 @@ typedef struct {
 
 	// Set only if flags & DDNET_CHUNK_FLAG_VITAL
 	// Is the amount of vital chunks that were already sent.
-	// But the number flips back to 0 when `MAX_SEQUENCE` is reached.
+	// But the number flips back to 0 when `DDNET_MAX_SEQUENCE` is reached.
 	uint16_t sequence;
 } DDNetChunkHeader;
 
 // Parses a byte buffer as a chunk header.
 // Consumes 2 or 3 bytes and stores the result in `header`. Returns the number
 // of bytes consumed.
-size_t decode_chunk_header(const uint8_t *buf, DDNetChunkHeader *header);
+size_t ddnet_decode_chunk_header(const uint8_t *buf, DDNetChunkHeader *header);
 
 // Given a filled header struct it it will pack it into `buf`
 // writing either 2 or 3 bytes depending on the header type.
@@ -64,9 +64,9 @@ size_t decode_chunk_header(const uint8_t *buf, DDNetChunkHeader *header);
 // 	.size = 2,
 // 	.sequence = 4};
 // uint8_t buf[8];
-// size_t bytes_written = encode_chunk_header(&header, buf);
+// size_t bytes_written = ddnet_encode_chunk_header(&header, buf);
 // ```
-size_t encode_chunk_header(const DDNetChunkHeader *header, uint8_t *buf);
+size_t ddnet_encode_chunk_header(const DDNetChunkHeader *header, uint8_t *buf);
 
 // Be careful this is not the message id
 // that is sent over the network!
@@ -142,7 +142,7 @@ bool ddnet_is_vital_msg(DDNetMessageKind kind);
 // for message in the payload already set
 // This function will fill the chunks header accordingly
 // For now this only means setting the correct size based on the payload
-DDNetError fill_chunk_header(DDNetChunk *chunk);
+DDNetError ddnet_fill_chunk_header(DDNetChunk *chunk);
 
 #ifdef __cplusplus
 }

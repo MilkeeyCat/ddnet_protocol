@@ -9,6 +9,8 @@ CheckOptions:
     value:           DDNet
   - key:             readability-identifier-naming.TypedefPrefix
     value:           DDNet
+  - key:             readability-identifier-naming.TypedefIgnoredRegexp
+    value:           OnDDNetChunk
   - key:             readability-identifier-naming.StructPrefix
     value:           DDNet
   - key:             readability-identifier-naming.UnionPrefix

@@ -19,3 +19,5 @@ CheckOptions:
     value:           DDNET_
   - key:             readability-identifier-naming.MacroDefinitionPrefix
     value:           DDNET_
+  - key:             readability-identifier-naming.MacroDefinitionIgnoredRegexp
+    value:           '^(USER_SPACE|KERNEL_SPACE)$'

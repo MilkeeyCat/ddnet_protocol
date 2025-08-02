@@ -7,15 +7,15 @@
 #include "message.h"
 #include "token.h"
 
-PacketHeader ddnet_decode_packet_header(const uint8_t *buf) {
-	return (PacketHeader){
+DDNetPacketHeader ddnet_decode_packet_header(const uint8_t *buf) {
+	return (DDNetPacketHeader){
 		.flags = buf[0] >> 2,
 		.ack = ((buf[0] & 0x3) << 8) | buf[1],
 		.num_chunks = buf[2],
 	};
 }
 
-DDNetError ddnet_encode_packet_header(const PacketHeader *header, uint8_t *buf) {
+DDNetError ddnet_encode_packet_header(const DDNetPacketHeader *header, uint8_t *buf) {
 	if(header->ack >= DDNET_MAX_SEQUENCE) {
 		return DDNET_ERR_ACK_OUT_OF_BOUNDS;
 	}
@@ -36,7 +36,7 @@ static void on_chunk(void *ctx, DDNetChunk *chunk) {
 	memcpy(&context->chunks[context->len++], chunk, sizeof(DDNetChunk));
 }
 
-size_t ddnet_get_packet_payload(PacketHeader *header, const uint8_t *full_data, size_t full_len, uint8_t *payload, size_t payload_len, DDNetError *err) {
+size_t ddnet_get_packet_payload(DDNetPacketHeader *header, const uint8_t *full_data, size_t full_len, uint8_t *payload, size_t payload_len, DDNetError *err) {
 	full_data += DDNET_PACKET_HEADER_SIZE;
 	full_len -= DDNET_PACKET_HEADER_SIZE;
 	if(header->flags & DDNET_PACKET_FLAG_COMPRESSION) {

@@ -3,7 +3,7 @@
 #include "packet.h"
 #include "token.h"
 
-size_t ddnet_decode_control(const uint8_t *buf, size_t len, ControlMessage *msg, DDNetError *err) {
+size_t ddnet_decode_control(const uint8_t *buf, size_t len, DDNetControlMessage *msg, DDNetError *err) {
 	msg->kind = buf[0];
 	msg->reason = NULL;
 
@@ -44,7 +44,7 @@ size_t ddnet_decode_control(const uint8_t *buf, size_t len, ControlMessage *msg,
 	return 1;
 }
 
-size_t ddnet_encode_control(const ControlMessage *msg, uint8_t *buf, DDNetError *err) {
+size_t ddnet_encode_control(const DDNetControlMessage *msg, uint8_t *buf, DDNetError *err) {
 	DDNetPacker packer;
 	ddnet_packer_init(&packer);
 	buf[0] = msg->kind;

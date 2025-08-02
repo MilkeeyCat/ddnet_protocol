@@ -84,10 +84,6 @@ void ddnet_packer_init_msg(DDNetPacker *packer, DDNetMessageKind kind) {
 		msg_id = DDNET_MSG_CON_READY;
 		msg_category = DDNET_SYSTEM;
 		break;
-	case DDNET_MSG_KIND_CL_STARTINFO:
-		msg_id = DDNET_MSG_CL_STARTINFO;
-		msg_category = DDNET_GAME;
-		break;
 	case DDNET_MSG_KIND_SNAP:
 		msg_id = DDNET_MSG_SNAP;
 		msg_category = DDNET_SYSTEM;
@@ -155,6 +151,22 @@ void ddnet_packer_init_msg(DDNetPacker *packer, DDNetMessageKind kind) {
 	case DDNET_MSG_KIND_RCON_CMD_REM:
 		msg_id = DDNET_MSG_RCON_CMD_REM;
 		msg_category = DDNET_SYSTEM;
+		break;
+	case DDNET_MSG_KIND_SV_MOTD:
+		msg_id = DDNET_MSG_SV_MOTD;
+		msg_category = DDNET_GAME;
+		break;
+	case DDNET_MSG_KIND_SV_BROADCAST:
+		msg_id = DDNET_MSG_SV_BROADCAST;
+		msg_category = DDNET_GAME;
+		break;
+	case DDNET_MSG_KIND_SV_CHAT:
+		msg_id = DDNET_MSG_SV_CHAT;
+		msg_category = DDNET_GAME;
+		break;
+	case DDNET_MSG_KIND_CL_STARTINFO:
+		msg_id = DDNET_MSG_CL_STARTINFO;
+		msg_category = DDNET_GAME;
 		break;
 	}
 

@@ -21,7 +21,7 @@ class BaseDoc
   end
 
   def valid?
-    !@comment.empty? && !@signature.empty?
+    errors.empty?
   end
 
   def errors

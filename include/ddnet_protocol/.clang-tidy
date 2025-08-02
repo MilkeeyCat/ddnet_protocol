@@ -1,0 +1,23 @@
+InheritParentConfig: true
+
+CheckOptions:
+  - key:             readability-identifier-naming.FunctionPrefix
+    value:           ddnet_
+  - key:             readability-identifier-naming.GlobalConstantPrefix
+    value:           DDNET_
+  - key:             readability-identifier-naming.EnumPrefix
+    value:           DDNet
+  - key:             readability-identifier-naming.TypedefPrefix
+    value:           DDNet
+  - key:             readability-identifier-naming.TypedefIgnoredRegexp
+    value:           OnDDNetChunk
+  - key:             readability-identifier-naming.StructPrefix
+    value:           DDNet
+  - key:             readability-identifier-naming.UnionPrefix
+    value:           DDNet
+  - key:             readability-identifier-naming.EnumConstantPrefix
+    value:           DDNET_
+  - key:             readability-identifier-naming.MacroDefinitionPrefix
+    value:           DDNET_
+  - key:             readability-identifier-naming.MacroDefinitionIgnoredRegexp
+    value:           '^(USER_SPACE|KERNEL_SPACE)$'

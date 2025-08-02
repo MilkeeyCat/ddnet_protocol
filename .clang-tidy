@@ -11,6 +11,7 @@ Checks: >
   -modernize-use-trailing-return-type,
   -modernize-use-auto,
   -modernize-avoid-c-arrays,
+  -modernize-macro-to-enum,
   performance-*,
   portability-*,
   readability-*,

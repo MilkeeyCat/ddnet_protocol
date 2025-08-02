@@ -30,7 +30,7 @@ size_t ddnet_fetch_chunks(uint8_t *buf, size_t len, PacketHeader *header, OnDDNe
 		}
 
 		DDNetChunkHeader chunk_header;
-		buf += decode_chunk_header(buf, &chunk_header);
+		buf += ddnet_decode_chunk_header(buf, &chunk_header);
 
 		space = end - buf;
 		if(space < chunk_header.size) {

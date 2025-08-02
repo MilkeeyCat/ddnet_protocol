@@ -18,7 +18,7 @@ minimum size in bytes required for a valid packet header
 
 maximum amount of total packet size
 
-# PacketKind
+# DDNetPacketKind
 
 ## Syntax
 
@@ -35,19 +35,19 @@ typedef enum {
 	// messages in their payload.
 	// These messages contain all the gameplay relevant information.
 	DDNET_PACKET_NORMAL,
-} PacketKind;
+} DDNetPacketKind;
 ```
 
 internal enum for packet types
 not sent over the network
 
-# PacketFlag
+# DDNetPacketFlag
 
 ## Syntax
 
 ```C
 typedef enum {
-	// Indicating that the packet is a control packet (See the `ControlMessage` struct)
+	// Indicating that the packet is a control packet (See the `DDNetControlMessage` struct)
 	// Can not be mixed with the DDNET_PACKET_FLAG_COMPRESSION!
 	DDNET_PACKET_FLAG_CONTROL = 1 << 2,
 	// Indicating that the packet is a connection less packet.
@@ -57,7 +57,7 @@ typedef enum {
 	// Indicating that the packet payload is huffman compressed (see `ddnet_huffman_decompress()`)
 	// Can not be mixed with the DDNET_PACKET_FLAG_CONTROL!
 	DDNET_PACKET_FLAG_COMPRESSION = 1 << 5,
-} PacketFlag;
+} DDNetPacketFlag;
 ```
 
 packet flags
@@ -66,7 +66,7 @@ multiple flags can be combined
 
 but if control is set compression should not be set
 
-# PacketHeader
+# DDNetPacketHeader
 
 ## Syntax
 
@@ -92,7 +92,7 @@ typedef struct {
 	// The token is placed at the end of the packet payload.
 	// But conceptually it belongs into the header.
 	DDNetToken token;
-} PacketHeader;
+} DDNetPacketHeader;
 ```
 
 Teeworlds packet header.
@@ -103,14 +103,14 @@ Plus the security token.
 Example:
 
 ```C
-PacketHeader header;
+DDNetPacketHeader header;
 header.flags = DDNET_PACKET_FLAG_CONTROL | DDNET_PACKET_FLAG_RESEND;
 header.ack = 10;
 header.num_chunks = 0; // control packets have no chunks
 header.token = DDNET_TOKEN_MAGIC;
 ```
 
-# ControlMessageKind
+# DDNetControlMessageKind
 
 ## Syntax
 
@@ -121,20 +121,20 @@ typedef enum {
 	DDNET_CTRL_MSG_CONNECTACCEPT,
 	DDNET_CTRL_MSG_ACCEPT,
 	DDNET_CTRL_MSG_CLOSE,
-} ControlMessageKind;
+} DDNetControlMessageKind;
 ```
 
 Type of control packet
 
-# ControlMessage
+# DDNetControlMessage
 
 ## Syntax
 
 ```C
 typedef struct {
-	ControlMessageKind kind;
+	DDNetControlMessageKind kind;
 	const char *reason; // Can be set if msg_kind == DDNET_CTRL_MSG_CLOSE
-} ControlMessage;
+} DDNetControlMessage;
 ```
 
 Payload of control packets
@@ -145,14 +145,14 @@ Payload of control packets
 
 ```C
 typedef struct {
-	PacketKind kind;
-	PacketHeader header;
+	DDNetPacketKind kind;
+	DDNetPacketHeader header;
 	uint8_t *payload;
 	size_t payload_len;
 	// The parsed packet payload
 	// Check `kind` to know which field in the union to access
 	union {
-		ControlMessage control;
+		DDNetControlMessage control;
 		struct {
 			// should be either `NULL`
 			// or point to memory of size `chunks.len * sizeof(DDNetChunk)`
@@ -176,7 +176,7 @@ Holds information about on full ddnet packet
 ## Syntax
 
 ```C
-PacketHeader ddnet_decode_packet_header(const uint8_t *buf);
+DDNetPacketHeader ddnet_decode_packet_header(const uint8_t *buf);
 ```
 
 Unpacks packet header and fills the `PacketHeader` struct.
@@ -191,7 +191,7 @@ https://github.com/MilkeeyCat/ddnet_protocol/issues/54
 ## Syntax
 
 ```C
-DDNetError ddnet_encode_packet_header(const PacketHeader *header, uint8_t *buf);
+DDNetError ddnet_encode_packet_header(const DDNetPacketHeader *header, uint8_t *buf);
 ```
 
 Given a `PacketHeader` as input it writes 3 bytes into `buf`
@@ -201,7 +201,7 @@ Given a `PacketHeader` as input it writes 3 bytes into `buf`
 ## Syntax
 
 ```C
-size_t ddnet_get_packet_payload(PacketHeader *header, const uint8_t *full_data, size_t full_len, uint8_t *payload, size_t payload_len, DDNetError *err);
+size_t ddnet_get_packet_payload(DDNetPacketHeader *header, const uint8_t *full_data, size_t full_len, uint8_t *payload, size_t payload_len, DDNetError *err);
 ```
 
 Extract and decompress packet payload.

@@ -77,7 +77,7 @@ TEST(Chunk, BigMessageId) {
 	uint8_t bytes[] = {0x40, 0x06, 0x03, 0x87, 0x03, 0x41, 0x42, 0x43, 0x00};
 	uint8_t *buf = &bytes[0];
 	DDNetError err = DDNET_ERR_NONE;
-	PacketHeader header = {
+	DDNetPacketHeader header = {
 		.num_chunks = 1};
 	Context ctx = {
 		.chunks = (DDNetChunk *)malloc(sizeof(DDNetChunk) * header.num_chunks),

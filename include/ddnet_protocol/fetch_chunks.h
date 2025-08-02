@@ -16,7 +16,11 @@ typedef void (*OnDDNetChunk)(void *ctx, DDNetChunk *chunk);
 // It will extract all system and game messages
 // and store them in the given packet struct.
 // And it returns the amount of bytes read.
+<<<<<<< Updated upstream
 size_t ddnet_fetch_chunks(uint8_t *buf, size_t len, PacketHeader *header, OnDDNetChunk callback, void *ctx, DDNetError *err);
+=======
+size_t fetch_chunks(uint8_t *buf, size_t len, DDNetPacketHeader *header, OnDDNetChunk callback, void *ctx, DDNetError *err);
+>>>>>>> Stashed changes
 
 #ifdef __cplusplus
 }

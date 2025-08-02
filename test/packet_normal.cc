@@ -8,7 +8,7 @@
 #include <ddnet_protocol/session.h>
 
 TEST(NormalPacket, HeaderOk) {
-	PacketHeader header;
+	DDNetPacketHeader header;
 	header.ack = 0;
 	header.flags = DDNET_PACKET_FLAG_RESEND;
 	header.num_chunks = 1;
@@ -21,7 +21,7 @@ TEST(NormalPacket, HeaderOk) {
 }
 
 TEST(NormalPacket, HeaderAckOob) {
-	PacketHeader header;
+	DDNetPacketHeader header;
 	header.ack = MAX_SEQUENCE + 2;
 	header.flags = DDNET_PACKET_FLAG_RESEND;
 	header.num_chunks = 1;
@@ -45,7 +45,7 @@ TEST(NormalPacket, Info) {
 	DDNetPacket packet = ddnet_decode_packet(bytes, sizeof(bytes), &err);
 
 	EXPECT_EQ(err, DDNetError::DDNET_ERR_NONE);
-	EXPECT_EQ(packet.kind, PacketKind::DDNET_PACKET_NORMAL);
+	EXPECT_EQ(packet.kind, DDNetPacketKind::DDNET_PACKET_NORMAL);
 	EXPECT_EQ(packet.header.flags, 0);
 	EXPECT_EQ(packet.header.num_chunks, 1);
 	EXPECT_EQ(packet.header.ack, 0);
@@ -148,7 +148,7 @@ TEST(NormalPacket, StartInfoAndRconCmd) {
 	DDNetPacket packet = ddnet_decode_packet(bytes, sizeof(bytes), &err);
 
 	EXPECT_EQ(err, DDNetError::DDNET_ERR_NONE);
-	EXPECT_EQ(packet.kind, PacketKind::DDNET_PACKET_NORMAL);
+	EXPECT_EQ(packet.kind, DDNetPacketKind::DDNET_PACKET_NORMAL);
 	EXPECT_EQ(packet.header.flags, 0);
 	EXPECT_EQ(packet.header.num_chunks, 2);
 	EXPECT_EQ(packet.header.ack, 6);
@@ -177,7 +177,7 @@ TEST(NormalPacket, GameMotdAndSysConReady) {
 	DDNetError err = DDNET_ERR_NONE;
 	DDNetPacket packet = ddnet_decode_packet(bytes, sizeof(bytes), &err);
 	EXPECT_EQ(err, DDNET_ERR_NONE);
-	EXPECT_EQ(packet.kind, PacketKind::DDNET_PACKET_NORMAL);
+	EXPECT_EQ(packet.kind, DDNetPacketKind::DDNET_PACKET_NORMAL);
 	EXPECT_EQ(packet.header.flags, 0);
 	EXPECT_EQ(packet.header.num_chunks, 2);
 	EXPECT_EQ(packet.header.ack, 4);
@@ -210,7 +210,7 @@ TEST(NormalPacket, UnknownFakeMessage) {
 	DDNetError err = DDNET_ERR_NONE;
 	DDNetPacket packet = ddnet_decode_packet(bytes, sizeof(bytes), &err);
 	EXPECT_EQ(err, DDNET_ERR_NONE);
-	EXPECT_EQ(packet.kind, PacketKind::DDNET_PACKET_NORMAL);
+	EXPECT_EQ(packet.kind, DDNetPacketKind::DDNET_PACKET_NORMAL);
 	EXPECT_EQ(packet.header.flags, 0);
 	EXPECT_EQ(packet.header.num_chunks, 1);
 	EXPECT_EQ(packet.header.ack, 0);
@@ -239,8 +239,13 @@ TEST(NormalPacket, UnknownFakeMessage) {
 }
 
 TEST(NormalPacket, PackEmpty) {
+<<<<<<< Updated upstream
 	DDNetPacket packet = {.kind = PacketKind::DDNET_PACKET_NORMAL};
 	uint8_t bytes[DDNET_MAX_PACKET_SIZE];
+=======
+	DDNetPacket packet = {.kind = DDNetPacketKind::DDNET_PACKET_NORMAL};
+	uint8_t bytes[MAX_PACKET_SIZE];
+>>>>>>> Stashed changes
 	DDNetError err = DDNET_ERR_NONE;
 	size_t size = ddnet_encode_packet(&packet, bytes, sizeof(bytes), &err);
 	EXPECT_EQ(err, DDNET_ERR_NONE);
@@ -250,7 +255,7 @@ TEST(NormalPacket, PackEmpty) {
 }
 
 TEST(NormalPacket, PackEmptyWithAck) {
-	DDNetPacket packet = {.kind = PacketKind::DDNET_PACKET_NORMAL};
+	DDNetPacket packet = {.kind = DDNetPacketKind::DDNET_PACKET_NORMAL};
 	packet.header.ack = 2;
 	uint8_t bytes[DDNET_MAX_PACKET_SIZE];
 	DDNetError err = DDNET_ERR_NONE;
@@ -268,7 +273,7 @@ TEST(NormalPacket, EmptyResendRequest) {
 	DDNetPacket packet = ddnet_decode_packet(bytes, sizeof(bytes), &err);
 
 	EXPECT_EQ(err, DDNetError::DDNET_ERR_NONE);
-	EXPECT_EQ(packet.kind, PacketKind::DDNET_PACKET_NORMAL);
+	EXPECT_EQ(packet.kind, DDNetPacketKind::DDNET_PACKET_NORMAL);
 	EXPECT_NE(packet.header.flags & DDNET_PACKET_FLAG_RESEND, 0);
 	EXPECT_EQ(packet.header.num_chunks, 0);
 	EXPECT_EQ(packet.header.ack, 0);

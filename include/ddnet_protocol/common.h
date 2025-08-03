@@ -27,8 +27,6 @@ extern void free(void *ptr);
 	"CODE_SPACE has invalid value, it must be `KERNEL_SPACE` or `USER_SPACE`."
 #endif
 
-#define MIN(a, b) (((a) < (b)) ? (a) : (b))
-
 #ifdef __cplusplus
 }
 #endif

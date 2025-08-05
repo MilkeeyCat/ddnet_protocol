@@ -7,6 +7,20 @@
 static DDNetError decode_game_message(DDNetChunk *chunk, DDNetMessageId msg_id, DDNetUnpacker *unpacker) {
 	DDNetGenericMessage *msg = &chunk->payload.msg;
 	switch(msg_id) {
+	case DDNET_MSG_SV_MOTD:
+		chunk->payload.kind = DDNET_MSG_KIND_SV_MOTD;
+		msg->motd.message = ddnet_unpacker_get_string(unpacker);
+		break;
+	case DDNET_MSG_SV_BROADCAST:
+		chunk->payload.kind = DDNET_MSG_KIND_SV_BROADCAST;
+		msg->broadcast.message = ddnet_unpacker_get_string(unpacker);
+		break;
+	case DDNET_MSG_SV_CHAT:
+		chunk->payload.kind = DDNET_MSG_KIND_SV_CHAT;
+		msg->chat.team = ddnet_unpacker_get_int(unpacker);
+		msg->chat.client_id = ddnet_unpacker_get_int(unpacker);
+		msg->chat.message = ddnet_unpacker_get_string(unpacker);
+		break;
 	case DDNET_MSG_CL_STARTINFO:
 		chunk->payload.kind = DDNET_MSG_KIND_CL_STARTINFO;
 		msg->start_info.name = ddnet_unpacker_get_string(unpacker);
@@ -169,15 +183,6 @@ size_t ddnet_encode_message(DDNetChunk *chunk, uint8_t *buf, DDNetError *err) {
 	case DDNET_MSG_KIND_READY:
 	case DDNET_MSG_KIND_ENTERGAME:
 		break;
-	case DDNET_MSG_KIND_CL_STARTINFO:
-		ddnet_packer_add_string(&packer, msg->start_info.name);
-		ddnet_packer_add_string(&packer, msg->start_info.clan);
-		ddnet_packer_add_int(&packer, (int32_t)msg->start_info.country);
-		ddnet_packer_add_string(&packer, msg->start_info.skin);
-		ddnet_packer_add_int(&packer, msg->start_info.use_custom_color);
-		ddnet_packer_add_int(&packer, (int32_t)msg->start_info.color_body);
-		ddnet_packer_add_int(&packer, (int32_t)msg->start_info.color_feet);
-		break;
 	case DDNET_MSG_KIND_INPUTTIMING:
 		ddnet_packer_add_int(&packer, msg->input_timing.intended_tick);
 		ddnet_packer_add_int(&packer, msg->input_timing.time_left);
@@ -222,6 +227,26 @@ size_t ddnet_encode_message(DDNetChunk *chunk, uint8_t *buf, DDNetError *err) {
 		break;
 	case DDNET_MSG_KIND_RCON_CMD_REM:
 		ddnet_packer_add_string(&packer, msg->rcon_cmd_rem.name);
+		break;
+	case DDNET_MSG_KIND_SV_MOTD:
+		ddnet_packer_add_string(&packer, msg->motd.message);
+		break;
+	case DDNET_MSG_KIND_SV_BROADCAST:
+		ddnet_packer_add_string(&packer, msg->broadcast.message);
+		break;
+	case DDNET_MSG_KIND_SV_CHAT:
+		ddnet_packer_add_int(&packer, msg->chat.team);
+		ddnet_packer_add_int(&packer, msg->chat.client_id);
+		ddnet_packer_add_string(&packer, msg->chat.message);
+		break;
+	case DDNET_MSG_KIND_CL_STARTINFO:
+		ddnet_packer_add_string(&packer, msg->start_info.name);
+		ddnet_packer_add_string(&packer, msg->start_info.clan);
+		ddnet_packer_add_int(&packer, (int32_t)msg->start_info.country);
+		ddnet_packer_add_string(&packer, msg->start_info.skin);
+		ddnet_packer_add_int(&packer, msg->start_info.use_custom_color);
+		ddnet_packer_add_int(&packer, (int32_t)msg->start_info.color_body);
+		ddnet_packer_add_int(&packer, (int32_t)msg->start_info.color_feet);
 		break;
 	case DDNET_MSG_KIND_SNAP:
 	case DDNET_MSG_KIND_SNAPEMPTY:

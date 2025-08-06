@@ -66,6 +66,19 @@ size_t ddnet_encode_message(DDNetChunk *chunk, uint8_t *buf, DDNetError *err);
 
 DDNetMessage ddnet_build_msg_info(const char *password);
 
+// helper to intialize a start info message with sensible defaults
+// if you want to build a full packet struct with a start info as payload
+// you can do it like this
+//
+// ```C++
+// DDNetMessage msg = ddnet_build_msg_start_info("named tee");
+// msg.msg.start_info.clan = "my clan"; // you can overwrite any of the defaults like this
+// DDNetPacket packet = {};
+// DDNetSession session = {};
+// DDNetError err = ddnet_build_packet(&packet, &msg, 1, &session);
+// ```
+DDNetMessage ddnet_build_msg_start_info(const char *name);
+
 #ifdef __cplusplus
 }
 #endif

@@ -31,6 +31,25 @@ typedef enum {
 	DDNET_CHAT_WHISPER_RECEIVE,
 } DDNetChatTeam;
 
+// regular and special weapons
+typedef enum {
+	// team switching and similar
+	DDNET_WEAPON_GAME = -3,
+
+	// console kill command (not self damage)
+	DDNET_WEAPON_SELF = -2,
+
+	// kill tiles or out of world
+	DDNET_WEAPON_WORLD = -1,
+
+	DDNET_WEAPON_HAMMER = 0,
+	DDNET_WEAPON_GUN = 1,
+	DDNET_WEAPON_SHOTGUN = 2,
+	DDNET_WEAPON_GRENADE = 3,
+	DDNET_WEAPON_LASER = 4,
+	DDNET_WEAPON_NINJA = 5,
+} DDNetWeapon;
+
 // message of the day
 // sent by the server
 // and displayed in the middle of the screen
@@ -57,6 +76,21 @@ typedef struct {
 	// chat message
 	const char *message;
 } DDNetMsgSvChat;
+
+// sent by the server
+typedef struct {
+	// client id of the player that caused the kill
+	// can be the same as the victim_id on suicide
+	int32_t killer_id;
+
+	// client id of the player that got killed
+	int32_t victim_id;
+
+	DDNetWeapon weapon;
+
+	// set to 1 if the victim had the flag in a ctf gametype
+	int32_t mode_special;
+} DDNetMsgSvKillMsg;
 
 // sent by the client
 typedef struct {

@@ -96,6 +96,7 @@ typedef enum {
 	DDNET_MSG_KIND_SV_MOTD,
 	DDNET_MSG_KIND_SV_BROADCAST,
 	DDNET_MSG_KIND_SV_CHAT,
+	DDNET_MSG_KIND_SV_KILLMSG,
 	DDNET_MSG_KIND_CL_STARTINFO,
 } DDNetMessageKind;
 
@@ -125,6 +126,7 @@ typedef union {
 	DDNetMsgSvMotd motd;
 	DDNetMsgSvBroadcast broadcast;
 	DDNetMsgSvChat chat;
+	DDNetMsgSvKillMsg kill_msg;
 	DDNetMsgClStartInfo start_info;
 } DDNetGenericMessage;
 

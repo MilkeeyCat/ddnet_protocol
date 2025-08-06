@@ -21,6 +21,13 @@ static DDNetError decode_game_message(DDNetChunk *chunk, DDNetMessageId msg_id, 
 		msg->chat.client_id = ddnet_unpacker_get_int(unpacker);
 		msg->chat.message = ddnet_unpacker_get_string(unpacker);
 		break;
+	case DDNET_MSG_SV_KILLMSG:
+		chunk->payload.kind = DDNET_MSG_KIND_SV_KILLMSG;
+		msg->kill_msg.killer_id = ddnet_unpacker_get_int(unpacker);
+		msg->kill_msg.victim_id = ddnet_unpacker_get_int(unpacker);
+		msg->kill_msg.weapon = ddnet_unpacker_get_int(unpacker);
+		msg->kill_msg.mode_special = ddnet_unpacker_get_int(unpacker);
+		break;
 	case DDNET_MSG_CL_STARTINFO:
 		chunk->payload.kind = DDNET_MSG_KIND_CL_STARTINFO;
 		msg->start_info.name = ddnet_unpacker_get_string(unpacker);
@@ -238,6 +245,12 @@ size_t ddnet_encode_message(DDNetChunk *chunk, uint8_t *buf, DDNetError *err) {
 		ddnet_packer_add_int(&packer, msg->chat.team);
 		ddnet_packer_add_int(&packer, msg->chat.client_id);
 		ddnet_packer_add_string(&packer, msg->chat.message);
+		break;
+	case DDNET_MSG_KIND_SV_KILLMSG:
+		ddnet_packer_add_int(&packer, msg->kill_msg.killer_id);
+		ddnet_packer_add_int(&packer, msg->kill_msg.victim_id);
+		ddnet_packer_add_int(&packer, msg->kill_msg.weapon);
+		ddnet_packer_add_int(&packer, msg->kill_msg.mode_special);
 		break;
 	case DDNET_MSG_KIND_CL_STARTINFO:
 		ddnet_packer_add_string(&packer, msg->start_info.name);

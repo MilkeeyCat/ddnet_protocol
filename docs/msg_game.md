@@ -171,6 +171,31 @@ typedef struct {
 
 sent by the server
 
+# DDNetMsgSvWeaponPickup
+
+## Syntax
+
+```C
+typedef struct {
+	DDNetWeapon weapon;
+} DDNetMsgSvWeaponPickup;
+```
+
+sent by the server
+
+# DDNetMsgClSay
+
+## Syntax
+
+```C
+typedef struct {
+	DDNetChatTeam team;
+	const char *message;
+} DDNetMsgClSay;
+```
+
+sent by the client
+
 # DDNetMsgClStartInfo
 
 ## Syntax

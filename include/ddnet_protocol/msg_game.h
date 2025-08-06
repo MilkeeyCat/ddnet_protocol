@@ -134,6 +134,17 @@ typedef struct {
 	float player_hooking;
 } DDNetMsgSvTuneParams;
 
+// sent by the server
+typedef struct {
+	DDNetWeapon weapon;
+} DDNetMsgSvWeaponPickup;
+
+// sent by the client
+typedef struct {
+	DDNetChatTeam team;
+	const char *message;
+} DDNetMsgClSay;
+
 // sent by the client
 typedef struct {
 	const char *name;

@@ -180,6 +180,14 @@ void ddnet_packer_init_msg(DDNetPacker *packer, DDNetMessageKind kind) {
 		msg_id = DDNET_MSG_SV_READYTOENTER;
 		msg_category = DDNET_GAME;
 		break;
+	case DDNET_MSG_KIND_SV_WEAPONPICKUP:
+		msg_id = DDNET_MSG_SV_WEAPONPICKUP;
+		msg_category = DDNET_GAME;
+		break;
+	case DDNET_MSG_KIND_CL_SAY:
+		msg_id = DDNET_MSG_CL_SAY;
+		msg_category = DDNET_GAME;
+		break;
 	case DDNET_MSG_KIND_CL_STARTINFO:
 		msg_id = DDNET_MSG_CL_STARTINFO;
 		msg_category = DDNET_GAME;

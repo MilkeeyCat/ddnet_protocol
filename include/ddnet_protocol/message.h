@@ -50,6 +50,8 @@ typedef enum {
 	DDNET_MSG_SV_TUNEPARAMS = 6,
 	// msg id 7 was removed in 2015 it used to be extra projectile
 	DDNET_MSG_SV_READYTOENTER = 8,
+	DDNET_MSG_SV_WEAPONPICKUP = 9,
+	DDNET_MSG_CL_SAY = 17,
 	DDNET_MSG_CL_STARTINFO = 20,
 } DDNetMessageId;
 

@@ -71,6 +71,15 @@ static DDNetError decode_game_message(DDNetChunk *chunk, DDNetMessageId msg_id, 
 	case DDNET_MSG_SV_READYTOENTER:
 		chunk->payload.kind = DDNET_MSG_KIND_SV_READYTOENTER;
 		break;
+	case DDNET_MSG_SV_WEAPONPICKUP:
+		chunk->payload.kind = DDNET_MSG_KIND_SV_WEAPONPICKUP;
+		msg->weapon_pickup.weapon = ddnet_unpacker_get_int(unpacker);
+		break;
+	case DDNET_MSG_CL_SAY:
+		chunk->payload.kind = DDNET_MSG_KIND_CL_SAY;
+		msg->say.team = ddnet_unpacker_get_int(unpacker);
+		msg->say.message = ddnet_unpacker_get_string(unpacker);
+		break;
 	case DDNET_MSG_CL_STARTINFO:
 		chunk->payload.kind = DDNET_MSG_KIND_CL_STARTINFO;
 		msg->start_info.name = ddnet_unpacker_get_string(unpacker);
@@ -333,6 +342,13 @@ size_t ddnet_encode_message(DDNetChunk *chunk, uint8_t *buf, DDNetError *err) {
 		ddnet_packer_add_int(&packer, (int32_t)(msg->tune_params.laser_damage * 100));
 		ddnet_packer_add_int(&packer, (int32_t)(msg->tune_params.player_collision * 100));
 		ddnet_packer_add_int(&packer, (int32_t)(msg->tune_params.player_hooking * 100));
+		break;
+	case DDNET_MSG_KIND_SV_WEAPONPICKUP:
+		ddnet_packer_add_int(&packer, msg->weapon_pickup.weapon);
+		break;
+	case DDNET_MSG_KIND_CL_SAY:
+		ddnet_packer_add_int(&packer, msg->chat.team);
+		ddnet_packer_add_string(&packer, msg->chat.message);
 		break;
 	case DDNET_MSG_KIND_CL_STARTINFO:
 		ddnet_packer_add_string(&packer, msg->start_info.name);

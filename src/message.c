@@ -280,3 +280,20 @@ DDNetMessage ddnet_build_msg_info(const char *password) {
 		},
 	};
 }
+
+DDNetMessage ddnet_build_msg_start_info(const char *name) {
+	return (DDNetMessage){
+		.kind = DDNET_MSG_KIND_CL_STARTINFO,
+		.msg = {
+			.start_info = {
+				.name = name,
+				.clan = "",
+				.country = -1,
+				.skin = "greensward",
+				.use_custom_color = 0,
+				.color_body = 0,
+				.color_feet = 0,
+			},
+		},
+	};
+}

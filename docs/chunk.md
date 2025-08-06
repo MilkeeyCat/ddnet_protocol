@@ -121,6 +121,8 @@ typedef enum {
 	DDNET_MSG_KIND_SV_BROADCAST,
 	DDNET_MSG_KIND_SV_CHAT,
 	DDNET_MSG_KIND_SV_KILLMSG,
+	DDNET_MSG_KIND_SV_SOUNDGLOBAL,
+	DDNET_MSG_KIND_SV_TUNEPARAMS,
 	DDNET_MSG_KIND_CL_STARTINFO,
 } DDNetMessageKind;
 ```
@@ -156,6 +158,8 @@ typedef union {
 	DDNetMsgSvBroadcast broadcast;
 	DDNetMsgSvChat chat;
 	DDNetMsgSvKillMsg kill_msg;
+	DDNetMsgSvSoundGlobal sound_global;
+	DDNetMsgSvTuneParams tune_params;
 	DDNetMsgClStartInfo start_info;
 } DDNetGenericMessage;
 ```

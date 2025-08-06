@@ -115,6 +115,62 @@ typedef struct {
 
 sent by the server
 
+# DDNetMsgSvSoundGlobal
+
+## Syntax
+
+```C
+typedef struct {
+	int32_t sound_id;
+} DDNetMsgSvSoundGlobal;
+```
+
+sent by the server
+
+# DDNetMsgSvTuneParams
+
+## Syntax
+
+```C
+typedef struct {
+	float ground_control_speed;
+	float ground_control_accel;
+	float ground_friction;
+	float ground_jump_impulse;
+	float air_jump_impulse;
+	float air_control_speed;
+	float air_control_accel;
+	float air_friction;
+	float hook_length;
+	float hook_fire_speed;
+	float hook_drag_accel;
+	float hook_drag_speed;
+	float gravity;
+	float velramp_start;
+	float velramp_range;
+	float velramp_curvature;
+	float gun_curvature;
+	float gun_speed;
+	float gun_lifetime;
+	float shotgun_curvature;
+	float shotgun_speed;
+	float shotgun_speeddiff;
+	float shotgun_lifetime;
+	float grenade_curvature;
+	float grenade_speed;
+	float grenade_lifetime;
+	float laser_reach;
+	float laser_bounce_delay;
+	float laser_bounce_num;
+	float laser_bounce_cost;
+	float laser_damage;
+	float player_collision;
+	float player_hooking;
+} DDNetMsgSvTuneParams;
+```
+
+sent by the server
+
 # DDNetMsgClStartInfo
 
 ## Syntax

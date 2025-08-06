@@ -68,6 +68,9 @@ static DDNetError decode_game_message(DDNetChunk *chunk, DDNetMessageId msg_id, 
 		msg->tune_params.player_collision = (float)ddnet_unpacker_get_int(unpacker) / 100;
 		msg->tune_params.player_hooking = (float)ddnet_unpacker_get_int(unpacker) / 100;
 		break;
+	case DDNET_MSG_SV_READYTOENTER:
+		chunk->payload.kind = DDNET_MSG_KIND_SV_READYTOENTER;
+		break;
 	case DDNET_MSG_CL_STARTINFO:
 		chunk->payload.kind = DDNET_MSG_KIND_CL_STARTINFO;
 		msg->start_info.name = ddnet_unpacker_get_string(unpacker);
@@ -229,6 +232,7 @@ size_t ddnet_encode_message(DDNetChunk *chunk, uint8_t *buf, DDNetError *err) {
 	case DDNET_MSG_KIND_CON_READY:
 	case DDNET_MSG_KIND_READY:
 	case DDNET_MSG_KIND_ENTERGAME:
+	case DDNET_MSG_KIND_SV_READYTOENTER:
 		break;
 	case DDNET_MSG_KIND_INPUTTIMING:
 		ddnet_packer_add_int(&packer, msg->input_timing.intended_tick);

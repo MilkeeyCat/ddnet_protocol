@@ -32,6 +32,7 @@ typedef enum {
 } DDNetChatTeam;
 
 // regular and special weapons
+// see also `DDNetPickupWeapon` for regular weapons only
 typedef enum {
 	// team switching and similar
 	DDNET_WEAPON_GAME = -3,
@@ -49,6 +50,18 @@ typedef enum {
 	DDNET_WEAPON_LASER = 4,
 	DDNET_WEAPON_NINJA = 5,
 } DDNetWeapon;
+
+// regular weapons only see also `DDNetWeapon` for special weapons
+// these weapons can be picked up
+// kill messages can contain more weapons
+typedef enum {
+	DDNET_PICKUP_WEAPON_HAMMER = 0,
+	DDNET_PICKUP_WEAPON_GUN = 1,
+	DDNET_PICKUP_WEAPON_SHOTGUN = 2,
+	DDNET_PICKUP_WEAPON_GRENADE = 3,
+	DDNET_PICKUP_WEAPON_LASER = 4,
+	DDNET_PICKUP_WEAPON_NINJA = 5,
+} DDNetPickupWeapon;
 
 // message of the day
 // sent by the server
@@ -136,7 +149,7 @@ typedef struct {
 
 // sent by the server
 typedef struct {
-	DDNetWeapon weapon;
+	DDNetPickupWeapon weapon;
 } DDNetMsgSvWeaponPickup;
 
 // sent by the client

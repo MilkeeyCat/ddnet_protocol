@@ -49,6 +49,26 @@ typedef enum {
 ```
 
 regular and special weapons
+see also `DDNetPickupWeapon` for regular weapons only
+
+# DDNetPickupWeapon
+
+## Syntax
+
+```C
+typedef enum {
+	DDNET_PICKUP_WEAPON_HAMMER = 0,
+	DDNET_PICKUP_WEAPON_GUN = 1,
+	DDNET_PICKUP_WEAPON_SHOTGUN = 2,
+	DDNET_PICKUP_WEAPON_GRENADE = 3,
+	DDNET_PICKUP_WEAPON_LASER = 4,
+	DDNET_PICKUP_WEAPON_NINJA = 5,
+} DDNetPickupWeapon;
+```
+
+regular weapons only see also `DDNetWeapon` for special weapons
+these weapons can be picked up
+kill messages can contain more weapons
 
 # DDNetMsgSvMotd
 
@@ -177,7 +197,7 @@ sent by the server
 
 ```C
 typedef struct {
-	DDNetWeapon weapon;
+	DDNetPickupWeapon weapon;
 } DDNetMsgSvWeaponPickup;
 ```
 

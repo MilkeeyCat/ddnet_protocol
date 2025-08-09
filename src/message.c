@@ -21,6 +21,65 @@ static DDNetError decode_game_message(DDNetChunk *chunk, DDNetMessageId msg_id, 
 		msg->chat.client_id = ddnet_unpacker_get_int(unpacker);
 		msg->chat.message = ddnet_unpacker_get_string(unpacker);
 		break;
+	case DDNET_MSG_SV_KILLMSG:
+		chunk->payload.kind = DDNET_MSG_KIND_SV_KILLMSG;
+		msg->kill_msg.killer_id = ddnet_unpacker_get_int(unpacker);
+		msg->kill_msg.victim_id = ddnet_unpacker_get_int(unpacker);
+		msg->kill_msg.weapon = ddnet_unpacker_get_int(unpacker);
+		msg->kill_msg.mode_special = ddnet_unpacker_get_int(unpacker);
+		break;
+	case DDNET_MSG_SV_SOUNDGLOBAL:
+		chunk->payload.kind = DDNET_MSG_KIND_SV_SOUNDGLOBAL;
+		msg->sound_global.sound_id = ddnet_unpacker_get_int(unpacker);
+		break;
+	case DDNET_MSG_SV_TUNEPARAMS:
+		chunk->payload.kind = DDNET_MSG_KIND_SV_TUNEPARAMS;
+		msg->tune_params.ground_control_speed = (float)ddnet_unpacker_get_int(unpacker) / 100;
+		msg->tune_params.ground_control_accel = (float)ddnet_unpacker_get_int(unpacker) / 100;
+		msg->tune_params.ground_friction = (float)ddnet_unpacker_get_int(unpacker) / 100;
+		msg->tune_params.ground_jump_impulse = (float)ddnet_unpacker_get_int(unpacker) / 100;
+		msg->tune_params.air_jump_impulse = (float)ddnet_unpacker_get_int(unpacker) / 100;
+		msg->tune_params.air_control_speed = (float)ddnet_unpacker_get_int(unpacker) / 100;
+		msg->tune_params.air_control_accel = (float)ddnet_unpacker_get_int(unpacker) / 100;
+		msg->tune_params.air_friction = (float)ddnet_unpacker_get_int(unpacker) / 100;
+		msg->tune_params.hook_length = (float)ddnet_unpacker_get_int(unpacker) / 100;
+		msg->tune_params.hook_fire_speed = (float)ddnet_unpacker_get_int(unpacker) / 100;
+		msg->tune_params.hook_drag_accel = (float)ddnet_unpacker_get_int(unpacker) / 100;
+		msg->tune_params.hook_drag_speed = (float)ddnet_unpacker_get_int(unpacker) / 100;
+		msg->tune_params.gravity = (float)ddnet_unpacker_get_int(unpacker) / 100;
+		msg->tune_params.velramp_start = (float)ddnet_unpacker_get_int(unpacker) / 100;
+		msg->tune_params.velramp_range = (float)ddnet_unpacker_get_int(unpacker) / 100;
+		msg->tune_params.velramp_curvature = (float)ddnet_unpacker_get_int(unpacker) / 100;
+		msg->tune_params.gun_curvature = (float)ddnet_unpacker_get_int(unpacker) / 100;
+		msg->tune_params.gun_speed = (float)ddnet_unpacker_get_int(unpacker) / 100;
+		msg->tune_params.gun_lifetime = (float)ddnet_unpacker_get_int(unpacker) / 100;
+		msg->tune_params.shotgun_curvature = (float)ddnet_unpacker_get_int(unpacker) / 100;
+		msg->tune_params.shotgun_speed = (float)ddnet_unpacker_get_int(unpacker) / 100;
+		msg->tune_params.shotgun_speeddiff = (float)ddnet_unpacker_get_int(unpacker) / 100;
+		msg->tune_params.shotgun_lifetime = (float)ddnet_unpacker_get_int(unpacker) / 100;
+		msg->tune_params.grenade_curvature = (float)ddnet_unpacker_get_int(unpacker) / 100;
+		msg->tune_params.grenade_speed = (float)ddnet_unpacker_get_int(unpacker) / 100;
+		msg->tune_params.grenade_lifetime = (float)ddnet_unpacker_get_int(unpacker) / 100;
+		msg->tune_params.laser_reach = (float)ddnet_unpacker_get_int(unpacker) / 100;
+		msg->tune_params.laser_bounce_delay = (float)ddnet_unpacker_get_int(unpacker) / 100;
+		msg->tune_params.laser_bounce_num = (float)ddnet_unpacker_get_int(unpacker) / 100;
+		msg->tune_params.laser_bounce_cost = (float)ddnet_unpacker_get_int(unpacker) / 100;
+		msg->tune_params.laser_damage = (float)ddnet_unpacker_get_int(unpacker) / 100;
+		msg->tune_params.player_collision = (float)ddnet_unpacker_get_int(unpacker) / 100;
+		msg->tune_params.player_hooking = (float)ddnet_unpacker_get_int(unpacker) / 100;
+		break;
+	case DDNET_MSG_SV_READYTOENTER:
+		chunk->payload.kind = DDNET_MSG_KIND_SV_READYTOENTER;
+		break;
+	case DDNET_MSG_SV_WEAPONPICKUP:
+		chunk->payload.kind = DDNET_MSG_KIND_SV_WEAPONPICKUP;
+		msg->weapon_pickup.weapon = ddnet_unpacker_get_int(unpacker);
+		break;
+	case DDNET_MSG_CL_SAY:
+		chunk->payload.kind = DDNET_MSG_KIND_CL_SAY;
+		msg->say.team = ddnet_unpacker_get_int(unpacker);
+		msg->say.message = ddnet_unpacker_get_string(unpacker);
+		break;
 	case DDNET_MSG_CL_STARTINFO:
 		chunk->payload.kind = DDNET_MSG_KIND_CL_STARTINFO;
 		msg->start_info.name = ddnet_unpacker_get_string(unpacker);
@@ -182,6 +241,7 @@ size_t ddnet_encode_message(DDNetChunk *chunk, uint8_t *buf, DDNetError *err) {
 	case DDNET_MSG_KIND_CON_READY:
 	case DDNET_MSG_KIND_READY:
 	case DDNET_MSG_KIND_ENTERGAME:
+	case DDNET_MSG_KIND_SV_READYTOENTER:
 		break;
 	case DDNET_MSG_KIND_INPUTTIMING:
 		ddnet_packer_add_int(&packer, msg->input_timing.intended_tick);
@@ -237,6 +297,57 @@ size_t ddnet_encode_message(DDNetChunk *chunk, uint8_t *buf, DDNetError *err) {
 	case DDNET_MSG_KIND_SV_CHAT:
 		ddnet_packer_add_int(&packer, msg->chat.team);
 		ddnet_packer_add_int(&packer, msg->chat.client_id);
+		ddnet_packer_add_string(&packer, msg->chat.message);
+		break;
+	case DDNET_MSG_KIND_SV_KILLMSG:
+		ddnet_packer_add_int(&packer, msg->kill_msg.killer_id);
+		ddnet_packer_add_int(&packer, msg->kill_msg.victim_id);
+		ddnet_packer_add_int(&packer, msg->kill_msg.weapon);
+		ddnet_packer_add_int(&packer, msg->kill_msg.mode_special);
+		break;
+	case DDNET_MSG_KIND_SV_SOUNDGLOBAL:
+		ddnet_packer_add_int(&packer, msg->sound_global.sound_id);
+		break;
+	case DDNET_MSG_KIND_SV_TUNEPARAMS:
+		ddnet_packer_add_int(&packer, (int32_t)(msg->tune_params.ground_control_speed * 100));
+		ddnet_packer_add_int(&packer, (int32_t)(msg->tune_params.ground_control_accel * 100));
+		ddnet_packer_add_int(&packer, (int32_t)(msg->tune_params.ground_friction * 100));
+		ddnet_packer_add_int(&packer, (int32_t)(msg->tune_params.ground_jump_impulse * 100));
+		ddnet_packer_add_int(&packer, (int32_t)(msg->tune_params.air_jump_impulse * 100));
+		ddnet_packer_add_int(&packer, (int32_t)(msg->tune_params.air_control_speed * 100));
+		ddnet_packer_add_int(&packer, (int32_t)(msg->tune_params.air_control_accel * 100));
+		ddnet_packer_add_int(&packer, (int32_t)(msg->tune_params.air_friction * 100));
+		ddnet_packer_add_int(&packer, (int32_t)(msg->tune_params.hook_length * 100));
+		ddnet_packer_add_int(&packer, (int32_t)(msg->tune_params.hook_fire_speed * 100));
+		ddnet_packer_add_int(&packer, (int32_t)(msg->tune_params.hook_drag_accel * 100));
+		ddnet_packer_add_int(&packer, (int32_t)(msg->tune_params.hook_drag_speed * 100));
+		ddnet_packer_add_int(&packer, (int32_t)(msg->tune_params.gravity * 100));
+		ddnet_packer_add_int(&packer, (int32_t)(msg->tune_params.velramp_start * 100));
+		ddnet_packer_add_int(&packer, (int32_t)(msg->tune_params.velramp_range * 100));
+		ddnet_packer_add_int(&packer, (int32_t)(msg->tune_params.velramp_curvature * 100));
+		ddnet_packer_add_int(&packer, (int32_t)(msg->tune_params.gun_curvature * 100));
+		ddnet_packer_add_int(&packer, (int32_t)(msg->tune_params.gun_speed * 100));
+		ddnet_packer_add_int(&packer, (int32_t)(msg->tune_params.gun_lifetime * 100));
+		ddnet_packer_add_int(&packer, (int32_t)(msg->tune_params.shotgun_curvature * 100));
+		ddnet_packer_add_int(&packer, (int32_t)(msg->tune_params.shotgun_speed * 100));
+		ddnet_packer_add_int(&packer, (int32_t)(msg->tune_params.shotgun_speeddiff * 100));
+		ddnet_packer_add_int(&packer, (int32_t)(msg->tune_params.shotgun_lifetime * 100));
+		ddnet_packer_add_int(&packer, (int32_t)(msg->tune_params.grenade_curvature * 100));
+		ddnet_packer_add_int(&packer, (int32_t)(msg->tune_params.grenade_speed * 100));
+		ddnet_packer_add_int(&packer, (int32_t)(msg->tune_params.grenade_lifetime * 100));
+		ddnet_packer_add_int(&packer, (int32_t)(msg->tune_params.laser_reach * 100));
+		ddnet_packer_add_int(&packer, (int32_t)(msg->tune_params.laser_bounce_delay * 100));
+		ddnet_packer_add_int(&packer, (int32_t)(msg->tune_params.laser_bounce_num * 100));
+		ddnet_packer_add_int(&packer, (int32_t)(msg->tune_params.laser_bounce_cost * 100));
+		ddnet_packer_add_int(&packer, (int32_t)(msg->tune_params.laser_damage * 100));
+		ddnet_packer_add_int(&packer, (int32_t)(msg->tune_params.player_collision * 100));
+		ddnet_packer_add_int(&packer, (int32_t)(msg->tune_params.player_hooking * 100));
+		break;
+	case DDNET_MSG_KIND_SV_WEAPONPICKUP:
+		ddnet_packer_add_int(&packer, msg->weapon_pickup.weapon);
+		break;
+	case DDNET_MSG_KIND_CL_SAY:
+		ddnet_packer_add_int(&packer, msg->chat.team);
 		ddnet_packer_add_string(&packer, msg->chat.message);
 		break;
 	case DDNET_MSG_KIND_CL_STARTINFO:

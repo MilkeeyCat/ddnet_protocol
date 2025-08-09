@@ -120,6 +120,12 @@ typedef enum {
 	DDNET_MSG_KIND_SV_MOTD,
 	DDNET_MSG_KIND_SV_BROADCAST,
 	DDNET_MSG_KIND_SV_CHAT,
+	DDNET_MSG_KIND_SV_KILLMSG,
+	DDNET_MSG_KIND_SV_SOUNDGLOBAL,
+	DDNET_MSG_KIND_SV_TUNEPARAMS,
+	DDNET_MSG_KIND_SV_READYTOENTER,
+	DDNET_MSG_KIND_SV_WEAPONPICKUP,
+	DDNET_MSG_KIND_CL_SAY,
 	DDNET_MSG_KIND_CL_STARTINFO,
 } DDNetMessageKind;
 ```
@@ -154,6 +160,11 @@ typedef union {
 	DDNetMsgSvMotd motd;
 	DDNetMsgSvBroadcast broadcast;
 	DDNetMsgSvChat chat;
+	DDNetMsgSvKillMsg kill_msg;
+	DDNetMsgSvSoundGlobal sound_global;
+	DDNetMsgSvTuneParams tune_params;
+	DDNetMsgSvWeaponPickup weapon_pickup;
+	DDNetMsgClSay say;
 	DDNetMsgClStartInfo start_info;
 } DDNetGenericMessage;
 ```

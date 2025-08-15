@@ -75,6 +75,36 @@ static DDNetError decode_game_message(DDNetChunk *chunk, DDNetMessageId msg_id, 
 		chunk->payload.kind = DDNET_MSG_KIND_SV_WEAPONPICKUP;
 		msg->weapon_pickup.weapon = ddnet_unpacker_get_int(unpacker);
 		break;
+	case DDNET_MSG_SV_EMOTICON:
+		chunk->payload.kind = DDNET_MSG_KIND_SV_EMOTICON;
+		msg->emoticon.client_id = ddnet_unpacker_get_int(unpacker);
+		msg->emoticon.emoticon = ddnet_unpacker_get_int(unpacker);
+		break;
+	case DDNET_MSG_SV_VOTECLEAROPTIONS:
+		chunk->payload.kind = DDNET_MSG_KIND_SV_VOTECLEAROPTIONS;
+		break;
+	case DDNET_MSG_SV_VOTEOPTIONLISTADD:
+		chunk->payload.kind = DDNET_MSG_KIND_SV_VOTEOPTIONLISTADD;
+		msg->vote_option_list_add.num_options = ddnet_unpacker_get_int(unpacker);
+		memset((void *)msg->vote_option_list_add.descriptions, 0, sizeof(msg->vote_option_list_add.descriptions));
+		for(int32_t i = 0; i < msg->vote_option_list_add.num_options; i++) {
+			msg->vote_option_list_add.descriptions[i] = ddnet_unpacker_get_string(unpacker);
+		}
+		break;
+	case DDNET_MSG_SV_VOTEOPTIONADD:
+		chunk->payload.kind = DDNET_MSG_KIND_SV_VOTEOPTIONADD;
+		msg->vote_option_add.description = ddnet_unpacker_get_string(unpacker);
+		break;
+	case DDNET_MSG_SV_VOTEOPTIONREMOVE:
+		chunk->payload.kind = DDNET_MSG_KIND_SV_VOTEOPTIONREMOVE;
+		msg->vote_option_remove.description = ddnet_unpacker_get_string(unpacker);
+		break;
+	case DDNET_MSG_SV_VOTESET:
+		chunk->payload.kind = DDNET_MSG_KIND_SV_VOTESET;
+		msg->vote_set.timeout = ddnet_unpacker_get_int(unpacker);
+		msg->vote_set.description = ddnet_unpacker_get_string(unpacker);
+		msg->vote_set.reason = ddnet_unpacker_get_string(unpacker);
+		break;
 	case DDNET_MSG_CL_SAY:
 		chunk->payload.kind = DDNET_MSG_KIND_CL_SAY;
 		msg->say.team = ddnet_unpacker_get_int(unpacker);
@@ -242,6 +272,7 @@ size_t ddnet_encode_message(DDNetChunk *chunk, uint8_t *buf, DDNetError *err) {
 	case DDNET_MSG_KIND_READY:
 	case DDNET_MSG_KIND_ENTERGAME:
 	case DDNET_MSG_KIND_SV_READYTOENTER:
+	case DDNET_MSG_KIND_SV_VOTECLEAROPTIONS:
 		break;
 	case DDNET_MSG_KIND_INPUTTIMING:
 		ddnet_packer_add_int(&packer, msg->input_timing.intended_tick);
@@ -345,6 +376,31 @@ size_t ddnet_encode_message(DDNetChunk *chunk, uint8_t *buf, DDNetError *err) {
 		break;
 	case DDNET_MSG_KIND_SV_WEAPONPICKUP:
 		ddnet_packer_add_int(&packer, msg->weapon_pickup.weapon);
+		break;
+	case DDNET_MSG_KIND_SV_EMOTICON:
+		ddnet_packer_add_int(&packer, msg->emoticon.client_id);
+		ddnet_packer_add_int(&packer, msg->emoticon.emoticon);
+		break;
+	case DDNET_MSG_KIND_SV_VOTEOPTIONLISTADD:
+		ddnet_packer_add_int(&packer, msg->vote_option_list_add.num_options);
+		for(int32_t i = 0; i < (sizeof(msg->vote_option_list_add.descriptions) / sizeof(const char *)); i++) {
+			if(i > msg->vote_option_list_add.num_options) {
+				ddnet_packer_add_string(&packer, "");
+				continue;
+			}
+			ddnet_packer_add_string(&packer, msg->vote_option_list_add.descriptions[i]);
+		}
+		break;
+	case DDNET_MSG_KIND_SV_VOTEOPTIONADD:
+		ddnet_packer_add_string(&packer, msg->vote_option_add.description);
+		break;
+	case DDNET_MSG_KIND_SV_VOTEOPTIONREMOVE:
+		ddnet_packer_add_string(&packer, msg->vote_option_remove.description);
+		break;
+	case DDNET_MSG_KIND_SV_VOTESET:
+		ddnet_packer_add_int(&packer, msg->vote_set.timeout);
+		ddnet_packer_add_string(&packer, msg->vote_set.description);
+		ddnet_packer_add_string(&packer, msg->vote_set.reason);
 		break;
 	case DDNET_MSG_KIND_CL_SAY:
 		ddnet_packer_add_int(&packer, msg->chat.team);

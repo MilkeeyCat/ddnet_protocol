@@ -70,6 +70,33 @@ regular weapons only see also `DDNetWeapon` for special weapons
 these weapons can be picked up
 kill messages can contain more weapons
 
+# DDNetEmoticon
+
+## Syntax
+
+```C
+typedef enum {
+	DDNET_EMOTICON_OOP,
+	DDNET_EMOTICON_EXCLAMATION,
+	DDNET_EMOTICON_HEARTS,
+	DDNET_EMOTICON_DROP,
+	DDNET_EMOTICON_DOTDOT,
+	DDNET_EMOTICON_MUSIC,
+	DDNET_EMOTICON_SORRY,
+	DDNET_EMOTICON_GHOST,
+	DDNET_EMOTICON_SUSHI,
+	DDNET_EMOTICON_SPLATTEE,
+	DDNET_EMOTICON_DEVILTEE,
+	DDNET_EMOTICON_ZOMG,
+	DDNET_EMOTICON_ZZZ,
+	DDNET_EMOTICON_WTF,
+	DDNET_EMOTICON_EYES,
+	DDNET_EMOTICON_QUESTION,
+} DDNetEmoticon;
+```
+
+emoticons are displayed above the tee
+
 # DDNetMsgSvMotd
 
 ## Syntax
@@ -199,6 +226,77 @@ sent by the server
 typedef struct {
 	DDNetPickupWeapon weapon;
 } DDNetMsgSvWeaponPickup;
+```
+
+sent by the server
+
+# DDNetMsgSvEmoticon
+
+## Syntax
+
+```C
+typedef struct {
+	// id of the player that the emoticon is attached to
+	int32_t client_id;
+	DDNetEmoticon emoticon;
+} DDNetMsgSvEmoticon;
+```
+
+sent by the server
+
+# DDNetMsgSvVoteOptionListAdd
+
+## Syntax
+
+```C
+typedef struct {
+	// The next field `descriptions` has a fixed size of 14
+	// but not all strings might be set.
+	// So `num_options` determines how many values starting from
+	// index 0 are valid in `descriptions`
+	int32_t num_options;
+	// only access index 0-num_options
+	const char *descriptions[14];
+} DDNetMsgSvVoteOptionListAdd;
+```
+
+sent by the server
+
+# DDNetMsgSvVoteOptionAdd
+
+## Syntax
+
+```C
+typedef struct {
+	const char *description;
+} DDNetMsgSvVoteOptionAdd;
+```
+
+sent by the server
+See also `DDNetMsgSvVoteOptionListAdd` for multiple vote options at once
+
+# DDNetMsgSvVoteOptionRemove
+
+## Syntax
+
+```C
+typedef struct {
+	const char *description;
+} DDNetMsgSvVoteOptionRemove;
+```
+
+sent by the server
+
+# DDNetMsgSvVoteSet
+
+## Syntax
+
+```C
+typedef struct {
+	int32_t timeout;
+	const char *description;
+	const char *reason;
+} DDNetMsgSvVoteSet;
 ```
 
 sent by the server

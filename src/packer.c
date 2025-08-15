@@ -184,6 +184,30 @@ void ddnet_packer_init_msg(DDNetPacker *packer, DDNetMessageKind kind) {
 		msg_id = DDNET_MSG_SV_WEAPONPICKUP;
 		msg_category = DDNET_GAME;
 		break;
+	case DDNET_MSG_KIND_SV_EMOTICON:
+		msg_id = DDNET_MSG_SV_EMOTICON;
+		msg_category = DDNET_GAME;
+		break;
+	case DDNET_MSG_KIND_SV_VOTECLEAROPTIONS:
+		msg_id = DDNET_MSG_SV_VOTECLEAROPTIONS;
+		msg_category = DDNET_GAME;
+		break;
+	case DDNET_MSG_KIND_SV_VOTEOPTIONLISTADD:
+		msg_id = DDNET_MSG_SV_VOTEOPTIONLISTADD;
+		msg_category = DDNET_GAME;
+		break;
+	case DDNET_MSG_KIND_SV_VOTEOPTIONADD:
+		msg_id = DDNET_MSG_SV_VOTEOPTIONADD;
+		msg_category = DDNET_GAME;
+		break;
+	case DDNET_MSG_KIND_SV_VOTEOPTIONREMOVE:
+		msg_id = DDNET_MSG_SV_VOTEOPTIONREMOVE;
+		msg_category = DDNET_GAME;
+		break;
+	case DDNET_MSG_KIND_SV_VOTESET:
+		msg_id = DDNET_MSG_SV_VOTESET;
+		msg_category = DDNET_GAME;
+		break;
 	case DDNET_MSG_KIND_CL_SAY:
 		msg_id = DDNET_MSG_CL_SAY;
 		msg_category = DDNET_GAME;

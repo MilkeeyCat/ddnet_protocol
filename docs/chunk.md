@@ -125,6 +125,12 @@ typedef enum {
 	DDNET_MSG_KIND_SV_TUNEPARAMS,
 	DDNET_MSG_KIND_SV_READYTOENTER,
 	DDNET_MSG_KIND_SV_WEAPONPICKUP,
+	DDNET_MSG_KIND_SV_EMOTICON,
+	DDNET_MSG_KIND_SV_VOTECLEAROPTIONS,
+	DDNET_MSG_KIND_SV_VOTEOPTIONLISTADD,
+	DDNET_MSG_KIND_SV_VOTEOPTIONADD,
+	DDNET_MSG_KIND_SV_VOTEOPTIONREMOVE,
+	DDNET_MSG_KIND_SV_VOTESET,
 	DDNET_MSG_KIND_CL_SAY,
 	DDNET_MSG_KIND_CL_STARTINFO,
 } DDNetMessageKind;
@@ -164,6 +170,11 @@ typedef union {
 	DDNetMsgSvSoundGlobal sound_global;
 	DDNetMsgSvTuneParams tune_params;
 	DDNetMsgSvWeaponPickup weapon_pickup;
+	DDNetMsgSvEmoticon emoticon;
+	DDNetMsgSvVoteOptionListAdd vote_option_list_add;
+	DDNetMsgSvVoteOptionAdd vote_option_add;
+	DDNetMsgSvVoteOptionRemove vote_option_remove;
+	DDNetMsgSvVoteSet vote_set;
 	DDNetMsgClSay say;
 	DDNetMsgClStartInfo start_info;
 } DDNetGenericMessage;

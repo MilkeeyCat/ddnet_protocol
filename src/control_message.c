@@ -50,13 +50,13 @@ size_t ddnet_encode_control(const DDNetControlMessage *msg, uint8_t *buf, DDNetE
 	buf[0] = msg->kind;
 
 	switch(msg->kind) {
-	case DDNET_CTRL_MSG_KEEPALIVE:
 	case DDNET_CTRL_MSG_CONNECTACCEPT:
 		if(err) {
 			// TODO: implement
 			*err = DDNET_ERR_INVALID_CONTROL_MESSAGE;
 		}
 		break;
+	case DDNET_CTRL_MSG_KEEPALIVE:
 	case DDNET_CTRL_MSG_ACCEPT:
 		break;
 	case DDNET_CTRL_MSG_CONNECT:

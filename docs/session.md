@@ -44,3 +44,22 @@ This struct is meant to be passed as mutable pointer to encode and decode method
 Where its sequence numbers can be read and written to based on the amount of
 vital messages packed and unpacked.
 
+# ddnet_seq_in_backroom
+
+## Syntax
+
+```C
+bool ddnet_seq_in_backroom(uint16_t sequence, uint16_t ack);
+```
+
+Only used for chunks where the sequence number does not match the expected value
+to decide wether to drop known chunks silently or request resend if something got lost
+The expected value would be the `(last_ack + 1) % DDNET_MAX_SEQUENCE`
+
+The argument `sequence` is the sequence number of the incoming chunk
+
+The argument `ack` is the expected sequence number
+
+true - if the sequence number is already known and the chunk should be dropped
+false - if the sequence number is off and we need to request a resend of lost chunks
+

@@ -1,7 +1,7 @@
-#include "chunk.h"
-#include "errors.h"
-#include "message.h"
-#include "packet.h"
+#include <ddnet_protocol/chunk.h>
+#include <ddnet_protocol/errors.h>
+#include <ddnet_protocol/message.h>
+#include <ddnet_protocol/packet.h>
 
 size_t ddnet_decode_chunk_header(const uint8_t *buf, DDNetChunkHeader *header) {
 	header->flags = buf[0] & 0b11000000;

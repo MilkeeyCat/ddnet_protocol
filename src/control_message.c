@@ -1,7 +1,7 @@
-#include "control_message.h"
-#include "packer.h"
-#include "packet.h"
-#include "token.h"
+#include <ddnet_protocol/control_message.h>
+#include <ddnet_protocol/packer.h>
+#include <ddnet_protocol/packet.h>
+#include <ddnet_protocol/token.h>
 
 size_t ddnet_decode_control(const uint8_t *buf, size_t len, DDNetControlMessage *msg, DDNetError *err) {
 	msg->kind = buf[0];

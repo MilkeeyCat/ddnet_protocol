@@ -1,5 +1,5 @@
-#include "huffman.h"
-#include "errors.h"
+#include <ddnet_protocol/errors.h>
+#include <ddnet_protocol/huffman.h>
 
 static const uint32_t FREQUENCY_TABLE[256 + 1] = {
 	1 << 30, 4545, 2657, 431, 1950, 919, 444, 482, 2244, 617, 838, 542, 715, 1814, 304, 240, 754, 212, 647, 186,

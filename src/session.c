@@ -1,5 +1,5 @@
-#include "session.h"
-#include "chunk.h"
+#include <ddnet_protocol/chunk.h>
+#include <ddnet_protocol/session.h>
 
 bool ddnet_seq_in_backroom(uint16_t sequence, uint16_t ack) {
 	int32_t bottom = ack - (DDNET_MAX_SEQUENCE / 2);

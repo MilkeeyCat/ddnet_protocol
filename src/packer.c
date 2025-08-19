@@ -1,8 +1,8 @@
-#include "packer.h"
-#include "chunk.h"
-#include "common.h"
-#include "errors.h"
-#include "message.h"
+#include <ddnet_protocol/chunk.h>
+#include <ddnet_protocol/common.h>
+#include <ddnet_protocol/errors.h>
+#include <ddnet_protocol/message.h>
+#include <ddnet_protocol/packer.h>
 
 void ddnet_str_sanitize_cc(char *string) {
 	uint8_t *str = (uint8_t *)string;

@@ -1,11 +1,11 @@
-#include "packet.h"
-#include "chunk.h"
-#include "control_message.h"
-#include "errors.h"
-#include "fetch_chunks.h"
-#include "huffman.h"
-#include "message.h"
-#include "token.h"
+#include <ddnet_protocol/chunk.h>
+#include <ddnet_protocol/control_message.h>
+#include <ddnet_protocol/errors.h>
+#include <ddnet_protocol/fetch_chunks.h>
+#include <ddnet_protocol/huffman.h>
+#include <ddnet_protocol/message.h>
+#include <ddnet_protocol/packet.h>
+#include <ddnet_protocol/token.h>
 
 DDNetPacketHeader ddnet_decode_packet_header(const uint8_t *buf) {
 	return (DDNetPacketHeader){

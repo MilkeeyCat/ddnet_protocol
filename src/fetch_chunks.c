@@ -1,7 +1,7 @@
-#include "fetch_chunks.h"
-#include "errors.h"
-#include "message.h"
-#include "packet.h"
+#include <ddnet_protocol/errors.h>
+#include <ddnet_protocol/fetch_chunks.h>
+#include <ddnet_protocol/message.h>
+#include <ddnet_protocol/packet.h>
 
 size_t ddnet_fetch_chunks(uint8_t *buf, size_t len, DDNetPacketHeader *header, OnDDNetChunk callback, void *ctx, DDNetError *err) {
 	uint8_t *start = buf;

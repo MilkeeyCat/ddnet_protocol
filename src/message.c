@@ -1,8 +1,8 @@
-#include "message.h"
-#include "chunk.h"
-#include "errors.h"
-#include "msg_system.h"
-#include "packer.h"
+#include <ddnet_protocol/chunk.h>
+#include <ddnet_protocol/errors.h>
+#include <ddnet_protocol/message.h>
+#include <ddnet_protocol/msg_system.h>
+#include <ddnet_protocol/packer.h>
 
 static DDNetError decode_game_message(DDNetChunk *chunk, DDNetMessageId msg_id, DDNetUnpacker *unpacker) {
 	DDNetGenericMessage *msg = &chunk->payload.msg;

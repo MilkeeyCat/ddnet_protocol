@@ -1,4 +1,4 @@
-#include "token.h"
+#include <ddnet_protocol/token.h>
 
 const DDNetToken DDNET_TOKEN_MAGIC = 0x544b454e;
 const DDNetToken DDNET_TOKEN_NONE = 0xffffffff;

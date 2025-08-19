@@ -14,7 +14,6 @@ FILE(GLOB LIB_SOURCES src/*.c)
 FILE(GLOB LIB_PUBLIC_HEADERS include/ddnet_protocol/*.h)
 add_library(ddnet_protocol ${LIB_SOURCES})
 
-target_include_directories(ddnet_protocol PRIVATE include/ddnet_protocol)
 target_include_directories(ddnet_protocol PUBLIC include)
 
 set_target_properties(ddnet_protocol PROPERTIES PUBLIC_HEADER "${LIB_PUBLIC_HEADERS}")

@@ -15,10 +15,10 @@ typedef struct {
 	// in its chunk header.
 	uint16_t sequence;
 	// Acknowledge sequence number of the other party.
-	// This is the ``ack`` of the other peer.
+	// This is the `ack` of the other peer.
 	// This value should never be sent. It is being received from the
 	// packet header the peer sent to us.
-	// And we can use it to compare it to our ``sequence``
+	// And we can use it to compare it to our `sequence`
 	// to make sure no messages were lost.
 	uint16_t peer_ack;
 	// DDNet security token. Is a 4 byte random integer

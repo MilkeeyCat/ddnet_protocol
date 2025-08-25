@@ -173,7 +173,7 @@ size_t ddnet_encode_packet(const DDNetPacket *packet, uint8_t *buf, size_t len, 
 // Fills the passed `packet` struct based on the messages and session passed in.
 // It will read and write to the `session` struct passed in.
 //
-// The ``messages`` will be copied into the ``packet``.
+// The `messages` will be copied into the `packet`.
 // new memory will be allocated for that operation.
 // It is your responsibility to free it using `ddnet_free_packet()`
 DDNetError ddnet_build_packet(DDNetPacket *packet, const DDNetMessage messages[], uint8_t messages_len, DDNetSession *session);

@@ -249,7 +249,7 @@ You have to build it by hand.
 Fills the passed `packet` struct based on the messages and session passed in.
 It will read and write to the `session` struct passed in.
 
-The ``messages`` will be copied into the ``packet``.
+The `messages` will be copied into the `packet`.
 new memory will be allocated for that operation.
 It is your responsibility to free it using `ddnet_free_packet()`
 

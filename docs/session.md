@@ -53,7 +53,7 @@ bool ddnet_seq_in_backroom(uint16_t sequence, uint16_t ack);
 ```
 
 Only used for chunks where the sequence number does not match the expected value
-to decide wether to drop known chunks silently or request resend if something got lost
+to decide whether to drop known chunks silently or request resend if something got lost
 The expected value would be the `(last_ack + 1) % DDNET_MAX_SEQUENCE`
 
 The argument `sequence` is the sequence number of the incoming chunk

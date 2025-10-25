@@ -8,7 +8,6 @@ extern "C" {
 #include "common.h"
 #include "errors.h"
 #include "packet.h"
-#include "token.h"
 
 typedef void (*OnDDNetChunk)(void *ctx, DDNetChunk *chunk);
 

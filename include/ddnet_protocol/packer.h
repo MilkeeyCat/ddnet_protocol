@@ -4,9 +4,9 @@
 extern "C" {
 #endif
 
+#include "chunk.h"
 #include "common.h"
 #include "errors.h"
-#include "message.h"
 
 // Replaces all characters below ASCII 32 with whitespace.
 void ddnet_str_sanitize_cc(char *string);

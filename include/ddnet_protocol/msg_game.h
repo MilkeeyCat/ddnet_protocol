@@ -6,41 +6,37 @@ extern "C" {
 
 #include "common.h"
 
-// possible values of the team field in the chat
-// message sent by the server
+// Possible values of the team field in the chat message sent by the server.
 typedef enum {
-	// chat message sent to public chat
+	// Chat message sent to public chat.
 	DDNET_CHAT_PUBLIC,
 
-	// chat message sent to team chat
-	// this can be scoped to TEAM_RED, TEAM_BLUE and TEAM_SPECTATORS
-	// beased on which team the sender is in
-	// but it can also be scoped to ddrace teams
+	// Chat message sent to team chat. This can be scoped to TEAM_RED, TEAM_BLUE
+	// and TEAM_SPECTATORS based on which team the sender is in but it can also
+	// be scoped to ddrace teams.
 	DDNET_CHAT_TEAM,
 
-	// this value is a ddnet extension
-	// this is sent from the server to the client
-	// to display an outgoing ddnet whisper message
-	// in this case the client_id field on the DDNetMsgSvChat struct
-	// is the recipient not the sender. Because the sender knows his own name.
+	// This value is a ddnet extension. This is sent from the server to the
+	// client to display an outgoing ddnet whisper message. In this case the
+	// client_id field on the `DDNetMsgSvChat` struct is the recipient not the
+	// sender. Because the sender knows his own name.
 	DDNET_CHAT_WHISPER_SEND,
 
-	// this value is a ddnet extension
-	// this is sent from the server to the client
-	// to display received whisper messages differently in the chat.
+	// This value is a ddnet extension. This is sent from the server to the
+	// client to display received whisper messages differently in the chat.
 	DDNET_CHAT_WHISPER_RECEIVE,
 } DDNetChatTeam;
 
-// regular and special weapons
-// see also `DDNetPickupWeapon` for regular weapons only
+// Regular and special weapons. See also `DDNetPickupWeapon` for regular weapons
+// only.
 typedef enum {
-	// team switching and similar
+	// Team switching and similar.
 	DDNET_WEAPON_GAME = -3,
 
-	// console kill command (not self damage)
+	// Console kill command (not self damage).
 	DDNET_WEAPON_SELF = -2,
 
-	// kill tiles or out of world
+	// Kill tiles or out of world.
 	DDNET_WEAPON_WORLD = -1,
 
 	DDNET_WEAPON_HAMMER = 0,
@@ -51,9 +47,8 @@ typedef enum {
 	DDNET_WEAPON_NINJA = 5,
 } DDNetWeapon;
 
-// regular weapons only see also `DDNetWeapon` for special weapons
-// these weapons can be picked up
-// kill messages can contain more weapons
+// Regular weapons only. See also `DDNetWeapon` for special weapons. These
+// weapons can be picked up. Kill messages can contain more weapons.
 typedef enum {
 	DDNET_PICKUP_WEAPON_HAMMER = 0,
 	DDNET_PICKUP_WEAPON_GUN = 1,
@@ -63,7 +58,7 @@ typedef enum {
 	DDNET_PICKUP_WEAPON_NINJA = 5,
 } DDNetPickupWeapon;
 
-// emoticons are displayed above the tee
+// Emoticons are displayed above the tee.
 typedef enum {
 	DDNET_EMOTICON_OOP,
 	DDNET_EMOTICON_EXCLAMATION,
@@ -83,16 +78,13 @@ typedef enum {
 	DDNET_EMOTICON_QUESTION,
 } DDNetEmoticon;
 
-// message of the day
-// sent by the server
-// and displayed in the middle of the screen
-// with transparent background on the client side
+// Message of the day. Sent by the server and displayed in the middle of the
+// screen with transparent background on the client side.
 typedef struct {
 	const char *message;
 } DDNetMsgSvMotd;
 
-// sent by the server
-// and displayed in the middle of the screen as white text
+// Sent by the server and displayed in the middle of the screen as white text.
 typedef struct {
 	const char *message;
 } DDNetMsgSvBroadcast;
@@ -101,27 +93,27 @@ typedef struct {
 typedef struct {
 	DDNetChatTeam team;
 
-	// client id of the message author
-	// can be -1 if the message was sent by the server
-	// can be the message recipient if the team is DDNET_CHAT_WHISPER_SEND
+	// Client id of the message author. Can be -1 if the message was sent by the
+	// server can be the message recipient if the team is
+	// `DDNET_CHAT_WHISPER_SEND`.
 	int32_t client_id;
 
-	// chat message
+	// Chat message.
 	const char *message;
 } DDNetMsgSvChat;
 
 // sent by the server
 typedef struct {
-	// client id of the player that caused the kill
-	// can be the same as the victim_id on suicide
+	// Client id of the player that caused the kill can be the same as the
+	// victim_id on suicide.
 	int32_t killer_id;
 
-	// client id of the player that got killed
+	// Client id of the player that got killed.
 	int32_t victim_id;
 
 	DDNetWeapon weapon;
 
-	// set to 1 if the victim had the flag in a ctf gametype
+	// Set to 1 if the victim had the flag in a ctf gametype.
 	int32_t mode_special;
 } DDNetMsgSvKillMsg;
 
@@ -174,25 +166,24 @@ typedef struct {
 
 // sent by the server
 typedef struct {
-	// id of the player that the emoticon is attached to
+	// Id of the player that the emoticon is attached to.
 	int32_t client_id;
 	DDNetEmoticon emoticon;
 } DDNetMsgSvEmoticon;
 
 // sent by the server
 typedef struct {
-	// The next field `descriptions` has a fixed size of 14
-	// but not all strings might be set.
-	// So `num_options` determines how many values starting from
-	// index 0 are valid in `descriptions`
+	// The next field `descriptions` has a fixed size of 14 but not all strings
+	// might be set. So `num_options` determines how many values starting from
+	// index 0 are valid in `descriptions`.
 	int32_t num_options;
 
-	// only access index 0-num_options
+	// Only access index 0-num_options.
 	const char *descriptions[14];
 } DDNetMsgSvVoteOptionListAdd;
 
 // sent by the server
-// See also `DDNetMsgSvVoteOptionListAdd` for multiple vote options at once
+// See also `DDNetMsgSvVoteOptionListAdd` for multiple vote options at once.
 typedef struct {
 	const char *description;
 } DDNetMsgSvVoteOptionAdd;

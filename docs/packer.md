@@ -41,9 +41,8 @@ typedef enum {
 } DDNetStringSanitize;
 ```
 
-used by `ddnet_unpacker_get_string_sanitized()`
-to strip unwanted characters from the strings
-received from the peer
+Used by `ddnet_unpacker_get_string_sanitized()` to strip unwanted characters
+from the strings received from the peer.
 
 # DDNetUnpacker
 
@@ -57,12 +56,11 @@ typedef struct {
 } DDNetUnpacker;
 ```
 
-State for the unpacker
-holds the data to be unpacked
-and keeps track of how much data was unpacked
-and also tracks if errors occurred
+State for the unpacker.
+Holds the data to be unpacked and keeps track of how much data was unpacked
+and also tracks if errors occurred.
 
-See also `ddnet_unpacker_init` and `ddnet_unpacker_get_int`
+See also `ddnet_unpacker_init` and `ddnet_unpacker_get_int`.
 
 # DDNET_PACKER_BUFFER_SIZE
 
@@ -72,8 +70,7 @@ See also `ddnet_unpacker_init` and `ddnet_unpacker_get_int`
 #define DDNET_PACKER_BUFFER_SIZE (1024 * 2)
 ```
 
-maximum output and storage size in bytes
-used by the `DDNetPacker`
+Maximum output and storage size in bytes used by the `DDNetPacker`.
 
 # DDNetPacker
 
@@ -88,9 +85,8 @@ typedef struct {
 } DDNetPacker;
 ```
 
-State for the packer
-holds the currently packed data
-and also tracks errors
+State for the packer.
+Holds the currently packed data and also tracks errors.
 
 # ddnet_packer_init
 
@@ -130,8 +126,8 @@ ddnet_packer_add_string(&packer, "say hello");
 size_t ddnet_packer_size(DDNetPacker *packer);
 ```
 
-get the size in bytes of the currently packed data
-see also `ddnet_packer_data()`
+Get the size in bytes of the currently packed data.
+See also `ddnet_packer_data()`.
 
 # ddnet_packer_remaining_size
 
@@ -141,8 +137,8 @@ see also `ddnet_packer_data()`
 size_t ddnet_packer_remaining_size(DDNetPacker *packer);
 ```
 
-amount of free bytes in the output buffer
-the packer can pack a maximum of `DDNET_PACKER_BUFFER_SIZE` bytes
+Amount of free bytes in the output buffer.
+The packer can pack a maximum of `DDNET_PACKER_BUFFER_SIZE` bytes.
 
 # ddnet_packer_data
 
@@ -152,7 +148,7 @@ the packer can pack a maximum of `DDNET_PACKER_BUFFER_SIZE` bytes
 uint8_t *ddnet_packer_data(DDNetPacker *packer);
 ```
 
-use in combination with `ddnet_packer_size()`
+Use in combination with `ddnet_packer_size()`.
 
 # ddnet_packer_add_int
 
@@ -162,8 +158,8 @@ use in combination with `ddnet_packer_size()`
 DDNetError ddnet_packer_add_int(DDNetPacker *packer, int32_t value);
 ```
 
-Packs `value` as teeworlds varint
-call `ddnet_packer_data()` to receive the full packed data
+Packs `value` as teeworlds varint.
+Call `ddnet_packer_data()` to receive the full packed data.
 
 # ddnet_packer_add_string
 
@@ -173,8 +169,8 @@ call `ddnet_packer_data()` to receive the full packed data
 DDNetError ddnet_packer_add_string(DDNetPacker *packer, const char *value);
 ```
 
-Packs `value` as plain null terminated C string
-call `ddnet_packer_data()` to receive the full packed data
+Packs `value` as plain null terminated C string.
+Call `ddnet_packer_data()` to receive the full packed data.
 
 # ddnet_packer_add_raw
 
@@ -184,8 +180,8 @@ call `ddnet_packer_data()` to receive the full packed data
 DDNetError ddnet_packer_add_raw(DDNetPacker *packer, const uint8_t *data, size_t size);
 ```
 
-Packs `data` as raw data
-call `ddnet_packer_data()` to receive the full packed data
+Packs `data` as raw data.
+Call `ddnet_packer_data()` to receive the full packed data.
 
 # ddnet_unpacker_init
 
@@ -195,8 +191,8 @@ call `ddnet_packer_data()` to receive the full packed data
 void ddnet_unpacker_init(DDNetUnpacker *packer, uint8_t *buf, size_t len);
 ```
 
-returns a new `DDNetUnpacker` instance
-it keeps track of how much data was already unpacked
+Returns a new `DDNetUnpacker` instance.
+It keeps track of how much data was already unpacked.
 
 ```C
 uint8_t bytes[] = {0x05, 0x01, 0x02};
@@ -216,7 +212,7 @@ unpacker.err; // => DDNetError::DDNET_ERR_NONE
 size_t ddnet_unpacker_remaining_size(DDNetUnpacker *unpacker);
 ```
 
-amount of bytes that have not yet been unpacked
+Amount of bytes that have not yet been unpacked.
 
 # ddnet_unpacker_get_int
 
@@ -226,9 +222,9 @@ amount of bytes that have not yet been unpacked
 int32_t ddnet_unpacker_get_int(DDNetUnpacker *unpacker);
 ```
 
-Use `ddnet_unpacker_init` to get the value for `DDNetUnpacker *unpacker`
-it returns the next integer in the unpacker data
-and also progresses the internal unpacker state to point to the next element
+Use `ddnet_unpacker_init()` to get the value for `DDNetUnpacker *unpacker`.
+It returns the next integer in the unpacker data and also progresses the
+internal unpacker state to point to the next element.
 
 ```C
 uint8_t bytes[] = {0x05};
@@ -246,12 +242,12 @@ unpacker.err; // => DDNetError::DDNET_ERR_NONE
 const char *ddnet_unpacker_get_string(DDNetUnpacker *unpacker);
 ```
 
-Use `ddnet_unpacker_init` to get the value for `DDNetUnpacker *unpacker`
-it returns the next null terminated string in the unpacker data
-and also progresses the internal unpacker state to point to the next element
+Use `ddnet_unpacker_init()` to get the value for `DDNetUnpacker *unpacker`.
+It returns the next null terminated string in the unpacker data and also
+progresses the internal unpacker state to point to the next element.
 
-applies `STRING_SANITIZE` by default
-if you want a string without sanitization use
+Applies `STRING_SANITIZE` by default. If you want a string without
+sanitization use:
 
 ```C
 uint8_t bytes[] = {'f', 'o', 0x03, 'o', 0x00};
@@ -268,9 +264,9 @@ ddnet_unpacker_get_string_sanitized(&unpacker, DDNET_STRING_SANITIZE_NONE);
 const char *ddnet_unpacker_get_string_sanitized(DDNetUnpacker *unpacker, DDNetStringSanitize sanitize);
 ```
 
-Use `ddnet_unpacker_init` to get the value for `DDNetUnpacker *unpacker`
-it returns the next null terminated string in the unpacker data
-and also progresses the internal unpacker state to point to the next element
+Use `ddnet_unpacker_init` to get the value for `DDNetUnpacker *unpacker`.
+It returns the next null terminated string in the unpacker data and also
+progresses the internal unpacker state to point to the next element.
 
 ```C
 uint8_t bytes[] = {'f', 'o', 'o', 0x00};
@@ -289,8 +285,8 @@ unpacker.err; // =>  DDNetError::DDNET_ERR_NONE
 bool ddnet_unpacker_get_bool(DDNetUnpacker *unpacker);
 ```
 
-Use `ddnet_unpacker_init` to get the value for `DDNetUnpacker *unpacker`
-it returns the next boolean in the unpacker data
+Use `ddnet_unpacker_init` to get the value for `DDNetUnpacker *unpacker`.
+It returns the next boolean in the unpacker data
 and also progresses the internal unpacker state to point to the next element
 
 Might set the unpacker->err to `DDNET_ERR_INVALID_BOOL`
@@ -314,9 +310,9 @@ unpacker.err; // => DDNetError::DDNET_ERR_INVALID_BOOL
 const uint8_t *ddnet_unpacker_get_raw(DDNetUnpacker *unpacker, size_t len);
 ```
 
-Use `ddnet_unpacker_init` to get the value for `DDNetUnpacker *unpacker`
-it returns the next `len` amount of bytes in the unpacker data
-and also progresses the internal unpacker state to point to the next element
+Use `ddnet_unpacker_init` to get the value for `DDNetUnpacker *unpacker`.
+It returns the next `len` amount of bytes in the unpacker data and also
+progresses the internal unpacker state to point to the next element.
 
 ```C
 uint8_t bytes[] = {0x05};

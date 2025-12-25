@@ -78,6 +78,18 @@ size_t ddnet_encode_message(DDNetChunk *chunk, uint8_t *buf, DDNetError *err);
 
 DDNetMessage ddnet_build_msg_info(const char *password);
 
+// Initializes a new packer struct.
+// And already packs the message id and message kind flag.
+//
+// See also `ddnet_packer_init()` if you need an empty packer.
+//
+// ```C
+// DDNetPacker packer;
+// ddnet_packer_init_msg(&packer, DDNET_MSG_KIND_RCON_CMD);
+// ddnet_packer_add_string(&packer, "say hello");
+// ```
+void ddnet_packer_init_msg(DDNetPacker *packer, DDNetMessageKind kind);
+
 #ifdef __cplusplus
 }
 #endif

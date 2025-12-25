@@ -99,25 +99,6 @@ void ddnet_packer_init(DDNetPacker *packer);
 Initializes a new packer struct.
 See also `ddnet_packer_init_msg()` if you want to send a net message.
 
-# ddnet_packer_init_msg
-
-## Syntax
-
-```C
-void ddnet_packer_init_msg(DDNetPacker *packer, DDNetMessageKind kind);
-```
-
-Initializes a new packer struct.
-And already packs the message id and message kind flag.
-
-See also `ddnet_packer_init()` if you need an empty packer.
-
-```C
-DDNetPacker packer;
-ddnet_packer_init_msg(&packer, DDNET_MSG_KIND_RCON_CMD);
-ddnet_packer_add_string(&packer, "say hello");
-```
-
 # ddnet_packer_size
 
 ## Syntax

@@ -259,7 +259,10 @@ def main
     end
   end
 
-  %w(packer huffman errors token packet chunk session msg_game).each do |component|
+  %w(
+    packer huffman errors
+    token packet chunk
+    session msg_game int_string).each do |component|
     header_to_markdown(
       "include/ddnet_protocol/#{component}.h",
       "docs/#{component}.md",

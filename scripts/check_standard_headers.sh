@@ -16,7 +16,11 @@ error_found=0
 # Check each source file for stdlib headers
 for file in $files; do
 	if grep -E "#include\s+<($c_headers_regex)>" "$file" > /dev/null; then
-		echo "Error: '$file' includes stdlib header '${c_headers[i]}'. Include 'ddnet_protocol/common.h' instead."
+		for ((i = 0; i < ${#c_headers[@]}; i++)); do
+			if grep -E "^\s*#include\s+<${c_headers[i]}>" "$file" > /dev/null; then
+				echo "Error: '$file' includes stdlib header '${c_headers[i]}'. Include 'ddnet_protocol/common.h' instead."
+			fi
+		done
 		error_found=1
 	fi
 done

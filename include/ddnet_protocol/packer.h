@@ -35,8 +35,8 @@ typedef enum {
 // See also `ddnet_unpacker_init` and `ddnet_unpacker_get_int`
 typedef struct {
 	DDNetError err;
-	uint8_t *buf_end;
-	uint8_t *buf;
+	const uint8_t *buf_end;
+	const uint8_t *buf;
 } DDNetUnpacker;
 
 // maximum output and storage size in bytes
@@ -104,7 +104,7 @@ DDNetError ddnet_packer_add_raw(DDNetPacker *packer, const uint8_t *data, size_t
 // ddnet_unpacker_get_int(&unpacker); // => 2
 // unpacker.err; // => DDNetError::DDNET_ERR_NONE
 // ```
-void ddnet_unpacker_init(DDNetUnpacker *packer, uint8_t *buf, size_t len);
+void ddnet_unpacker_init(DDNetUnpacker *packer, const uint8_t *buf, size_t len);
 
 // amount of bytes that have not yet been unpacked
 size_t ddnet_unpacker_remaining_size(DDNetUnpacker *unpacker);

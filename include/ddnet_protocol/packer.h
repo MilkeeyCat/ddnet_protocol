@@ -104,7 +104,7 @@ DDNetError ddnet_packer_add_raw(DDNetPacker *packer, const uint8_t *data, size_t
 // ddnet_unpacker_get_int(&unpacker); // => 2
 // unpacker.err; // => DDNetError::DDNET_ERR_NONE
 // ```
-void ddnet_unpacker_init(DDNetUnpacker *packer, const uint8_t *buf, size_t len);
+void ddnet_unpacker_init(DDNetUnpacker *unpacker, const uint8_t *buf, size_t len);
 
 // amount of bytes that have not yet been unpacked
 size_t ddnet_unpacker_remaining_size(DDNetUnpacker *unpacker);

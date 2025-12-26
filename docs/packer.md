@@ -192,7 +192,7 @@ call `ddnet_packer_data()` to receive the full packed data
 ## Syntax
 
 ```C
-void ddnet_unpacker_init(DDNetUnpacker *packer, const uint8_t *buf, size_t len);
+void ddnet_unpacker_init(DDNetUnpacker *unpacker, const uint8_t *buf, size_t len);
 ```
 
 returns a new `DDNetUnpacker` instance

@@ -291,7 +291,7 @@ DDNetError ddnet_packer_add_raw(DDNetPacker *packer, const uint8_t *data, size_t
 	return DDNET_ERR_NONE;
 }
 
-void ddnet_unpacker_init(DDNetUnpacker *unpacker, uint8_t *buf, size_t len) {
+void ddnet_unpacker_init(DDNetUnpacker *unpacker, const uint8_t *buf, size_t len) {
 	unpacker->err = DDNET_ERR_NONE;
 	unpacker->buf = buf;
 	unpacker->buf_end = buf + len;

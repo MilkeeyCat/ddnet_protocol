@@ -4,13 +4,28 @@
 extern "C" {
 #endif
 
+// Gamemode flags
+typedef enum {
+	// If this flag is set the current gamemode has vanilla teams.
+	// Meaning there is `DDNET_TEAM_RED` and `DDNET_TEAM_BLUE`.
+	// If the flag is not set the `DDNET_TEAM_GAME` will be used
+	// for all players.
+	DDNET_GAMEFLAG_TEAMS = 1 << 0,
+
+	// If this flag is set the current gamemode has vanilla flags.
+	// A flag being a flag in the world that comes from the
+	// capture the flag gametype (ctf).
+	DDNET_GAMEFLAG_FLAGS = 1 << 1,
+} DDNetGameFlag;
+
 // This enum represents teeworlds vanilla teams.
 // These teams are different than ddrace teams that were added by ddnet.
 typedef enum {
 	DDNET_TEAM_SPECTATORS = -1,
-	DDNET_TEAM_RED,
-	DDNET_TEAM_BLUE,
-	DDNET_NUM_TEAMS,
+	DDNET_TEAM_GAME = 0,
+	DDNET_TEAM_RED = 0,
+	DDNET_TEAM_BLUE = 1,
+	DDNET_NUM_TEAMS = 2,
 } DDNetTeam;
 
 // possible values of the team field in the chat

@@ -5,78 +5,7 @@ extern "C" {
 #endif
 
 #include "common.h"
-
-// Possible values of the team field in the chat message sent by the server.
-typedef enum {
-	// Chat message sent to public chat.
-	DDNET_CHAT_PUBLIC,
-
-	// Chat message sent to team chat. This can be scoped to TEAM_RED, TEAM_BLUE
-	// and TEAM_SPECTATORS based on which team the sender is in but it can also
-	// be scoped to ddrace teams.
-	DDNET_CHAT_TEAM,
-
-	// This value is a ddnet extension. This is sent from the server to the
-	// client to display an outgoing ddnet whisper message. In this case the
-	// client_id field on the `DDNetMsgSvChat` struct is the recipient not the
-	// sender. Because the sender knows his own name.
-	DDNET_CHAT_WHISPER_SEND,
-
-	// This value is a ddnet extension. This is sent from the server to the
-	// client to display received whisper messages differently in the chat.
-	DDNET_CHAT_WHISPER_RECEIVE,
-} DDNetChatTeam;
-
-// Regular and special weapons. See also `DDNetPickupWeapon` for regular weapons
-// only.
-typedef enum {
-	// Team switching and similar.
-	DDNET_WEAPON_GAME = -3,
-
-	// Console kill command (not self damage).
-	DDNET_WEAPON_SELF = -2,
-
-	// Kill tiles or out of world.
-	DDNET_WEAPON_WORLD = -1,
-
-	DDNET_WEAPON_HAMMER = 0,
-	DDNET_WEAPON_GUN = 1,
-	DDNET_WEAPON_SHOTGUN = 2,
-	DDNET_WEAPON_GRENADE = 3,
-	DDNET_WEAPON_LASER = 4,
-	DDNET_WEAPON_NINJA = 5,
-} DDNetWeapon;
-
-// Regular weapons only. See also `DDNetWeapon` for special weapons. These
-// weapons can be picked up. Kill messages can contain more weapons.
-typedef enum {
-	DDNET_PICKUP_WEAPON_HAMMER = 0,
-	DDNET_PICKUP_WEAPON_GUN = 1,
-	DDNET_PICKUP_WEAPON_SHOTGUN = 2,
-	DDNET_PICKUP_WEAPON_GRENADE = 3,
-	DDNET_PICKUP_WEAPON_LASER = 4,
-	DDNET_PICKUP_WEAPON_NINJA = 5,
-} DDNetPickupWeapon;
-
-// Emoticons are displayed above the tee.
-typedef enum {
-	DDNET_EMOTICON_OOP,
-	DDNET_EMOTICON_EXCLAMATION,
-	DDNET_EMOTICON_HEARTS,
-	DDNET_EMOTICON_DROP,
-	DDNET_EMOTICON_DOTDOT,
-	DDNET_EMOTICON_MUSIC,
-	DDNET_EMOTICON_SORRY,
-	DDNET_EMOTICON_GHOST,
-	DDNET_EMOTICON_SUSHI,
-	DDNET_EMOTICON_SPLATTEE,
-	DDNET_EMOTICON_DEVILTEE,
-	DDNET_EMOTICON_ZOMG,
-	DDNET_EMOTICON_ZZZ,
-	DDNET_EMOTICON_WTF,
-	DDNET_EMOTICON_EYES,
-	DDNET_EMOTICON_QUESTION,
-} DDNetEmoticon;
+#include "enums.h"
 
 // Message of the day. Sent by the server and displayed in the middle of the
 // screen with transparent background on the client side.

@@ -48,6 +48,19 @@ progress.marks
 progress.make
 compiler_depend.internal
 
+# gtest and asan
+
+*/_deps/googletest*
+SAN.*
+libgtest.a
+libgtest_main.a
+testrunner\[1\]_include.cmake
+CTestTestfile.cmake
+libgmock.a
+libgmock_main.a
+testrunner
+testrunner\[1\]_tests.cmake
+
 # binaries
 
 libddnet_protocol.a

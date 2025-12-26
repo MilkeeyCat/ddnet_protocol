@@ -4,7 +4,8 @@
 extern "C" {
 #endif
 
-// Gamemode flags
+// Gamemode flags. These flags can be combined.
+// And they are used by the `DDNetObjGameInfo` snapshot item.
 typedef enum {
 	// If this flag is set the current gamemode has vanilla teams.
 	// Meaning there is `DDNET_TEAM_RED` and `DDNET_TEAM_BLUE`.
@@ -17,6 +18,19 @@ typedef enum {
 	// capture the flag gametype (ctf).
 	DDNET_GAMEFLAG_FLAGS = 1 << 1,
 } DDNetGameFlag;
+
+// The current gamestate. Only one of these flags can be used.
+// This flag is used by the `DDNetObjGameInfo` snapshot item.
+typedef enum {
+	// The world is paused and the scoreboard is displayed.
+	DDNET_GAMESTATEFLAG_GAMEOVER = 1 << 0,
+
+	// The round will end on the next score.
+	DDNET_GAMESTATEFLAG_SUDDENDEATH = 1 << 1,
+
+	// The world is paused.
+	DDNET_GAMESTATEFLAG_PAUSED = 1 << 2,
+} DDNetGameStateFlag;
 
 // This enum represents teeworlds vanilla teams.
 // These teams are different than ddrace teams that were added by ddnet.

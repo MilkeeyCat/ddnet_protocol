@@ -16,7 +16,26 @@ typedef enum {
 } DDNetGameFlag;
 ```
 
-Gamemode flags
+Gamemode flags. These flags can be combined.
+And they are used by the `DDNetObjGameInfo` snapshot item.
+
+# DDNetGameStateFlag
+
+## Syntax
+
+```C
+typedef enum {
+	// The world is paused and the scoreboard is displayed.
+	DDNET_GAMESTATEFLAG_GAMEOVER = 1 << 0,
+	// The round will end on the next score.
+	DDNET_GAMESTATEFLAG_SUDDENDEATH = 1 << 1,
+	// The world is paused.
+	DDNET_GAMESTATEFLAG_PAUSED = 1 << 2,
+} DDNetGameStateFlag;
+```
+
+The current gamestate. Only one of these flags can be used.
+This flag is used by the `DDNetObjGameInfo` snapshot item.
 
 # DDNetTeam
 

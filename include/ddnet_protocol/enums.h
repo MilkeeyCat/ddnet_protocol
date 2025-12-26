@@ -4,6 +4,15 @@
 extern "C" {
 #endif
 
+// This enum represents teeworlds vanilla teams.
+// These teams are different than ddrace teams that were added by ddnet.
+typedef enum {
+	DDNET_TEAM_SPECTATORS = -1,
+	DDNET_TEAM_RED,
+	DDNET_TEAM_BLUE,
+	DDNET_NUM_TEAMS,
+} DDNetTeam;
+
 // possible values of the team field in the chat
 // message sent by the server
 typedef enum {
@@ -11,7 +20,7 @@ typedef enum {
 	DDNET_CHAT_PUBLIC,
 
 	// chat message sent to team chat
-	// this can be scoped to TEAM_RED, TEAM_BLUE and TEAM_SPECTATORS
+	// this can be scoped to `DDNET_TEAM_RED`, `DDNET_TEAM_BLUE` and `DDNET_TEAM_SPECTATORS`
 	// beased on which team the sender is in
 	// but it can also be scoped to ddrace teams
 	DDNET_CHAT_TEAM,

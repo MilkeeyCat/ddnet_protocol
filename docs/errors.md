@@ -22,7 +22,6 @@ typedef enum {
 } DDNetError;
 ```
 
-generic error enum
-holds all kind of errors returned
-by different functions
+Generic error enum, holds all kinds of errors returned by different
+functions.
 

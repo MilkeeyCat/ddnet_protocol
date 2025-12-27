@@ -7,8 +7,7 @@ extern "C" {
 #include "chunk.h"
 #include "errors.h"
 
-// Message id of system and game net messages
-// that is sent over the network.
+// Message id of system and game net messages that is sent over the network.
 typedef enum {
 	// used for ddnet extensions
 	DDNET_MSG_NULL = 0,
@@ -61,18 +60,18 @@ typedef enum {
 	DDNET_MSG_CL_STARTINFO = 20,
 } DDNetMessageId;
 
-// Every chunk contains either a system or game message
-// This type is set as a bit flag in the first byte of the chunk payload
+// Every chunk contains either a system or game message. This type is set as a
+// bit flag in the first byte of the chunk payload.
 typedef enum {
 	DDNET_GAME = 0,
 	DDNET_SYSTEM = 1,
 } DDNetMessageCategory;
 
-// The given chunk has to have a correct header set
-// and its `msg` will be filled based on the content of
-// `buf` which has to point to the beginning of the chunk payload
+// The given chunk has to have a correct header set and its `msg` will be filled
+// based on the content of `buf` which has to point to the beginning of the
+// chunk payload.
 //
-// this function could also be called ddnet_decode_chunk_payload()
+// This function could also be called `ddnet_decode_chunk_payload()`.
 DDNetError ddnet_decode_message(DDNetChunk *chunk, uint8_t *buf);
 
 size_t ddnet_encode_message(DDNetChunk *chunk, uint8_t *buf, DDNetError *err);

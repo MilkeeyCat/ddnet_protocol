@@ -4,25 +4,22 @@
 
 ```C
 typedef enum {
-	DDNET_ERR_NONE,
-	DDNET_ERR_INVALID_PACKET,
-	DDNET_ERR_UNKNOWN_MESSAGE,
-	DDNET_ERR_INVALID_CONTROL_MESSAGE,
-	DDNET_ERR_INVALID_TOKEN_MAGIC,
-	DDNET_ERR_INVALID_BOOL,
-	DDNET_ERR_STR_UNEXPECTED_EOF,
-	DDNET_ERR_EMPTY_BUFFER,
-	DDNET_ERR_END_OF_BUFFER,
-	DDNET_ERR_BUFFER_FULL,
-	DDNET_ERR_OUTPUT_VAR_TOO_SMALL,
-	DDNET_ERR_REMAINING_BYTES_IN_BUFFER,
-	DDNET_ERR_MISSING_DDNET_SECURITY_TOKEN,
-	DDNET_ERR_HUFFMAN_NODE_NULL,
-	DDNET_ERR_MESSAGE_ID_OUT_OF_BOUNDS,
-	DDNET_ERR_ACK_OUT_OF_BOUNDS,
+#define X(err) err,
+	DDNET_ERRORS
+#undef X
 } DDNetError;
 ```
 
 Generic error enum, holds all kinds of errors returned by different
 functions.
+
+# ddnet_error_str
+
+## Syntax
+
+```C
+const char *ddnet_error_str(DDNetError err);
+```
+
+Turns error enum into human readable string.
 

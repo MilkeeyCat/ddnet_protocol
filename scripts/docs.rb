@@ -75,6 +75,13 @@ class BaseDoc
   def self.is_union?(line)
     line.strip == "typedef union {"
   end
+
+  def self.is_xmacro?(line, next_line)
+    return false unless line.strip.start_with? "#define "
+    return false unless next_line.strip.start_with? "X("
+
+    true
+  end
 end
 
 class FuncDoc < BaseDoc
@@ -151,23 +158,37 @@ class UnionDoc < StructDoc
   # OOPs where is the code
 end
 
+class XMacroDoc < StructDoc
+  # OOPs where is the code
+end
+
 # @param filepath String
 # @return (FuncDoc|StructDoc)[]
 def parse_docs(filepath)
   docs = []
   comment = ""
   struct_or_enum = nil
-  line_num = 0
-
-  IO.foreach(filepath) do |line|
-    line_num += 1
-    next if line.strip.empty?
-    next if line[0] == '#' && !BaseDoc.is_define_value?(line)
+  lines = File.readlines(filepath)
+  lines.each_with_index do |line, line_num|
+    stripline = line.strip
+    next if stripline.empty?
+    next if stripline == "#pragma once"
+    next if stripline == "#ifdef __cplusplus"
+    next if stripline == "#endif"
+    next if stripline.start_with? "#include"
 
     # seek till struct end if we got one
     if struct_or_enum
       struct_or_enum.signature += line
-      if line.start_with? "} "
+
+      if struct_or_enum.class == XMacroDoc
+        # the macro continues to span across multiple
+        # lines as long as the line break is escaped
+        unless stripline.end_with? '\\'
+          docs << struct_or_enum
+          struct_or_enum = nil
+        end
+      elsif line.start_with? "} "
         docs << struct_or_enum
         struct_or_enum = nil
       end
@@ -198,6 +219,11 @@ def parse_docs(filepath)
       docs << TypedefDoc.new(comment, line)
     elsif BaseDoc.is_global_constant? line
       docs << GlobalConstantDoc.new(comment, line)
+    elsif BaseDoc.is_xmacro?(line, lines[line_num+1])
+      # we have to seek to the end of the macro before
+      # we can store the instance
+      struct_or_enum = XMacroDoc.new(comment)
+      struct_or_enum.signature += line
     elsif BaseDoc.is_define_value? line
       docs << DefineValueDoc.new(comment, line)
     elsif BaseDoc.is_struct? line
@@ -238,7 +264,9 @@ def expect_file_content(filepath, content)
 end
 
 def header_to_markdown(header_path, markdown_path, dry_run)
-  markdown = parse_docs(header_path).map do |doc|
+  # X macros are not documented where they are defined
+  # the enum that uses them has the documentation
+  markdown = parse_docs(header_path).filter { |doc| doc.class != XMacroDoc }.map do |doc|
     doc.to_markdown + "\n"
   end.inject(:+)
   if dry_run

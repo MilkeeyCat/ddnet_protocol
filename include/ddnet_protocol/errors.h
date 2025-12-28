@@ -30,6 +30,7 @@ typedef enum {
 #undef X
 } DDNetError;
 
+// Turns error enum into human readable string.
 const char *ddnet_error_str(DDNetError err);
 
 #ifdef __cplusplus

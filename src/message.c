@@ -219,7 +219,7 @@ static DDNetError decode_system_message(DDNetChunk *chunk, DDNetMessageId msg_id
 	return unpacker->err;
 }
 
-DDNetError ddnet_decode_message(DDNetChunk *chunk, uint8_t *buf) {
+DDNetError ddnet_decode_message(DDNetChunk *chunk, const uint8_t *buf) {
 	DDNetUnpacker unpacker;
 	ddnet_unpacker_init(&unpacker, buf, chunk->header.size);
 	int32_t msg_and_sys = ddnet_unpacker_get_int(&unpacker);

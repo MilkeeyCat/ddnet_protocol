@@ -72,7 +72,7 @@ typedef enum {
 // chunk payload.
 //
 // This function could also be called `ddnet_decode_chunk_payload()`.
-DDNetError ddnet_decode_message(DDNetChunk *chunk, uint8_t *buf);
+DDNetError ddnet_decode_message(DDNetChunk *chunk, const uint8_t *buf);
 
 size_t ddnet_encode_message(DDNetChunk *chunk, uint8_t *buf, DDNetError *err);
 

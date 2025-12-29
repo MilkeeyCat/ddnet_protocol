@@ -3,9 +3,9 @@
 #include <ddnet_protocol/message.h>
 #include <ddnet_protocol/packet.h>
 
-size_t ddnet_fetch_chunks(uint8_t *buf, size_t len, DDNetPacketHeader *header, OnDDNetChunk callback, void *ctx, DDNetError *err) {
-	uint8_t *start = buf;
-	uint8_t *end = buf + len;
+size_t ddnet_fetch_chunks(const uint8_t *buf, size_t len, DDNetPacketHeader *header, OnDDNetChunk callback, void *ctx, DDNetError *err) {
+	const uint8_t *start = buf;
+	const uint8_t *end = buf + len;
 	uint8_t num_chunks = 0;
 
 	while(true) {

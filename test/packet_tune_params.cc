@@ -9,8 +9,7 @@
 #include <ddnet_protocol/session.h>
 
 TEST(NormalPacket, TuneParams) {
-	// This is the ddnet_protocol example client connecting to
-	// a ddnet++ server
+	// this is the ddnet_protocol example client connecting to a ddnet++ server
 	uint8_t bytes[] = {
 		0x00, 0x04, 0x0C, 0x45, 0x3C, 0xC7, 0x00, 0x90,
 		0x77, 0x8F, 0x65, 0x1B, 0x8F, 0x32, 0x2A, 0x97,

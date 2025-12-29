@@ -222,6 +222,8 @@ static DDNetError decode_system_message(DDNetChunk *chunk, DDNetMessageId msg_id
 DDNetError ddnet_decode_message(DDNetChunk *chunk, uint8_t *buf) {
 	DDNetUnpacker unpacker;
 	ddnet_unpacker_init(&unpacker, buf, chunk->header.size);
+
+	const uint8_t *payload_start = unpacker.buf;
 	int32_t msg_and_sys = ddnet_unpacker_get_int(&unpacker);
 	bool sys = msg_and_sys & 1;
 	DDNetMessageId msg_id = msg_and_sys >> 1;
@@ -237,6 +239,14 @@ DDNetError ddnet_decode_message(DDNetChunk *chunk, uint8_t *buf) {
 		chunk->payload.msg.unknown.len = chunk->header.size;
 		chunk->payload.msg.unknown.buf = buf;
 		chunk->payload.kind = DDNET_MSG_KIND_UNKNOWN;
+	}
+
+	if(err == DDNET_ERR_NONE) {
+		size_t len_consumed = unpacker.buf - payload_start;
+		size_t bytes_left = chunk->header.size - len_consumed;
+		if(bytes_left > 0) {
+			return DDNET_ERR_REMAINING_BYTES_IN_MESSAGE;
+		}
 	}
 
 	return err;

@@ -62,7 +62,7 @@ endif()
 ### examples
 
 if(EXAMPLES)
-	set(EXAMPLE_LIST huffman)
+	set(EXAMPLE_LIST huffman client)
 	foreach(EXAMPLE ${EXAMPLE_LIST})
 	    add_executable(${EXAMPLE} examples/${EXAMPLE}.c)
 	    target_link_libraries(${EXAMPLE} ddnet_protocol)

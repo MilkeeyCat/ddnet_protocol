@@ -60,38 +60,38 @@ TEST(SnapSinglePacket, FirstFullSnap) {
 		0x4d, 0xa5, 0x5f, 0x49, 0x49, 0x76, 0x9a, 0x32,
 		0xa9, 0x5a, 0x71, 0x03};
 
-	DDNetError err = DDNetError::DDNET_ERR_NONE;
-	DDNetPacket packet = ddnet_decode_packet(bytes, sizeof(bytes), &err);
+	DDProtoError err = DDProtoError::DDPROTO_ERR_NONE;
+	DDProtoPacket packet = ddproto_decode_packet(bytes, sizeof(bytes), &err);
 
-	ASSERT_EQ(err, DDNetError::DDNET_ERR_NONE);
-	EXPECT_EQ(packet.kind, DDNetPacketKind::DDNET_PACKET_NORMAL);
-	EXPECT_EQ(packet.header.flags, DDNET_PACKET_FLAG_COMPRESSION);
+	ASSERT_EQ(err, DDProtoError::DDPROTO_ERR_NONE);
+	EXPECT_EQ(packet.kind, DDProtoPacketKind::DDPROTO_PACKET_NORMAL);
+	EXPECT_EQ(packet.header.flags, DDPROTO_PACKET_FLAG_COMPRESSION);
 	EXPECT_EQ(packet.header.num_chunks, 1);
 	EXPECT_EQ(packet.header.ack, 6);
 	EXPECT_EQ(packet.header.token, 0x99988aeb);
 
-	EXPECT_EQ(packet.chunks.data[0].payload.kind, DDNET_MSG_KIND_SNAPSINGLE);
+	EXPECT_EQ(packet.chunks.data[0].payload.kind, DDPROTO_MSG_KIND_SNAPSINGLE);
 	EXPECT_EQ(packet.chunks.data[0].header.flags, 0);
 	// there is no vital flag set so the chunk header did not include a sequence
 	// number. So it is not actually set to 0 it is just unset
 	EXPECT_EQ(packet.chunks.data[0].header.sequence, 0);
 
-	DDNetMsgSnapSingle snap_single = packet.chunks.data[0].payload.msg.snap_single;
+	DDProtoMsgSnapSingle snap_single = packet.chunks.data[0].payload.msg.snap_single;
 	EXPECT_EQ(snap_single.game_tick, 1420);
 	EXPECT_EQ(snap_single.delta_tick, 1421);
 	EXPECT_EQ(snap_single.crc, -1521333639);
 	EXPECT_EQ(snap_single.part_size, 322);
 
-	DDNetSnapshot snap = snap_single.snapshot;
+	DDProtoSnapshot snap = snap_single.snapshot;
 	EXPECT_EQ(snap.removed_keys.len, 0);
 	EXPECT_EQ(snap.removed_keys.data, nullptr);
 
 	ASSERT_EQ(snap.items.len, 14);
 
-	DDNetSnapItem *item = &snap.items.data[0];
-	ASSERT_EQ(item->kind, DDNET_ITEM_KIND_GAME_INFO);
+	DDProtoSnapItem *item = &snap.items.data[0];
+	ASSERT_EQ(item->kind, DDPROTO_ITEM_KIND_GAME_INFO);
 
-	DDNetObjGameInfo *game_info = &item->item.game_info;
+	DDProtoObjGameInfo *game_info = &item->item.game_info;
 	ASSERT_EQ(game_info->type_id, 6);
 	EXPECT_EQ(game_info->id, 0);
 	EXPECT_EQ(game_info->game_flags, 0);
@@ -104,41 +104,41 @@ TEST(SnapSinglePacket, FirstFullSnap) {
 	EXPECT_EQ(game_info->round_current, 1);
 
 	item = &snap.items.data[1];
-	ASSERT_EQ(item->kind, DDNET_ITEM_KIND_UNKNOWN);
-	DDNetObjUnknown *unknown = &item->item.unknown;
+	ASSERT_EQ(item->kind, DDPROTO_ITEM_KIND_UNKNOWN);
+	DDProtoObjUnknown *unknown = &item->item.unknown;
 	ASSERT_EQ(unknown->type_id, 0);
 	EXPECT_EQ(unknown->id, 32767);
 	ASSERT_EQ(unknown->size, 4);
 	EXPECT_EQ(unknown->data_len, 20);
-	DDNetUnpacker unpacker = {};
-	ddnet_unpacker_init(&unpacker, unknown->data, unknown->data_len);
-	int32_t unknown_field0 = ddnet_unpacker_get_int(&unpacker);
-	ASSERT_EQ(unpacker.err, DDNET_ERR_NONE);
-	int32_t unknown_field1 = ddnet_unpacker_get_int(&unpacker);
-	ASSERT_EQ(unpacker.err, DDNET_ERR_NONE);
-	int32_t unknown_field2 = ddnet_unpacker_get_int(&unpacker);
-	ASSERT_EQ(unpacker.err, DDNET_ERR_NONE);
-	int32_t unknown_field3 = ddnet_unpacker_get_int(&unpacker);
-	ASSERT_EQ(unpacker.err, DDNET_ERR_NONE);
+	DDProtoUnpacker unpacker = {};
+	ddproto_unpacker_init(&unpacker, unknown->data, unknown->data_len);
+	int32_t unknown_field0 = ddproto_unpacker_get_int(&unpacker);
+	ASSERT_EQ(unpacker.err, DDPROTO_ERR_NONE);
+	int32_t unknown_field1 = ddproto_unpacker_get_int(&unpacker);
+	ASSERT_EQ(unpacker.err, DDPROTO_ERR_NONE);
+	int32_t unknown_field2 = ddproto_unpacker_get_int(&unpacker);
+	ASSERT_EQ(unpacker.err, DDPROTO_ERR_NONE);
+	int32_t unknown_field3 = ddproto_unpacker_get_int(&unpacker);
+	ASSERT_EQ(unpacker.err, DDPROTO_ERR_NONE);
 	EXPECT_EQ(unknown_field0, -1824658838);
 	EXPECT_EQ(unknown_field1, -629591830);
 	EXPECT_EQ(unknown_field2, -1450210576);
 	EXPECT_EQ(unknown_field3, 914991429);
-	ddnet_unpacker_get_raw(&unpacker, 1);
-	EXPECT_EQ(unpacker.err, DDNET_ERR_END_OF_BUFFER);
+	ddproto_unpacker_get_raw(&unpacker, 1);
+	EXPECT_EQ(unpacker.err, DDPROTO_ERR_END_OF_BUFFER);
 
 	item = &snap.items.data[2];
-	ASSERT_EQ(item->kind, DDNET_ITEM_KIND_UNKNOWN);
+	ASSERT_EQ(item->kind, DDPROTO_ITEM_KIND_UNKNOWN);
 
 	item = &snap.items.data[3];
-	ASSERT_EQ(item->kind, DDNET_ITEM_KIND_UNKNOWN);
+	ASSERT_EQ(item->kind, DDPROTO_ITEM_KIND_UNKNOWN);
 
 	item = &snap.items.data[4];
-	ASSERT_EQ(item->kind, DDNET_ITEM_KIND_UNKNOWN);
+	ASSERT_EQ(item->kind, DDPROTO_ITEM_KIND_UNKNOWN);
 
 	item = &snap.items.data[5];
-	ASSERT_EQ(item->kind, DDNET_ITEM_KIND_CLIENT_INFO);
-	DDNetObjClientInfo *client_info = &item->item.client_info;
+	ASSERT_EQ(item->kind, DDPROTO_ITEM_KIND_CLIENT_INFO);
+	DDProtoObjClientInfo *client_info = &item->item.client_info;
 	ASSERT_EQ(client_info->type_id, 11);
 	EXPECT_EQ(client_info->id, 0);
 	EXPECT_STREQ(client_info->name, "nameless tee");
@@ -150,8 +150,8 @@ TEST(SnapSinglePacket, FirstFullSnap) {
 	EXPECT_EQ(client_info->color_feet, 65408);
 
 	item = &snap.items.data[6];
-	ASSERT_EQ(item->kind, DDNET_ITEM_KIND_PLAYER_INFO);
-	DDNetObjPlayerInfo *player_info = &item->item.player_info;
+	ASSERT_EQ(item->kind, DDPROTO_ITEM_KIND_PLAYER_INFO);
+	DDProtoObjPlayerInfo *player_info = &item->item.player_info;
 	ASSERT_EQ(player_info->type_id, 10);
 	ASSERT_EQ(player_info->id, 0);
 	ASSERT_EQ(player_info->client_id, 0);
@@ -159,20 +159,20 @@ TEST(SnapSinglePacket, FirstFullSnap) {
 	ASSERT_EQ(player_info->latency, 0);
 
 	item = &snap.items.data[7];
-	ASSERT_EQ(item->kind, DDNET_ITEM_KIND_UNKNOWN);
+	ASSERT_EQ(item->kind, DDPROTO_ITEM_KIND_UNKNOWN);
 
 	item = &snap.items.data[8];
-	ASSERT_EQ(item->kind, DDNET_ITEM_KIND_UNKNOWN);
+	ASSERT_EQ(item->kind, DDPROTO_ITEM_KIND_UNKNOWN);
 
 	item = &snap.items.data[9];
-	ASSERT_EQ(item->kind, DDNET_ITEM_KIND_UNKNOWN);
+	ASSERT_EQ(item->kind, DDPROTO_ITEM_KIND_UNKNOWN);
 
 	item = &snap.items.data[10];
-	ASSERT_EQ(item->kind, DDNET_ITEM_KIND_UNKNOWN);
+	ASSERT_EQ(item->kind, DDPROTO_ITEM_KIND_UNKNOWN);
 
 	item = &snap.items.data[11];
-	ASSERT_EQ(item->kind, DDNET_ITEM_KIND_CHARACTER);
-	DDNetObjCharacter *character = &item->item.character;
+	ASSERT_EQ(item->kind, DDPROTO_ITEM_KIND_CHARACTER);
+	DDProtoObjCharacter *character = &item->item.character;
 	ASSERT_EQ(character->type_id, 9);
 	EXPECT_EQ(character->id, 0);
 	EXPECT_EQ(character->core.tick, 1420);
@@ -199,59 +199,59 @@ TEST(SnapSinglePacket, FirstFullSnap) {
 	EXPECT_EQ(character->attack_tick, 0);
 
 	item = &snap.items.data[12];
-	ASSERT_EQ(item->kind, DDNET_ITEM_KIND_UNKNOWN);
+	ASSERT_EQ(item->kind, DDPROTO_ITEM_KIND_UNKNOWN);
 	unknown = &item->item.unknown;
 	ASSERT_EQ(unknown->type_id, 0);
 	EXPECT_EQ(unknown->id, 32763);
 	ASSERT_EQ(unknown->size, 4);
 	unpacker = {};
-	ddnet_unpacker_init(&unpacker, unknown->data, unknown->data_len);
-	unknown_field0 = ddnet_unpacker_get_int(&unpacker);
-	ASSERT_EQ(unpacker.err, DDNET_ERR_NONE);
-	unknown_field1 = ddnet_unpacker_get_int(&unpacker);
-	ASSERT_EQ(unpacker.err, DDNET_ERR_NONE);
-	unknown_field2 = ddnet_unpacker_get_int(&unpacker);
-	ASSERT_EQ(unpacker.err, DDNET_ERR_NONE);
-	unknown_field3 = ddnet_unpacker_get_int(&unpacker);
-	ASSERT_EQ(unpacker.err, DDNET_ERR_NONE);
+	ddproto_unpacker_init(&unpacker, unknown->data, unknown->data_len);
+	unknown_field0 = ddproto_unpacker_get_int(&unpacker);
+	ASSERT_EQ(unpacker.err, DDPROTO_ERR_NONE);
+	unknown_field1 = ddproto_unpacker_get_int(&unpacker);
+	ASSERT_EQ(unpacker.err, DDPROTO_ERR_NONE);
+	unknown_field2 = ddproto_unpacker_get_int(&unpacker);
+	ASSERT_EQ(unpacker.err, DDPROTO_ERR_NONE);
+	unknown_field3 = ddproto_unpacker_get_int(&unpacker);
+	ASSERT_EQ(unpacker.err, DDPROTO_ERR_NONE);
 	EXPECT_EQ(unknown_field0, 1993229659);
 	EXPECT_EQ(unknown_field1, -102024632);
 	EXPECT_EQ(unknown_field2, -1378361269);
 	EXPECT_EQ(unknown_field3, -1810037668);
-	ddnet_unpacker_get_raw(&unpacker, 1);
-	EXPECT_EQ(unpacker.err, DDNET_ERR_END_OF_BUFFER);
+	ddproto_unpacker_get_raw(&unpacker, 1);
+	EXPECT_EQ(unpacker.err, DDPROTO_ERR_END_OF_BUFFER);
 
 	item = &snap.items.data[13];
-	ASSERT_EQ(item->kind, DDNET_ITEM_KIND_UNKNOWN);
+	ASSERT_EQ(item->kind, DDPROTO_ITEM_KIND_UNKNOWN);
 	unknown = &item->item.unknown;
 	ASSERT_EQ(unknown->type_id, 32763);
 	EXPECT_EQ(unknown->id, 0);
 	ASSERT_EQ(unknown->size, 11);
 	EXPECT_EQ(unknown->data_len, 13);
 	unpacker = {};
-	ddnet_unpacker_init(&unpacker, unknown->data, unknown->data_len);
-	unknown_field0 = ddnet_unpacker_get_int(&unpacker);
-	ASSERT_EQ(unpacker.err, DDNET_ERR_NONE);
-	unknown_field1 = ddnet_unpacker_get_int(&unpacker);
-	ASSERT_EQ(unpacker.err, DDNET_ERR_NONE);
-	unknown_field2 = ddnet_unpacker_get_int(&unpacker);
-	ASSERT_EQ(unpacker.err, DDNET_ERR_NONE);
-	unknown_field3 = ddnet_unpacker_get_int(&unpacker);
-	ASSERT_EQ(unpacker.err, DDNET_ERR_NONE);
-	int32_t unknown_field4 = ddnet_unpacker_get_int(&unpacker);
-	ASSERT_EQ(unpacker.err, DDNET_ERR_NONE);
-	int32_t unknown_field5 = ddnet_unpacker_get_int(&unpacker);
-	ASSERT_EQ(unpacker.err, DDNET_ERR_NONE);
-	int32_t unknown_field6 = ddnet_unpacker_get_int(&unpacker);
-	ASSERT_EQ(unpacker.err, DDNET_ERR_NONE);
-	int32_t unknown_field7 = ddnet_unpacker_get_int(&unpacker);
-	ASSERT_EQ(unpacker.err, DDNET_ERR_NONE);
-	int32_t unknown_field8 = ddnet_unpacker_get_int(&unpacker);
-	ASSERT_EQ(unpacker.err, DDNET_ERR_NONE);
-	int32_t unknown_field9 = ddnet_unpacker_get_int(&unpacker);
-	ASSERT_EQ(unpacker.err, DDNET_ERR_NONE);
-	int32_t unknown_field10 = ddnet_unpacker_get_int(&unpacker);
-	ASSERT_EQ(unpacker.err, DDNET_ERR_NONE);
+	ddproto_unpacker_init(&unpacker, unknown->data, unknown->data_len);
+	unknown_field0 = ddproto_unpacker_get_int(&unpacker);
+	ASSERT_EQ(unpacker.err, DDPROTO_ERR_NONE);
+	unknown_field1 = ddproto_unpacker_get_int(&unpacker);
+	ASSERT_EQ(unpacker.err, DDPROTO_ERR_NONE);
+	unknown_field2 = ddproto_unpacker_get_int(&unpacker);
+	ASSERT_EQ(unpacker.err, DDPROTO_ERR_NONE);
+	unknown_field3 = ddproto_unpacker_get_int(&unpacker);
+	ASSERT_EQ(unpacker.err, DDPROTO_ERR_NONE);
+	int32_t unknown_field4 = ddproto_unpacker_get_int(&unpacker);
+	ASSERT_EQ(unpacker.err, DDPROTO_ERR_NONE);
+	int32_t unknown_field5 = ddproto_unpacker_get_int(&unpacker);
+	ASSERT_EQ(unpacker.err, DDPROTO_ERR_NONE);
+	int32_t unknown_field6 = ddproto_unpacker_get_int(&unpacker);
+	ASSERT_EQ(unpacker.err, DDPROTO_ERR_NONE);
+	int32_t unknown_field7 = ddproto_unpacker_get_int(&unpacker);
+	ASSERT_EQ(unpacker.err, DDPROTO_ERR_NONE);
+	int32_t unknown_field8 = ddproto_unpacker_get_int(&unpacker);
+	ASSERT_EQ(unpacker.err, DDPROTO_ERR_NONE);
+	int32_t unknown_field9 = ddproto_unpacker_get_int(&unpacker);
+	ASSERT_EQ(unpacker.err, DDPROTO_ERR_NONE);
+	int32_t unknown_field10 = ddproto_unpacker_get_int(&unpacker);
+	ASSERT_EQ(unpacker.err, DDPROTO_ERR_NONE);
 	EXPECT_EQ(unknown_field0, 49153);
 	EXPECT_EQ(unknown_field1, 0);
 	EXPECT_EQ(unknown_field2, -1);
@@ -263,8 +263,8 @@ TEST(SnapSinglePacket, FirstFullSnap) {
 	EXPECT_EQ(unknown_field8, 0);
 	EXPECT_EQ(unknown_field9, -1);
 	EXPECT_EQ(unknown_field10, -1);
-	ddnet_unpacker_get_raw(&unpacker, 1);
-	EXPECT_EQ(unpacker.err, DDNET_ERR_END_OF_BUFFER);
+	ddproto_unpacker_get_raw(&unpacker, 1);
+	EXPECT_EQ(unpacker.err, DDPROTO_ERR_END_OF_BUFFER);
 
-	ddnet_free_packet(&packet);
+	ddproto_free_packet(&packet);
 }

@@ -1,4 +1,4 @@
-# DDNetSession
+# DDProtoSession
 
 ## Syntax
 
@@ -24,8 +24,8 @@ typedef struct {
 	// of the packet payload. But conceptually it belongs into the packet
 	// header. The token is determined by the server and both client and server
 	// use the same value for one session.
-	DDNetToken token;
-} DDNetSession;
+	DDProtoToken token;
+} DDProtoSession;
 ```
 
 State of a ddnet network connection.
@@ -40,19 +40,19 @@ This struct is meant to be passed as mutable pointer to encode and decode
 methods. Where its sequence numbers can be read and written to based on the
 amount of vital messages packed and unpacked.
 
-# ddnet_seq_in_backroom
+# ddproto_seq_in_backroom
 
 ## Syntax
 
 ```C
-bool ddnet_seq_in_backroom(uint16_t sequence, uint16_t ack);
+bool ddproto_seq_in_backroom(uint16_t sequence, uint16_t ack);
 ```
 
 Only used for chunks where the sequence number does not match the expected
 value to decide whether to drop known chunks silently or request resend if
 something got lost.
 
-The expected value would be the `(last_ack + 1) % DDNET_MAX_SEQUENCE`.
+The expected value would be the `(last_ack + 1) % DDPROTO_MAX_SEQUENCE`.
 
 The argument `sequence` is the sequence number of the incoming chunk.
 

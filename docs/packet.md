@@ -1,24 +1,24 @@
-# DDNET_PACKET_HEADER_SIZE
+# DDPROTO_PACKET_HEADER_SIZE
 
 ## Syntax
 
 ```C
-#define DDNET_PACKET_HEADER_SIZE 3
+#define DDPROTO_PACKET_HEADER_SIZE 3
 ```
 
 Minimum size in bytes required for a valid packet header.
 
-# DDNET_MAX_PACKET_SIZE
+# DDPROTO_MAX_PACKET_SIZE
 
 ## Syntax
 
 ```C
-#define DDNET_MAX_PACKET_SIZE 1400
+#define DDPROTO_MAX_PACKET_SIZE 1400
 ```
 
 Maximum amount of total packet size.
 
-# DDNetPacketKind
+# DDProtoPacketKind
 
 ## Syntax
 
@@ -27,44 +27,44 @@ typedef enum {
 	// Connection less packet.
 	// This is for master server communication (server browser). And not used
 	// for anything gameplay relevant.
-	DDNET_PACKET_CONNLESS,
+	DDPROTO_PACKET_CONNLESS,
 	// Control packets are the lowest layer of the protocol. They handle
 	// connect, disconnect and keep alive.
-	DDNET_PACKET_CONTROL,
+	DDPROTO_PACKET_CONTROL,
 	// Normal packets can contain multiple game and system messages in their
 	// payload. These messages contain all the gameplay relevant information.
-	DDNET_PACKET_NORMAL,
-} DDNetPacketKind;
+	DDPROTO_PACKET_NORMAL,
+} DDProtoPacketKind;
 ```
 
 Internal enum for packet types. Not sent over the network.
 
-# DDNetPacketFlag
+# DDProtoPacketFlag
 
 ## Syntax
 
 ```C
 typedef enum {
 	// Indicating that the packet is a control packet (see
-	// `DDNetControlMessage` struct).
-	// Can not be mixed with the `DDNET_PACKET_FLAG_COMPRESSION`!
-	DDNET_PACKET_FLAG_CONTROL = 1 << 2,
+	// `DDProtoControlMessage` struct).
+	// Can not be mixed with the `DDPROTO_PACKET_FLAG_COMPRESSION`!
+	DDPROTO_PACKET_FLAG_CONTROL = 1 << 2,
 	// Indicating that the packet is a connection less packet.
-	DDNET_PACKET_FLAG_CONNLESS = 1 << 3,
+	DDPROTO_PACKET_FLAG_CONNLESS = 1 << 3,
 	// Requesting a resend from the peer.
-	DDNET_PACKET_FLAG_RESEND = 1 << 4,
+	DDPROTO_PACKET_FLAG_RESEND = 1 << 4,
 	// Indicating that the packet payload is huffman compressed (see
-	// `ddnet_huffman_decompress()`).
-	// Can not be mixed with the `DDNET_PACKET_FLAG_CONTROL`!
-	DDNET_PACKET_FLAG_COMPRESSION = 1 << 5,
-} DDNetPacketFlag;
+	// `ddproto_huffman_decompress()`).
+	// Can not be mixed with the `DDPROTO_PACKET_FLAG_CONTROL`!
+	DDPROTO_PACKET_FLAG_COMPRESSION = 1 << 5,
+} DDProtoPacketFlag;
 ```
 
 Packet flags.
 Used for the packet headerm. Multiple flags can be combined but if control is
 set, compression should not be set.
 
-# DDNetPacketHeader
+# DDProtoPacketHeader
 
 ## Syntax
 
@@ -81,13 +81,13 @@ typedef struct {
 	// One chunk contains one net message. If it is a control packet the number
 	// of chunks should be always zero.
 	//
-	// Should be kept in sync with `DDNetPacket`s `packet.chunks.len`.
+	// Should be kept in sync with `DDProtoPacket`s `packet.chunks.len`.
 	uint8_t num_chunks;
 	// DDNet security token.
 	// 4 byte random integer to avoid spoofing. The token is placed at the end
 	// of the packet payload. But conceptually it belongs into the header.
-	DDNetToken token;
-} DDNetPacketHeader;
+	DDProtoToken token;
+} DDProtoPacketHeader;
 ```
 
 Teeworlds packet header.
@@ -97,79 +97,79 @@ token.
 Example:
 
 ```C
-DDNetPacketHeader header;
-header.flags = DDNET_PACKET_FLAG_CONTROL | DDNET_PACKET_FLAG_RESEND;
+DDProtoPacketHeader header;
+header.flags = DDPROTO_PACKET_FLAG_CONTROL | DDPROTO_PACKET_FLAG_RESEND;
 header.ack = 10;
 header.num_chunks = 0; // control packets have no chunks
-header.token = DDNET_TOKEN_MAGIC;
+header.token = DDPROTO_TOKEN_MAGIC;
 ```
 
-# DDNetControlMessageKind
+# DDProtoControlMessageKind
 
 ## Syntax
 
 ```C
 typedef enum {
-	DDNET_CTRL_MSG_KEEPALIVE,
-	DDNET_CTRL_MSG_CONNECT,
-	DDNET_CTRL_MSG_CONNECTACCEPT,
-	DDNET_CTRL_MSG_ACCEPT,
-	DDNET_CTRL_MSG_CLOSE,
-} DDNetControlMessageKind;
+	DDPROTO_CTRL_MSG_KEEPALIVE,
+	DDPROTO_CTRL_MSG_CONNECT,
+	DDPROTO_CTRL_MSG_CONNECTACCEPT,
+	DDPROTO_CTRL_MSG_ACCEPT,
+	DDPROTO_CTRL_MSG_CLOSE,
+} DDProtoControlMessageKind;
 ```
 
 Type of control packet.
 
-# DDNetControlMessage
+# DDProtoControlMessage
 
 ## Syntax
 
 ```C
 typedef struct {
-	DDNetControlMessageKind kind;
-	const char *reason; // can be set if msg_kind == `DDNET_CTRL_MSG_CLOSE`
-} DDNetControlMessage;
+	DDProtoControlMessageKind kind;
+	const char *reason; // can be set if msg_kind == `DDPROTO_CTRL_MSG_CLOSE`
+} DDProtoControlMessage;
 ```
 
 Payload of control packets.
 
-# DDNetPacket
+# DDProtoPacket
 
 ## Syntax
 
 ```C
 typedef struct {
-	DDNetPacketKind kind;
-	DDNetPacketHeader header;
+	DDProtoPacketKind kind;
+	DDProtoPacketHeader header;
 	uint8_t *payload;
 	size_t payload_len;
 	// The parsed packet payload.
 	// Check `kind` to know which field in the union to access.
 	union {
-		DDNetControlMessage control;
+		DDProtoControlMessage control;
 		struct {
 			// Should be either `NULL` or point to memory of size
-			// `chunks.len * sizeof(DDNetChunk)`.
-			DDNetChunk *data;
+			// `chunks.len * sizeof(DDProtoChunk)`.
+			DDProtoChunk *data;
 			// Should be either `0` or match the allocated size of `chunks.data`
-			// in `sizeof(DDNetChunk)` otherwise you might run into segfaults.
+			// in `sizeof(DDProtoChunk)` otherwise you might run into segfaults.
 			//
 			// Should match `header.num_chunks` or is a protocol issue and the
 			// peer might not understand you correctly.
 			size_t len;
 		} chunks;
 	};
-} DDNetPacket;
+} DDProtoPacket;
 ```
 
 Holds information about on full ddnet packet.
 
-# ddnet_decode_packet_header
+# ddproto_decode_packet_header
 
 ## Syntax
 
 ```C
-DDNetPacketHeader ddnet_decode_packet_header(const uint8_t *buf);
+DDProtoPacketHeader ddproto_decode_packet_header(const uint8_t *buf);
 ```
 
 Unpacks packet header and fills the `PacketHeader` struct.
@@ -179,34 +179,34 @@ payload. So it is the responsibility of the payload unpacker to parse the
 token.
 https://github.com/MilkeeyCat/ddnet_protocol/issues/54
 
-# ddnet_encode_packet_header
+# ddproto_encode_packet_header
 
 ## Syntax
 
 ```C
-DDNetError ddnet_encode_packet_header(const DDNetPacketHeader *header, uint8_t *buf);
+DDProtoError ddproto_encode_packet_header(const DDProtoPacketHeader *header, uint8_t *buf);
 ```
 
 Given a `PacketHeader` as input it writes 3 bytes into `buf`.
 
-# ddnet_get_packet_payload
+# ddproto_get_packet_payload
 
 ## Syntax
 
 ```C
-size_t ddnet_get_packet_payload(DDNetPacketHeader *header, const uint8_t *full_data, size_t full_len, uint8_t *payload, size_t payload_len, DDNetError *err);
+size_t ddproto_get_packet_payload(DDProtoPacketHeader *header, const uint8_t *full_data, size_t full_len, uint8_t *payload, size_t payload_len, DDProtoError *err);
 ```
 
 Extract and decompress packet payload.
 Given a full raw packet as `full_data` It will extract only the payload into
 `payload` and return the size of the payload.
 
-# ddnet_decode_packet
+# ddproto_decode_packet
 
 ## Syntax
 
 ```C
-DDNetPacket ddnet_decode_packet(const uint8_t *buf, size_t len, DDNetError *err);
+DDProtoPacket ddproto_decode_packet(const uint8_t *buf, size_t len, DDProtoError *err);
 ```
 
 Given a pointer to the beginning of a udp payload this determines the type
@@ -214,26 +214,26 @@ of packet.
 
 It returns `NULL` on error. Check the `err` value for more details. Or a
 pointer to newly allocated memory that holds the parsed packet struct. It is
-your responsibility to free it using `ddnet_free_packet()`.
+your responsibility to free it using `ddproto_free_packet()`.
 
-# ddnet_encode_packet
+# ddproto_encode_packet
 
 ## Syntax
 
 ```C
-size_t ddnet_encode_packet(const DDNetPacket *packet, uint8_t *buf, size_t len, DDNetError *err);
+size_t ddproto_encode_packet(const DDProtoPacket *packet, uint8_t *buf, size_t len, DDProtoError *err);
 ```
 
-Given a `DDNetPacket` struct it will encode a full udp payload the output is
+Given a `DDProtoPacket` struct it will encode a full udp payload the output is
 written into `buf` which has to be at least `len` big. And returns the amount
 of written bytes.
 
-# ddnet_build_packet
+# ddproto_build_packet
 
 ## Syntax
 
 ```C
-DDNetError ddnet_build_packet(DDNetPacket *packet, const DDNetMessage messages[], uint8_t messages_len, DDNetSession *session);
+DDProtoError ddproto_build_packet(DDProtoPacket *packet, const DDProtoMessage messages[], uint8_t messages_len, DDProtoSession *session);
 ```
 
 Convenience function to initialize a `packet` struct.
@@ -244,14 +244,14 @@ struct passed in.
 
 The `messages` will be copied into the `packet`. New memory will be allocated
 for that operation. It is your responsibility to free it using
-`ddnet_free_packet()`.
+`ddproto_free_packet()`.
 
-# ddnet_free_packet
+# ddproto_free_packet
 
 ## Syntax
 
 ```C
-DDNetError ddnet_free_packet(DDNetPacket *packet);
+DDProtoError ddproto_free_packet(DDProtoPacket *packet);
 ```
 
 Frees a packet struct and all of its fields.

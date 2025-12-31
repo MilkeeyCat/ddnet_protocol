@@ -9,98 +9,98 @@ extern "C" {
 // Possible values of the team field in the chat message sent by the server.
 typedef enum {
 	// Chat message sent to public chat.
-	DDNET_CHAT_PUBLIC,
+	DDPROTO_CHAT_PUBLIC,
 
 	// Chat message sent to team chat. This can be scoped to TEAM_RED, TEAM_BLUE
 	// and TEAM_SPECTATORS based on which team the sender is in but it can also
 	// be scoped to ddrace teams.
-	DDNET_CHAT_TEAM,
+	DDPROTO_CHAT_TEAM,
 
 	// This value is a ddnet extension. This is sent from the server to the
 	// client to display an outgoing ddnet whisper message. In this case the
-	// client_id field on the `DDNetMsgSvChat` struct is the recipient not the
+	// client_id field on the `DDProtoMsgSvChat` struct is the recipient not the
 	// sender. Because the sender knows his own name.
-	DDNET_CHAT_WHISPER_SEND,
+	DDPROTO_CHAT_WHISPER_SEND,
 
 	// This value is a ddnet extension. This is sent from the server to the
 	// client to display received whisper messages differently in the chat.
-	DDNET_CHAT_WHISPER_RECEIVE,
-} DDNetChatTeam;
+	DDPROTO_CHAT_WHISPER_RECEIVE,
+} DDProtoChatTeam;
 
-// Regular and special weapons. See also `DDNetPickupWeapon` for regular weapons
+// Regular and special weapons. See also `DDProtoPickupWeapon` for regular weapons
 // only.
 typedef enum {
 	// Team switching and similar.
-	DDNET_WEAPON_GAME = -3,
+	DDPROTO_WEAPON_GAME = -3,
 
 	// Console kill command (not self damage).
-	DDNET_WEAPON_SELF = -2,
+	DDPROTO_WEAPON_SELF = -2,
 
 	// Kill tiles or out of world.
-	DDNET_WEAPON_WORLD = -1,
+	DDPROTO_WEAPON_WORLD = -1,
 
-	DDNET_WEAPON_HAMMER = 0,
-	DDNET_WEAPON_GUN = 1,
-	DDNET_WEAPON_SHOTGUN = 2,
-	DDNET_WEAPON_GRENADE = 3,
-	DDNET_WEAPON_LASER = 4,
-	DDNET_WEAPON_NINJA = 5,
-} DDNetWeapon;
+	DDPROTO_WEAPON_HAMMER = 0,
+	DDPROTO_WEAPON_GUN = 1,
+	DDPROTO_WEAPON_SHOTGUN = 2,
+	DDPROTO_WEAPON_GRENADE = 3,
+	DDPROTO_WEAPON_LASER = 4,
+	DDPROTO_WEAPON_NINJA = 5,
+} DDProtoWeapon;
 
-// Regular weapons only. See also `DDNetWeapon` for special weapons. These
+// Regular weapons only. See also `DDProtoWeapon` for special weapons. These
 // weapons can be picked up. Kill messages can contain more weapons.
 typedef enum {
-	DDNET_PICKUP_WEAPON_HAMMER = 0,
-	DDNET_PICKUP_WEAPON_GUN = 1,
-	DDNET_PICKUP_WEAPON_SHOTGUN = 2,
-	DDNET_PICKUP_WEAPON_GRENADE = 3,
-	DDNET_PICKUP_WEAPON_LASER = 4,
-	DDNET_PICKUP_WEAPON_NINJA = 5,
-} DDNetPickupWeapon;
+	DDPROTO_PICKUP_WEAPON_HAMMER = 0,
+	DDPROTO_PICKUP_WEAPON_GUN = 1,
+	DDPROTO_PICKUP_WEAPON_SHOTGUN = 2,
+	DDPROTO_PICKUP_WEAPON_GRENADE = 3,
+	DDPROTO_PICKUP_WEAPON_LASER = 4,
+	DDPROTO_PICKUP_WEAPON_NINJA = 5,
+} DDProtoPickupWeapon;
 
 // Emoticons are displayed above the tee.
 typedef enum {
-	DDNET_EMOTICON_OOP,
-	DDNET_EMOTICON_EXCLAMATION,
-	DDNET_EMOTICON_HEARTS,
-	DDNET_EMOTICON_DROP,
-	DDNET_EMOTICON_DOTDOT,
-	DDNET_EMOTICON_MUSIC,
-	DDNET_EMOTICON_SORRY,
-	DDNET_EMOTICON_GHOST,
-	DDNET_EMOTICON_SUSHI,
-	DDNET_EMOTICON_SPLATTEE,
-	DDNET_EMOTICON_DEVILTEE,
-	DDNET_EMOTICON_ZOMG,
-	DDNET_EMOTICON_ZZZ,
-	DDNET_EMOTICON_WTF,
-	DDNET_EMOTICON_EYES,
-	DDNET_EMOTICON_QUESTION,
-} DDNetEmoticon;
+	DDPROTO_EMOTICON_OOP,
+	DDPROTO_EMOTICON_EXCLAMATION,
+	DDPROTO_EMOTICON_HEARTS,
+	DDPROTO_EMOTICON_DROP,
+	DDPROTO_EMOTICON_DOTDOT,
+	DDPROTO_EMOTICON_MUSIC,
+	DDPROTO_EMOTICON_SORRY,
+	DDPROTO_EMOTICON_GHOST,
+	DDPROTO_EMOTICON_SUSHI,
+	DDPROTO_EMOTICON_SPLATTEE,
+	DDPROTO_EMOTICON_DEVILTEE,
+	DDPROTO_EMOTICON_ZOMG,
+	DDPROTO_EMOTICON_ZZZ,
+	DDPROTO_EMOTICON_WTF,
+	DDPROTO_EMOTICON_EYES,
+	DDPROTO_EMOTICON_QUESTION,
+} DDProtoEmoticon;
 
 // Message of the day. Sent by the server and displayed in the middle of the
 // screen with transparent background on the client side.
 typedef struct {
 	const char *message;
-} DDNetMsgSvMotd;
+} DDProtoMsgSvMotd;
 
 // Sent by the server and displayed in the middle of the screen as white text.
 typedef struct {
 	const char *message;
-} DDNetMsgSvBroadcast;
+} DDProtoMsgSvBroadcast;
 
 // sent by the server
 typedef struct {
-	DDNetChatTeam team;
+	DDProtoChatTeam team;
 
 	// Client id of the message author. Can be -1 if the message was sent by the
 	// server can be the message recipient if the team is
-	// `DDNET_CHAT_WHISPER_SEND`.
+	// `DDPROTO_CHAT_WHISPER_SEND`.
 	int32_t client_id;
 
 	// Chat message.
 	const char *message;
-} DDNetMsgSvChat;
+} DDProtoMsgSvChat;
 
 // sent by the server
 typedef struct {
@@ -111,16 +111,16 @@ typedef struct {
 	// Client id of the player that got killed.
 	int32_t victim_id;
 
-	DDNetWeapon weapon;
+	DDProtoWeapon weapon;
 
 	// Set to 1 if the victim had the flag in a ctf gametype.
 	int32_t mode_special;
-} DDNetMsgSvKillMsg;
+} DDProtoMsgSvKillMsg;
 
 // sent by the server
 typedef struct {
 	int32_t sound_id;
-} DDNetMsgSvSoundGlobal;
+} DDProtoMsgSvSoundGlobal;
 
 // sent by the server
 typedef struct {
@@ -157,19 +157,19 @@ typedef struct {
 	float laser_damage;
 	float player_collision;
 	float player_hooking;
-} DDNetMsgSvTuneParams;
+} DDProtoMsgSvTuneParams;
 
 // sent by the server
 typedef struct {
-	DDNetPickupWeapon weapon;
-} DDNetMsgSvWeaponPickup;
+	DDProtoPickupWeapon weapon;
+} DDProtoMsgSvWeaponPickup;
 
 // sent by the server
 typedef struct {
 	// Id of the player that the emoticon is attached to.
 	int32_t client_id;
-	DDNetEmoticon emoticon;
-} DDNetMsgSvEmoticon;
+	DDProtoEmoticon emoticon;
+} DDProtoMsgSvEmoticon;
 
 // sent by the server
 typedef struct {
@@ -180,31 +180,31 @@ typedef struct {
 
 	// Only access index 0-num_options.
 	const char *descriptions[14];
-} DDNetMsgSvVoteOptionListAdd;
+} DDProtoMsgSvVoteOptionListAdd;
 
 // sent by the server
-// See also `DDNetMsgSvVoteOptionListAdd` for multiple vote options at once.
+// See also `DDProtoMsgSvVoteOptionListAdd` for multiple vote options at once.
 typedef struct {
 	const char *description;
-} DDNetMsgSvVoteOptionAdd;
+} DDProtoMsgSvVoteOptionAdd;
 
 // sent by the server
 typedef struct {
 	const char *description;
-} DDNetMsgSvVoteOptionRemove;
+} DDProtoMsgSvVoteOptionRemove;
 
 // sent by the server
 typedef struct {
 	int32_t timeout;
 	const char *description;
 	const char *reason;
-} DDNetMsgSvVoteSet;
+} DDProtoMsgSvVoteSet;
 
 // sent by the client
 typedef struct {
-	DDNetChatTeam team;
+	DDProtoChatTeam team;
 	const char *message;
-} DDNetMsgClSay;
+} DDProtoMsgClSay;
 
 // sent by the client
 typedef struct {
@@ -215,7 +215,7 @@ typedef struct {
 	bool use_custom_color;
 	size_t color_body;
 	size_t color_feet;
-} DDNetMsgClStartInfo;
+} DDProtoMsgClStartInfo;
 
 #ifdef __cplusplus
 }

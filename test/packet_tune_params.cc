@@ -175,11 +175,11 @@ TEST(NormalPacket, TuneParams) {
 		0x90, 0x22, 0x90, 0x10, 0x00, 0x0F, 0x00, 0xB0,
 		0x1B, 0x90, 0x10, 0xFC, 0x58, 0xC5, 0x0A};
 
-	DDNetError err = DDNetError::DDNET_ERR_NONE;
-	DDNetPacket packet = ddnet_decode_packet(bytes, sizeof(bytes), &err);
+	DDProtoError err = DDProtoError::DDPROTO_ERR_NONE;
+	DDProtoPacket packet = ddproto_decode_packet(bytes, sizeof(bytes), &err);
 
-	ASSERT_EQ(err, DDNetError::DDNET_ERR_NONE);
-	EXPECT_EQ(packet.kind, DDNetPacketKind::DDNET_PACKET_NORMAL);
+	ASSERT_EQ(err, DDProtoError::DDPROTO_ERR_NONE);
+	EXPECT_EQ(packet.kind, DDProtoPacketKind::DDPROTO_PACKET_NORMAL);
 	EXPECT_EQ(packet.header.flags, 0);
 	EXPECT_EQ(packet.header.num_chunks, 12);
 	EXPECT_EQ(packet.header.ack, 4);
@@ -187,28 +187,28 @@ TEST(NormalPacket, TuneParams) {
 
 	ASSERT_EQ(packet.chunks.len, 12);
 
-	EXPECT_EQ(packet.chunks.data[0].payload.kind, DDNET_MSG_KIND_UNKNOWN);
+	EXPECT_EQ(packet.chunks.data[0].payload.kind, DDPROTO_MSG_KIND_UNKNOWN);
 	EXPECT_EQ(packet.chunks.data[0].header.sequence, 199);
 
-	EXPECT_EQ(packet.chunks.data[1].payload.kind, DDNET_MSG_KIND_UNKNOWN);
-	EXPECT_EQ(packet.chunks.data[2].payload.kind, DDNET_MSG_KIND_UNKNOWN);
-	EXPECT_EQ(packet.chunks.data[3].payload.kind, DDNET_MSG_KIND_UNKNOWN);
-	EXPECT_EQ(packet.chunks.data[4].payload.kind, DDNET_MSG_KIND_UNKNOWN);
-	EXPECT_EQ(packet.chunks.data[5].payload.kind, DDNET_MSG_KIND_UNKNOWN);
+	EXPECT_EQ(packet.chunks.data[1].payload.kind, DDPROTO_MSG_KIND_UNKNOWN);
+	EXPECT_EQ(packet.chunks.data[2].payload.kind, DDPROTO_MSG_KIND_UNKNOWN);
+	EXPECT_EQ(packet.chunks.data[3].payload.kind, DDPROTO_MSG_KIND_UNKNOWN);
+	EXPECT_EQ(packet.chunks.data[4].payload.kind, DDPROTO_MSG_KIND_UNKNOWN);
+	EXPECT_EQ(packet.chunks.data[5].payload.kind, DDPROTO_MSG_KIND_UNKNOWN);
 
-	DDNetMessage *msg = &packet.chunks.data[6].payload;
-	EXPECT_EQ(msg->kind, DDNET_MSG_KIND_SV_CHAT);
-	DDNetMsgSvChat chat = msg->msg.chat;
-	EXPECT_EQ(chat.team, DDNET_CHAT_PUBLIC);
+	DDProtoMessage *msg = &packet.chunks.data[6].payload;
+	EXPECT_EQ(msg->kind, DDPROTO_MSG_KIND_SV_CHAT);
+	DDProtoMsgSvChat chat = msg->msg.chat;
+	EXPECT_EQ(chat.team, DDPROTO_CHAT_PUBLIC);
 	EXPECT_EQ(chat.client_id, 15);
 	EXPECT_STREQ(chat.message, "(invalid): Do you know someone who uses a bot? Please report them to the moderators.");
 
 	msg = &packet.chunks.data[7].payload;
-	EXPECT_EQ(msg->kind, DDNET_MSG_KIND_SV_VOTEOPTIONADD);
+	EXPECT_EQ(msg->kind, DDPROTO_MSG_KIND_SV_VOTEOPTIONADD);
 
 	msg = &packet.chunks.data[8].payload;
-	EXPECT_EQ(msg->kind, DDNET_MSG_KIND_SV_TUNEPARAMS);
-	DDNetMsgSvTuneParams *tune_params = &msg->msg.tune_params;
+	EXPECT_EQ(msg->kind, DDPROTO_MSG_KIND_SV_TUNEPARAMS);
+	DDProtoMsgSvTuneParams *tune_params = &msg->msg.tune_params;
 	EXPECT_FLOAT_EQ(tune_params->ground_control_speed, 10.0);
 	EXPECT_FLOAT_EQ(tune_params->ground_control_accel, 2.0);
 	EXPECT_FLOAT_EQ(tune_params->ground_friction, 0.5);
@@ -243,5 +243,5 @@ TEST(NormalPacket, TuneParams) {
 	EXPECT_FLOAT_EQ(tune_params->player_collision, 1.0);
 	EXPECT_FLOAT_EQ(tune_params->player_hooking, 1.0);
 
-	ddnet_free_packet(&packet);
+	ddproto_free_packet(&packet);
 }

@@ -3,6 +3,7 @@
 #include <ddnet_protocol/message.h>
 #include <ddnet_protocol/msg_system.h>
 #include <ddnet_protocol/packer.h>
+#include <ddnet_protocol/snapshot.h>
 
 static DDNetError decode_game_message(DDNetChunk *chunk, DDNetMessageId msg_id, DDNetUnpacker *unpacker) {
 	DDNetGenericMessage *msg = &chunk->payload.msg;
@@ -148,6 +149,17 @@ static DDNetError decode_system_message(DDNetChunk *chunk, DDNetMessageId msg_id
 		msg->map_data.chunk_size = ddnet_unpacker_get_int(unpacker);
 		msg->map_data.data = ddnet_unpacker_get_raw(unpacker, msg->map_data.chunk_size);
 		chunk->payload.kind = DDNET_MSG_KIND_MAP_CHANGE;
+		break;
+	case DDNET_MSG_SNAPSINGLE:
+		msg->snap_single.game_tick = ddnet_unpacker_get_int(unpacker);
+		msg->snap_single.delta_tick = ddnet_unpacker_get_int(unpacker);
+		msg->snap_single.crc = ddnet_unpacker_get_int(unpacker);
+		msg->snap_single.part_size = ddnet_unpacker_get_int(unpacker);
+		DDNetError err = ddnet_decode_snapshot(unpacker, &msg->snap_single.snapshot);
+		if(err != DDNET_ERR_NONE) {
+			return err;
+		}
+		chunk->payload.kind = DDNET_MSG_KIND_SNAPSINGLE;
 		break;
 	case DDNET_MSG_CON_READY:
 		chunk->payload.kind = DDNET_MSG_KIND_CON_READY;

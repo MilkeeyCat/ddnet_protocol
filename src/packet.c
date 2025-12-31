@@ -5,6 +5,7 @@
 #include <ddnet_protocol/huffman.h>
 #include <ddnet_protocol/message.h>
 #include <ddnet_protocol/packet.h>
+#include <ddnet_protocol/snapshot.h>
 #include <ddnet_protocol/token.h>
 
 DDNetPacketHeader ddnet_decode_packet_header(const uint8_t *buf) {
@@ -181,6 +182,13 @@ DDNetError ddnet_build_packet(DDNetPacket *packet, const DDNetMessage messages[]
 
 DDNetError ddnet_free_packet(DDNetPacket *packet) {
 	if(packet->kind == DDNET_PACKET_NORMAL) {
+		for(size_t i = 0; i < packet->chunks.len; i++) {
+			DDNetChunk *chunk = &packet->chunks.data[i];
+			if(chunk->payload.kind == DDNET_MSG_KIND_SNAPSINGLE) {
+				DDNetSnapshot *snap = &chunk->payload.msg.snap_single.snapshot;
+				ddnet_free_snapshot(snap);
+			}
+		}
 		free(packet->chunks.data);
 	}
 	free(packet->payload);

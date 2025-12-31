@@ -5,6 +5,7 @@ extern "C" {
 #endif
 
 #include "common.h"
+#include "snapshot.h"
 
 // Holds the raw data including the message id of a message unknown to
 // the ddnet_protocol library.
@@ -35,7 +36,16 @@ typedef struct {
 	const uint8_t *data;
 } DDNetMsgMapData;
 
-// sent by the client
+// Sent by the server.
+typedef struct {
+	int32_t game_tick;
+	int32_t delta_tick;
+	int32_t crc;
+	int32_t part_size;
+	DDNetSnapshot snapshot;
+} DDNetMsgSnapSingle;
+
+// Sent by the client.
 // The `command` will be executed in the server console.
 typedef struct {
 	const char *command;

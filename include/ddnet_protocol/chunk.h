@@ -114,6 +114,7 @@ typedef union {
 	DDNetMsgInfo info;
 	DDNetMsgMapChange map_change;
 	DDNetMsgMapData map_data;
+	DDNetMsgSnapSingle snap_single;
 	DDNetMsgInputTiming input_timing;
 	DDNetMsgRconAuthStatus rcon_auth_status;
 	DDNetMsgRconLine rcon_line;

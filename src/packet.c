@@ -190,8 +190,11 @@ DDNetError ddnet_free_packet(DDNetPacket *packet) {
 			}
 		}
 		free(packet->chunks.data);
+		packet->chunks.data = NULL;
+		packet->chunks.len = 0;
 	}
 	free(packet->payload);
+	packet->payload = NULL;
 
 	return DDNET_ERR_NONE;
 }

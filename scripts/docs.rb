@@ -29,6 +29,9 @@ class BaseDoc
     if @comment.empty?
       messages << "comment is empty"
     end
+    if @comment.start_with? /[a-z]/
+      messages << "comment has to start with an uppercase letter (invalid comment: #{@comment})"
+    end
     if @signature.empty?
       messages << "signature is empty"
     end

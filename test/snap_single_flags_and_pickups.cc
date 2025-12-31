@@ -84,43 +84,43 @@ TEST(SnapSinglePacket, SnapWithFlagsAndPickups) {
 		0x23, 0x90, 0x10, 0x01, 0x05, 0x00, 0x90, 0x22,
 		0x90, 0x10, 0x00, 0x6B, 0x66, 0x92, 0x11};
 
-	DDNetError err = DDNetError::DDNET_ERR_NONE;
-	DDNetPacket packet = ddnet_decode_packet(bytes, sizeof(bytes), &err);
+	DDProtoError err = DDProtoError::DDPROTO_ERR_NONE;
+	DDProtoPacket packet = ddproto_decode_packet(bytes, sizeof(bytes), &err);
 
-	ASSERT_EQ(err, DDNetError::DDNET_ERR_NONE);
-	EXPECT_EQ(packet.kind, DDNetPacketKind::DDNET_PACKET_NORMAL);
+	ASSERT_EQ(err, DDProtoError::DDPROTO_ERR_NONE);
+	EXPECT_EQ(packet.kind, DDProtoPacketKind::DDPROTO_PACKET_NORMAL);
 
-	DDNetMsgSnapSingle snap_single = packet.chunks.data[0].payload.msg.snap_single;
+	DDProtoMsgSnapSingle snap_single = packet.chunks.data[0].payload.msg.snap_single;
 	EXPECT_EQ(snap_single.game_tick, 7990);
 	EXPECT_EQ(snap_single.delta_tick, 7991);
 	EXPECT_EQ(snap_single.crc, 1466432907);
 	EXPECT_EQ(snap_single.part_size, 522);
 
-	DDNetSnapshot snap = snap_single.snapshot;
+	DDProtoSnapshot snap = snap_single.snapshot;
 	EXPECT_EQ(snap.removed_keys.len, 0);
 	EXPECT_EQ(snap.removed_keys.data, nullptr);
 
 	ASSERT_EQ(snap.items.len, 28);
 
-	DDNetSnapItem *item = &snap.items.data[0];
-	ASSERT_EQ(item->kind, DDNET_ITEM_KIND_UNKNOWN);
+	DDProtoSnapItem *item = &snap.items.data[0];
+	ASSERT_EQ(item->kind, DDPROTO_ITEM_KIND_UNKNOWN);
 	item = &snap.items.data[1];
-	ASSERT_EQ(item->kind, DDNET_ITEM_KIND_UNKNOWN);
+	ASSERT_EQ(item->kind, DDPROTO_ITEM_KIND_UNKNOWN);
 	item = &snap.items.data[2];
-	ASSERT_EQ(item->kind, DDNET_ITEM_KIND_UNKNOWN);
+	ASSERT_EQ(item->kind, DDPROTO_ITEM_KIND_UNKNOWN);
 	item = &snap.items.data[3];
-	ASSERT_EQ(item->kind, DDNET_ITEM_KIND_UNKNOWN);
+	ASSERT_EQ(item->kind, DDPROTO_ITEM_KIND_UNKNOWN);
 	item = &snap.items.data[4];
-	ASSERT_EQ(item->kind, DDNET_ITEM_KIND_UNKNOWN);
+	ASSERT_EQ(item->kind, DDPROTO_ITEM_KIND_UNKNOWN);
 	item = &snap.items.data[5];
-	ASSERT_EQ(item->kind, DDNET_ITEM_KIND_UNKNOWN);
+	ASSERT_EQ(item->kind, DDPROTO_ITEM_KIND_UNKNOWN);
 
 	item = &snap.items.data[6];
-	ASSERT_EQ(item->kind, DDNET_ITEM_KIND_GAME_INFO);
-	DDNetObjGameInfo *game_info = &item->item.game_info;
+	ASSERT_EQ(item->kind, DDPROTO_ITEM_KIND_GAME_INFO);
+	DDProtoObjGameInfo *game_info = &item->item.game_info;
 	ASSERT_EQ(game_info->type_id, 6);
 	EXPECT_EQ(game_info->id, 0);
-	EXPECT_EQ(game_info->game_flags, DDNET_GAMEFLAG_FLAGS);
+	EXPECT_EQ(game_info->game_flags, DDPROTO_GAMEFLAG_FLAGS);
 	EXPECT_EQ(game_info->game_state_flags, 0);
 	EXPECT_EQ(game_info->round_start_tick, 0);
 	EXPECT_EQ(game_info->warmup_timer, 0);
@@ -130,22 +130,22 @@ TEST(SnapSinglePacket, SnapWithFlagsAndPickups) {
 	EXPECT_EQ(game_info->round_current, 1);
 
 	item = &snap.items.data[7];
-	ASSERT_EQ(item->kind, DDNET_ITEM_KIND_UNKNOWN);
+	ASSERT_EQ(item->kind, DDPROTO_ITEM_KIND_UNKNOWN);
 	item = &snap.items.data[8];
-	ASSERT_EQ(item->kind, DDNET_ITEM_KIND_UNKNOWN);
+	ASSERT_EQ(item->kind, DDPROTO_ITEM_KIND_UNKNOWN);
 
 	item = &snap.items.data[9];
-	ASSERT_EQ(item->kind, DDNET_ITEM_KIND_GAME_DATA);
-	DDNetObjGameData *game_data = &item->item.game_data;
+	ASSERT_EQ(item->kind, DDPROTO_ITEM_KIND_GAME_DATA);
+	DDProtoObjGameData *game_data = &item->item.game_data;
 	ASSERT_EQ(game_data->type_id, 7);
 	ASSERT_EQ(game_data->teamscore_red, 0);
 	ASSERT_EQ(game_data->teamscore_blue, 0);
-	ASSERT_EQ(game_data->flag_carrier_red, DDNET_FLAG_ATSTAND);
-	ASSERT_EQ(game_data->flag_carrier_blue, DDNET_FLAG_ATSTAND);
+	ASSERT_EQ(game_data->flag_carrier_red, DDPROTO_FLAG_ATSTAND);
+	ASSERT_EQ(game_data->flag_carrier_blue, DDPROTO_FLAG_ATSTAND);
 
 	item = &snap.items.data[10];
-	ASSERT_EQ(item->kind, DDNET_ITEM_KIND_CLIENT_INFO);
-	DDNetObjClientInfo *client_info = &item->item.client_info;
+	ASSERT_EQ(item->kind, DDPROTO_ITEM_KIND_CLIENT_INFO);
+	DDProtoObjClientInfo *client_info = &item->item.client_info;
 	ASSERT_EQ(client_info->type_id, 11);
 	EXPECT_EQ(client_info->id, 0);
 	EXPECT_STREQ(client_info->name, "client.c");
@@ -157,8 +157,8 @@ TEST(SnapSinglePacket, SnapWithFlagsAndPickups) {
 	EXPECT_EQ(client_info->color_feet, 0);
 
 	item = &snap.items.data[11];
-	ASSERT_EQ(item->kind, DDNET_ITEM_KIND_PLAYER_INFO);
-	DDNetObjPlayerInfo *player_info = &item->item.player_info;
+	ASSERT_EQ(item->kind, DDPROTO_ITEM_KIND_PLAYER_INFO);
+	DDProtoObjPlayerInfo *player_info = &item->item.player_info;
 	ASSERT_EQ(player_info->type_id, 10);
 	ASSERT_EQ(player_info->id, 0);
 	ASSERT_EQ(player_info->client_id, 0);
@@ -166,14 +166,14 @@ TEST(SnapSinglePacket, SnapWithFlagsAndPickups) {
 	ASSERT_EQ(player_info->latency, 0);
 
 	item = &snap.items.data[12];
-	ASSERT_EQ(item->kind, DDNET_ITEM_KIND_UNKNOWN);
+	ASSERT_EQ(item->kind, DDPROTO_ITEM_KIND_UNKNOWN);
 	item = &snap.items.data[13];
-	ASSERT_EQ(item->kind, DDNET_ITEM_KIND_UNKNOWN);
+	ASSERT_EQ(item->kind, DDPROTO_ITEM_KIND_UNKNOWN);
 	item = &snap.items.data[14];
-	ASSERT_EQ(item->kind, DDNET_ITEM_KIND_UNKNOWN);
+	ASSERT_EQ(item->kind, DDPROTO_ITEM_KIND_UNKNOWN);
 
 	item = &snap.items.data[15];
-	ASSERT_EQ(item->kind, DDNET_ITEM_KIND_CLIENT_INFO);
+	ASSERT_EQ(item->kind, DDPROTO_ITEM_KIND_CLIENT_INFO);
 	client_info = &item->item.client_info;
 	ASSERT_EQ(client_info->type_id, 11);
 	EXPECT_EQ(client_info->id, 15);
@@ -186,8 +186,8 @@ TEST(SnapSinglePacket, SnapWithFlagsAndPickups) {
 	EXPECT_EQ(client_info->color_feet, 0);
 
 	item = &snap.items.data[16];
-	ASSERT_EQ(item->kind, DDNET_ITEM_KIND_CHARACTER);
-	DDNetObjCharacter *character = &item->item.character;
+	ASSERT_EQ(item->kind, DDPROTO_ITEM_KIND_CHARACTER);
+	DDProtoObjCharacter *character = &item->item.character;
 	ASSERT_EQ(character->type_id, 9);
 	EXPECT_EQ(character->id, 0);
 	EXPECT_EQ(character->core.tick, 7985);
@@ -214,11 +214,11 @@ TEST(SnapSinglePacket, SnapWithFlagsAndPickups) {
 	EXPECT_EQ(character->attack_tick, 0);
 
 	item = &snap.items.data[17];
-	ASSERT_EQ(item->kind, DDNET_ITEM_KIND_UNKNOWN);
+	ASSERT_EQ(item->kind, DDPROTO_ITEM_KIND_UNKNOWN);
 
 	item = &snap.items.data[18];
-	ASSERT_EQ(item->kind, DDNET_ITEM_KIND_LASER);
-	DDNetObjLaser *laser = &item->item.laser;
+	ASSERT_EQ(item->kind, DDPROTO_ITEM_KIND_LASER);
+	DDProtoObjLaser *laser = &item->item.laser;
 	ASSERT_EQ(laser->type_id, 3);
 	EXPECT_EQ(laser->x, 1360);
 	EXPECT_EQ(laser->y, 688);
@@ -227,7 +227,7 @@ TEST(SnapSinglePacket, SnapWithFlagsAndPickups) {
 	EXPECT_EQ(laser->start_tick, 7990);
 
 	item = &snap.items.data[19];
-	ASSERT_EQ(item->kind, DDNET_ITEM_KIND_LASER);
+	ASSERT_EQ(item->kind, DDPROTO_ITEM_KIND_LASER);
 	laser = &item->item.laser;
 	ASSERT_EQ(laser->type_id, 3);
 	EXPECT_EQ(laser->x, 1200);
@@ -237,8 +237,8 @@ TEST(SnapSinglePacket, SnapWithFlagsAndPickups) {
 	EXPECT_EQ(laser->start_tick, 7990);
 
 	item = &snap.items.data[20];
-	ASSERT_EQ(item->kind, DDNET_ITEM_KIND_PICKUP);
-	DDNetObjPickup *pickup = &item->item.pickup;
+	ASSERT_EQ(item->kind, DDPROTO_ITEM_KIND_PICKUP);
+	DDProtoObjPickup *pickup = &item->item.pickup;
 	ASSERT_EQ(pickup->type_id, 4);
 	EXPECT_EQ(pickup->x, 2896);
 	EXPECT_EQ(pickup->y, 1008);
@@ -246,34 +246,34 @@ TEST(SnapSinglePacket, SnapWithFlagsAndPickups) {
 	EXPECT_EQ(pickup->subtype, 0);
 
 	item = &snap.items.data[21];
-	ASSERT_EQ(item->kind, DDNET_ITEM_KIND_PICKUP);
+	ASSERT_EQ(item->kind, DDPROTO_ITEM_KIND_PICKUP);
 	pickup = &item->item.pickup;
 	ASSERT_EQ(pickup->type_id, 4);
 	EXPECT_EQ(pickup->x, 2768);
 	EXPECT_EQ(pickup->y, 1008);
-	EXPECT_EQ(pickup->type, DDNET_POWERUP_WEAPON);
-	EXPECT_EQ(pickup->subtype, DDNET_PICKUP_WEAPON_LASER);
+	EXPECT_EQ(pickup->type, DDPROTO_POWERUP_WEAPON);
+	EXPECT_EQ(pickup->subtype, DDPROTO_PICKUP_WEAPON_LASER);
 
 	item = &snap.items.data[22];
-	ASSERT_EQ(item->kind, DDNET_ITEM_KIND_PICKUP);
+	ASSERT_EQ(item->kind, DDPROTO_ITEM_KIND_PICKUP);
 	pickup = &item->item.pickup;
 	ASSERT_EQ(pickup->type_id, 4);
 	EXPECT_EQ(pickup->x, 2704);
 	EXPECT_EQ(pickup->y, 1008);
-	EXPECT_EQ(pickup->type, DDNET_POWERUP_WEAPON);
-	EXPECT_EQ(pickup->subtype, DDNET_PICKUP_WEAPON_SHOTGUN);
+	EXPECT_EQ(pickup->type, DDPROTO_POWERUP_WEAPON);
+	EXPECT_EQ(pickup->subtype, DDPROTO_PICKUP_WEAPON_SHOTGUN);
 
 	item = &snap.items.data[23];
-	ASSERT_EQ(item->kind, DDNET_ITEM_KIND_PICKUP);
+	ASSERT_EQ(item->kind, DDPROTO_ITEM_KIND_PICKUP);
 	pickup = &item->item.pickup;
 	ASSERT_EQ(pickup->type_id, 4);
 	EXPECT_EQ(pickup->x, 2640);
 	EXPECT_EQ(pickup->y, 1008);
-	EXPECT_EQ(pickup->type, DDNET_POWERUP_WEAPON);
-	EXPECT_EQ(pickup->subtype, DDNET_PICKUP_WEAPON_GRENADE);
+	EXPECT_EQ(pickup->type, DDPROTO_POWERUP_WEAPON);
+	EXPECT_EQ(pickup->subtype, DDPROTO_PICKUP_WEAPON_GRENADE);
 
 	item = &snap.items.data[24];
-	ASSERT_EQ(item->kind, DDNET_ITEM_KIND_PICKUP);
+	ASSERT_EQ(item->kind, DDPROTO_ITEM_KIND_PICKUP);
 	pickup = &item->item.pickup;
 	ASSERT_EQ(pickup->type_id, 4);
 	EXPECT_EQ(pickup->x, 2576);
@@ -282,27 +282,27 @@ TEST(SnapSinglePacket, SnapWithFlagsAndPickups) {
 	EXPECT_EQ(pickup->subtype, 0);
 
 	item = &snap.items.data[25];
-	ASSERT_EQ(item->kind, DDNET_ITEM_KIND_PICKUP);
+	ASSERT_EQ(item->kind, DDPROTO_ITEM_KIND_PICKUP);
 	pickup = &item->item.pickup;
 	ASSERT_EQ(pickup->type_id, 4);
 	EXPECT_EQ(pickup->x, 2544);
 	EXPECT_EQ(pickup->y, 1008);
-	EXPECT_EQ(pickup->type, DDNET_POWERUP_ARMOR);
+	EXPECT_EQ(pickup->type, DDPROTO_POWERUP_ARMOR);
 	EXPECT_EQ(pickup->subtype, 0);
 
 	item = &snap.items.data[26];
-	ASSERT_EQ(item->kind, DDNET_ITEM_KIND_FLAG);
-	DDNetObjFlag *flag = &item->item.flag;
+	ASSERT_EQ(item->kind, DDPROTO_ITEM_KIND_FLAG);
+	DDProtoObjFlag *flag = &item->item.flag;
 	EXPECT_EQ(flag->x, 2288);
 	EXPECT_EQ(flag->y, 1040);
-	EXPECT_EQ(flag->team, DDNET_TEAM_BLUE);
+	EXPECT_EQ(flag->team, DDPROTO_TEAM_BLUE);
 
 	item = &snap.items.data[27];
-	ASSERT_EQ(item->kind, DDNET_ITEM_KIND_FLAG);
+	ASSERT_EQ(item->kind, DDPROTO_ITEM_KIND_FLAG);
 	flag = &item->item.flag;
 	EXPECT_EQ(flag->x, 2192);
 	EXPECT_EQ(flag->y, 1040);
-	EXPECT_EQ(flag->team, DDNET_TEAM_RED);
+	EXPECT_EQ(flag->team, DDPROTO_TEAM_RED);
 
-	ddnet_free_packet(&packet);
+	ddproto_free_packet(&packet);
 }

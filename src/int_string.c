@@ -1,7 +1,7 @@
 #include <ddnet_protocol/errors.h>
 #include <ddnet_protocol/int_string.h>
 
-size_t ddnet_str_length(const char *str) {
+size_t ddproto_str_length(const char *str) {
 	size_t len = 0;
 	while(*(str++)) {
 		len++;
@@ -9,9 +9,9 @@ size_t ddnet_str_length(const char *str) {
 	return len;
 }
 
-DDNetError ddnet_ints_to_str(const uint32_t *ints, size_t num_ints, char *str, size_t str_len) {
+DDProtoError ddproto_ints_to_str(const uint32_t *ints, size_t num_ints, char *str, size_t str_len) {
 	if(str_len < num_ints * sizeof(uint32_t)) {
-		return DDNET_ERR_OUTPUT_VAR_TOO_SMALL;
+		return DDPROTO_ERR_OUTPUT_VAR_TOO_SMALL;
 	}
 
 	// unpack string without validation
@@ -27,13 +27,13 @@ DDNetError ddnet_ints_to_str(const uint32_t *ints, size_t num_ints, char *str, s
 	str[str_index - 1] = '\0';
 
 	// TODO: check valid utf8
-	return DDNET_ERR_NONE;
+	return DDPROTO_ERR_NONE;
 }
 
-DDNetError ddnet_str_to_ints(uint32_t *ints, size_t num_ints, const char *str) {
-	const size_t str_len = ddnet_str_length(str);
+DDProtoError ddproto_str_to_ints(uint32_t *ints, size_t num_ints, const char *str) {
+	const size_t str_len = ddproto_str_length(str);
 	if(str_len > num_ints * sizeof(uint32_t)) {
-		return DDNET_ERR_OUTPUT_VAR_TOO_SMALL;
+		return DDPROTO_ERR_OUTPUT_VAR_TOO_SMALL;
 	}
 
 	for(size_t i = 0; i < num_ints; i++) {
@@ -50,5 +50,5 @@ DDNetError ddnet_str_to_ints(uint32_t *ints, size_t num_ints, const char *str) {
 	// last byte is always zero and unused in this format
 	ints[num_ints - 1] &= 0xffffff00;
 
-	return DDNET_ERR_NONE;
+	return DDPROTO_ERR_NONE;
 }

@@ -12,20 +12,20 @@ extern "C" {
 typedef struct {
 	const uint8_t *buf;
 	size_t len;
-} DDNetMsgUnknown;
+} DDProtoMsgUnknown;
 
 // sent by the client
 typedef struct {
 	const char *version;
 	const char *password;
-} DDNetMsgInfo;
+} DDProtoMsgInfo;
 
 // sent by the server
 typedef struct {
 	const char *name;
 	int32_t crc;
 	int32_t size;
-} DDNetMsgMapChange;
+} DDProtoMsgMapChange;
 
 // sent by the server
 typedef struct {
@@ -34,7 +34,7 @@ typedef struct {
 	int32_t chunk;
 	int32_t chunk_size;
 	const uint8_t *data;
-} DDNetMsgMapData;
+} DDProtoMsgMapData;
 
 // Sent by the server.
 typedef struct {
@@ -42,14 +42,14 @@ typedef struct {
 	int32_t delta_tick;
 	int32_t crc;
 	int32_t part_size;
-	DDNetSnapshot snapshot;
-} DDNetMsgSnapSingle;
+	DDProtoSnapshot snapshot;
+} DDProtoMsgSnapSingle;
 
 // Sent by the client.
 // The `command` will be executed in the server console.
 typedef struct {
 	const char *command;
-} DDNetMsgRconCmd;
+} DDProtoMsgRconCmd;
 
 // sent by the client
 typedef struct {
@@ -62,44 +62,44 @@ typedef struct {
 	// If set to true the server will send the available rcon commands to the
 	// client.
 	bool send_rcon_cmds;
-} DDNetMsgRconAuth;
+} DDProtoMsgRconAuth;
 
 // sent by the client
 // This is sent multiple times during the map download process. The server is
-// supposed to answer with a `DDNET_MSG_KIND_MAP_DATA`
+// supposed to answer with a `DDPROTO_MSG_KIND_MAP_DATA`
 typedef struct {
 	int32_t chunk;
-} DDNetMsgRequestMapData;
+} DDProtoMsgRequestMapData;
 
 // sent by the server
 typedef struct {
 	const char *name;
 	const char *help;
 	const char *params;
-} DDNetMsgRconCmdAdd;
+} DDProtoMsgRconCmdAdd;
 
 // sent by the server
 typedef struct {
 	const char *name;
-} DDNetMsgRconCmdRem;
+} DDProtoMsgRconCmdRem;
 
 // sent by the server
 typedef struct {
 	int32_t intended_tick;
 	int32_t time_left;
-} DDNetMsgInputTiming;
+} DDProtoMsgInputTiming;
 
 // sent by the server
 typedef struct {
 	bool authed;
 	bool cmdlist;
-} DDNetMsgRconAuthStatus;
+} DDProtoMsgRconAuthStatus;
 
 // sent by the server
 // Log line that shows up in the clients remote console.
 typedef struct {
 	const char *line;
-} DDNetMsgRconLine;
+} DDProtoMsgRconLine;
 
 // sent by the client
 typedef struct {
@@ -116,7 +116,7 @@ typedef struct {
 	int32_t wanted_weapon;
 	int32_t next_weapon;
 	int32_t prev_weapon;
-} DDNetMsgInput;
+} DDProtoMsgInput;
 
 #ifdef __cplusplus
 }

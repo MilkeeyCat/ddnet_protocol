@@ -3,7 +3,7 @@
 #include <ddnet_protocol/message.h>
 #include <ddnet_protocol/packet.h>
 
-size_t ddnet_fetch_chunks(const uint8_t *buf, size_t len, DDNetPacketHeader *header, OnDDNetChunk callback, void *ctx, DDNetError *err) {
+size_t ddproto_fetch_chunks(const uint8_t *buf, size_t len, DDProtoPacketHeader *header, OnDDProtoChunk callback, void *ctx, DDProtoError *err) {
 	const uint8_t *start = buf;
 	const uint8_t *end = buf + len;
 	uint8_t num_chunks = 0;
@@ -23,31 +23,31 @@ size_t ddnet_fetch_chunks(const uint8_t *buf, size_t len, DDNetPacketHeader *hea
 		// so we can assume that it is an invalid message
 		if(space < 4) {
 			if(err) {
-				*err = DDNET_ERR_END_OF_BUFFER;
+				*err = DDPROTO_ERR_END_OF_BUFFER;
 			}
 
 			return 0;
 		}
 
-		DDNetChunkHeader chunk_header;
-		buf += ddnet_decode_chunk_header(buf, &chunk_header);
+		DDProtoChunkHeader chunk_header;
+		buf += ddproto_decode_chunk_header(buf, &chunk_header);
 
 		space = end - buf;
 		if(space < chunk_header.size) {
 			if(err) {
-				*err = DDNET_ERR_END_OF_BUFFER;
+				*err = DDPROTO_ERR_END_OF_BUFFER;
 			}
 
 			return 0;
 		}
 
-		DDNetChunk chunk;
+		DDProtoChunk chunk;
 		chunk.header = chunk_header;
-		DDNetError chunk_err = ddnet_decode_message(&chunk, buf);
+		DDProtoError chunk_err = ddproto_decode_message(&chunk, buf);
 		callback(ctx, &chunk);
 		num_chunks++;
 		// unknown message ids are not a fatal error in teeworlds
-		if(chunk_err != DDNET_ERR_NONE && chunk_err != DDNET_ERR_UNKNOWN_MESSAGE) {
+		if(chunk_err != DDPROTO_ERR_NONE && chunk_err != DDPROTO_ERR_UNKNOWN_MESSAGE) {
 			if(err) {
 				*err = chunk_err;
 			}
@@ -59,7 +59,7 @@ size_t ddnet_fetch_chunks(const uint8_t *buf, size_t len, DDNetPacketHeader *hea
 
 	if(num_chunks < header->num_chunks) {
 		if(err) {
-			*err = DDNET_ERR_END_OF_BUFFER;
+			*err = DDPROTO_ERR_END_OF_BUFFER;
 		}
 
 		return 0;

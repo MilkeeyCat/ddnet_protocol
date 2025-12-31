@@ -9,63 +9,63 @@ extern "C" {
 #include "msg_game.h"
 
 // Gamemode flags. These flags can be combined. And they are used by the
-// `DDNetObjGameInfo` snapshot item.
+// `DDProtoObjGameInfo` snapshot item.
 typedef enum {
 	// If this flag is set the current gamemode has vanilla teams. Meaning there
-	// is `DDNET_TEAM_RED` and `DDNET_TEAM_BLUE`. If the flag is not set the
-	// `DDNET_TEAM_GAME` will be used for all players.
-	DDNET_GAMEFLAG_TEAMS = 1 << 0,
+	// is `DDPROTO_TEAM_RED` and `DDPROTO_TEAM_BLUE`. If the flag is not set the
+	// `DDPROTO_TEAM_GAME` will be used for all players.
+	DDPROTO_GAMEFLAG_TEAMS = 1 << 0,
 
 	// If this flag is set the current gamemode has vanilla flags. A flag being
 	// a flag in the world that comes from the capture the flag gametype (ctf).
-	DDNET_GAMEFLAG_FLAGS = 1 << 1,
-} DDNetGameFlag;
+	DDPROTO_GAMEFLAG_FLAGS = 1 << 1,
+} DDProtoGameFlag;
 
 // The current gamestate. Only one of these flags can be used. This flag is used
-// by the `DDNetObjGameInfo` snapshot item.
+// by the `DDProtoObjGameInfo` snapshot item.
 typedef enum {
 	// The world is paused and the scoreboard is displayed.
-	DDNET_GAMESTATEFLAG_GAMEOVER = 1 << 0,
+	DDPROTO_GAMESTATEFLAG_GAMEOVER = 1 << 0,
 
 	// The round will end on the next score.
-	DDNET_GAMESTATEFLAG_SUDDENDEATH = 1 << 1,
+	DDPROTO_GAMESTATEFLAG_SUDDENDEATH = 1 << 1,
 
 	// The world is paused.
-	DDNET_GAMESTATEFLAG_PAUSED = 1 << 2,
-} DDNetGameStateFlag;
+	DDPROTO_GAMESTATEFLAG_PAUSED = 1 << 2,
+} DDProtoGameStateFlag;
 
 // This enum represents teeworlds vanilla teams. These teams are different than
 // ddrace teams that were added by ddnet.
 typedef enum {
-	DDNET_TEAM_SPECTATORS = -1,
-	DDNET_TEAM_GAME = 0,
-	DDNET_TEAM_RED = 0,
-	DDNET_TEAM_BLUE = 1,
-	DDNET_NUM_TEAMS = 2,
-} DDNetTeam;
+	DDPROTO_TEAM_SPECTATORS = -1,
+	DDPROTO_TEAM_GAME = 0,
+	DDPROTO_TEAM_RED = 0,
+	DDPROTO_TEAM_BLUE = 1,
+	DDPROTO_NUM_TEAMS = 2,
+} DDProtoTeam;
 
 // Used to determine a pickup type.
 typedef enum {
-	DDNET_POWERUP_HEALTH = 0,
-	DDNET_POWERUP_ARMOR = 1,
-	DDNET_POWERUP_WEAPON = 2,
-	DDNET_POWERUP_NINJA = 3
-} DDNetPowerup;
+	DDPROTO_POWERUP_HEALTH = 0,
+	DDPROTO_POWERUP_ARMOR = 1,
+	DDPROTO_POWERUP_WEAPON = 2,
+	DDPROTO_POWERUP_NINJA = 3
+} DDProtoPowerup;
 
-// Used by the flag carrier fields in the `DDNetObjGameData` snap item. Values
+// Used by the flag carrier fields in the `DDProtoObjGameData` snap item. Values
 // from 0 to max clients is a client id. And if it is not a client id it is one
 // of these 3 negative values.
 typedef enum {
-	DDNET_FLAG_MISSING = -3,
-	DDNET_FLAG_ATSTAND = -2,
-	DDNET_FLAG_TAKEN = -1,
-} DDNetFlag;
+	DDPROTO_FLAG_MISSING = -3,
+	DDPROTO_FLAG_ATSTAND = -2,
+	DDPROTO_FLAG_TAKEN = -1,
+} DDProtoFlag;
 
-// Special values for spectator id used by `DDNetObjSpectatorInfo`
+// Special values for spectator id used by `DDProtoObjSpectatorInfo`
 typedef enum {
-	DDNET_SPEC_FREEVIEW = -1,
-	DDNET_SPEC_FOLLOW = -2,
-} DDNetSpec;
+	DDPROTO_SPEC_FREEVIEW = -1,
+	DDPROTO_SPEC_FOLLOW = -2,
+} DDProtoSpec;
 
 // Holds the raw data of a snap item unknown to the ddnet_protocol library.
 typedef struct
@@ -84,7 +84,7 @@ typedef struct
 	// This value is not sent over the network! It is the size of the `data` in
 	// bytes.
 	size_t data_len;
-} DDNetObjUnknown;
+} DDProtoObjUnknown;
 
 // Flying weapon bullet.
 typedef struct
@@ -96,9 +96,9 @@ typedef struct
 	int32_t y;
 	int32_t vel_x;
 	int32_t vel_y;
-	DDNetPickupWeapon type;
+	DDProtoPickupWeapon type;
 	int32_t start_tick;
-} DDNetObjProjectile;
+} DDProtoObjProjectile;
 
 // A blue laser ray shot by the rifle weapon.
 typedef struct
@@ -111,7 +111,7 @@ typedef struct
 	int32_t from_x;
 	int32_t from_y;
 	int32_t start_tick;
-} DDNetObjLaser;
+} DDProtoObjLaser;
 
 // A pickup is a collectable weapon, armor or shield in the world.
 typedef struct
@@ -124,12 +124,12 @@ typedef struct
 	// Be careful to not confuse this with the generic snap item field
 	// `type_id`. The `type` is pickup specific and determines if it is a
 	// weapon, ninja, health or armor.
-	DDNetPowerup type;
+	DDProtoPowerup type;
 	// The `subtype` should only be used if the `type` is set to
-	// `DDNET_POWERUP_WEAPON` otherwise `subtype` should be set to `0` by the
+	// `DDPROTO_POWERUP_WEAPON` otherwise `subtype` should be set to `0` by the
 	// sender and ignored by the receiver.
-	DDNetPickupWeapon subtype;
-} DDNetObjPickup;
+	DDProtoPickupWeapon subtype;
+} DDProtoObjPickup;
 
 // This represents a flag from the capture the flag mode.
 typedef struct
@@ -139,11 +139,11 @@ typedef struct
 
 	int32_t x;
 	int32_t y;
-	// The flag will be red if set to `DDNET_TEAM_RED`.
-	// The flag will be blue if set to `DDNET_TEAM_BLUE`.
+	// The flag will be red if set to `DDPROTO_TEAM_RED`.
+	// The flag will be blue if set to `DDPROTO_TEAM_BLUE`.
 	// No other values are allowed.
-	DDNetTeam team;
-} DDNetObjFlag;
+	DDProtoTeam team;
+} DDProtoObjFlag;
 
 // Info about the current game state and score. This object should only exist
 // once per snapshot.
@@ -152,19 +152,19 @@ typedef struct
 	int32_t type_id;
 	int32_t id;
 
-	DDNetGameFlag game_flags;
-	DDNetGameStateFlag game_state_flags;
+	DDProtoGameFlag game_flags;
+	DDProtoGameStateFlag game_state_flags;
 	int32_t round_start_tick;
 	int32_t warmup_timer;
 	int32_t score_limit;
 	int32_t time_limit;
 	int32_t round_num;
 	int32_t round_current;
-} DDNetObjGameInfo;
+} DDProtoObjGameInfo;
 
-// Similar to `DDNetObjGameInfo` but more optional.
+// Similar to `DDProtoObjGameInfo` but more optional.
 // This snap item is only expected to be included in the snapshot if the
-// `DDNetObjGameInfo` `game_flags` are set.
+// `DDProtoObjGameInfo` `game_flags` are set.
 //
 // It contains flag and team score data which is not used by all modes.
 typedef struct
@@ -173,36 +173,36 @@ typedef struct
 	int32_t id;
 
 	// The current score of the red team. Will be displayed in the scoreboard.
-	// Needs the `DDNetObjGameInfo.game_flags` set to `DDNET_GAMEFLAG_TEAMS` to
+	// Needs the `DDProtoObjGameInfo.game_flags` set to `DDPROTO_GAMEFLAG_TEAMS` to
 	// work properly.
 	int32_t teamscore_red;
 
 	// The current score of the blue team. Will be displayed in the scoreboard.
-	// Needs the `DDNetObjGameInfo.game_flags` set to `DDNET_GAMEFLAG_TEAMS` to
+	// Needs the `DDProtoObjGameInfo.game_flags` set to `DDPROTO_GAMEFLAG_TEAMS` to
 	// work properly.
 	int32_t teamscore_blue;
 
 	// Client Id of the current flag holder. Is expected to be `-1` if the red flag
-	// is not being carried by anyone. See the `DDNetFlag` enum for all special values.
-	// Needs the `DDNetObjGameInfo.game_flags` set to `DDNET_GAMEFLAG_FLAGS`
+	// is not being carried by anyone. See the `DDProtoFlag` enum for all special values.
+	// Needs the `DDProtoObjGameInfo.game_flags` set to `DDPROTO_GAMEFLAG_FLAGS`
 	// to work properly.
 	// Client Id of the current flag holder. Is expected to be `-1` if the red
-	// flag is not being carried by anyone. See the `DDNetFlag` enum for all
-	// special values. Needs the `DDNetObjGameInfo.game_flags` set to
-	// `DDNET_GAMEFLAG_FLAGS` to work properly.
-	// TODO: which type to use for that field? Could use `DDNetFlag` but that
+	// flag is not being carried by anyone. See the `DDProtoFlag` enum for all
+	// special values. Needs the `DDProtoObjGameInfo.game_flags` set to
+	// `DDPROTO_GAMEFLAG_FLAGS` to work properly.
+	// TODO: which type to use for that field? Could use `DDProtoFlag` but that
 	// does not clearly communicate it also contains client ids.
 	int32_t flag_carrier_red;
 
 	// Client Id of the current flag holder. Is expected to be `-1` if the blue
-	// flag is not being carried by anyone. See the `DDNetFlag` enum for all
-	// special values. Needs the `DDNetObjGameInfo.game_flags` set to
-	// `DDNET_GAMEFLAG_FLAGS` to work properly.
+	// flag is not being carried by anyone. See the `DDProtoFlag` enum for all
+	// special values. Needs the `DDProtoObjGameInfo.game_flags` set to
+	// `DDPROTO_GAMEFLAG_FLAGS` to work properly.
 	int32_t flag_carrier_blue;
-} DDNetObjGameData;
+} DDProtoObjGameData;
 
 // This is never sent over the network on its own. It is always used as a field
-// in the `DDNetObjCharacter` object.
+// in the `DDProtoObjCharacter` object.
 typedef struct
 {
 	int32_t type_id;
@@ -223,7 +223,7 @@ typedef struct
 	int32_t hook_y;
 	int32_t hook_dx;
 	int32_t hook_dy;
-} DDNetObjCharacterCore;
+} DDProtoObjCharacterCore;
 
 // Represents a tee in the world. Its position and other state.
 typedef struct
@@ -231,7 +231,7 @@ typedef struct
 	int32_t type_id;
 	int32_t id;
 
-	DDNetObjCharacterCore core;
+	DDProtoObjCharacterCore core;
 	int32_t player_flags;
 	int32_t health;
 	int32_t armor;
@@ -239,7 +239,7 @@ typedef struct
 	int32_t weapon;
 	int32_t emote;
 	int32_t attack_tick;
-} DDNetObjCharacter;
+} DDProtoObjCharacter;
 
 // Score, team and latency.
 typedef struct
@@ -252,7 +252,7 @@ typedef struct
 	// client id.
 	bool local;
 	int32_t client_id;
-	DDNetTeam team;
+	DDProtoTeam team;
 
 	// The amount of points a player made, will be displayed as is in the
 	// scoreboard. Unless it is a ddrace server that uses time score then a time
@@ -265,7 +265,7 @@ typedef struct
 
 	// This is used to display the ping of players in the scoreboard.
 	int32_t latency;
-} DDNetObjPlayerInfo;
+} DDProtoObjPlayerInfo;
 
 // Skin, name, clan and country info.
 typedef struct
@@ -273,14 +273,14 @@ typedef struct
 	int32_t type_id;
 	int32_t id;
 
-	char name[DDNET_MAX_SKIN_LENGTH];
-	char clan[DDNET_MAX_CLAN_LENGTH];
+	char name[DDPROTO_MAX_SKIN_LENGTH];
+	char clan[DDPROTO_MAX_CLAN_LENGTH];
 	int32_t country;
-	char skin[DDNET_MAX_SKIN_LENGTH];
+	char skin[DDPROTO_MAX_SKIN_LENGTH];
 	bool use_custom_color;
 	int32_t color_body;
 	int32_t color_feet;
-} DDNetObjClientInfo;
+} DDProtoObjClientInfo;
 
 // Only sent to spectators if the server forces the camera position. Its either
 // set to the x/y position or following a client id.
@@ -290,11 +290,11 @@ typedef struct
 	int32_t id;
 
 	// Can be the client id of a player that the camera should follow. Or one of
-	// the magic values in the `DDNetSpec` enum.
-	DDNetSpec spectator_id;
+	// the magic values in the `DDProtoSpec` enum.
+	DDProtoSpec spectator_id;
 	int32_t x;
 	int32_t y;
-} DDNetObjSpectatorInfo;
+} DDProtoObjSpectatorInfo;
 
 // Meta event. Never actually sent over the network.
 typedef struct
@@ -304,7 +304,7 @@ typedef struct
 
 	int32_t x;
 	int32_t y;
-} DDNetEventCommon;
+} DDProtoEventCommon;
 
 // Grenade explosion animation.
 typedef struct
@@ -314,7 +314,7 @@ typedef struct
 
 	int32_t x;
 	int32_t y;
-} DDNetEventExplosion;
+} DDProtoEventExplosion;
 
 // Purple steam spawn animation.
 typedef struct
@@ -324,7 +324,7 @@ typedef struct
 
 	int32_t x;
 	int32_t y;
-} DDNetEventSpawn;
+} DDProtoEventSpawn;
 
 // Hammer hit animation that looks like a white splash.
 typedef struct
@@ -334,7 +334,7 @@ typedef struct
 
 	int32_t x;
 	int32_t y;
-} DDNetEventHammerHit;
+} DDProtoEventHammerHit;
 
 // Bursting tee animation. The color of the particles depends on the skin color
 // of the tee that died. So one has to look into `client_id` and the stored skin
@@ -348,7 +348,7 @@ typedef struct
 	int32_t y;
 	// Client id of the tee that died.
 	int32_t client_id;
-} DDNetEventDeath;
+} DDProtoEventDeath;
 
 // Plays a sound.
 typedef struct
@@ -359,7 +359,7 @@ typedef struct
 	int32_t x;
 	int32_t y;
 	int32_t sound_id;
-} DDNetEventSoundGlobal;
+} DDProtoEventSoundGlobal;
 
 // Plays a sound.
 typedef struct
@@ -370,7 +370,7 @@ typedef struct
 	int32_t x;
 	int32_t y;
 	int32_t sound_id;
-} DDNetEventSoundWorld;
+} DDProtoEventSoundWorld;
 
 // Displays rotating yellow damage indicator star.
 typedef struct
@@ -381,7 +381,7 @@ typedef struct
 	int32_t x;
 	int32_t y;
 	int32_t angle;
-} DDNetEventDamageIndicator;
+} DDProtoEventDamageIndicator;
 
 #ifdef __cplusplus
 }

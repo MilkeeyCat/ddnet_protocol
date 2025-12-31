@@ -160,8 +160,8 @@ TEST(SnapSinglePacket, SnapWithEventSpawn) {
 		0x10, 0x01, 0x05, 0x00, 0x90, 0x22, 0x90, 0x10,
 		0x00, 0x0F, 0x00, 0xB0, 0x1B, 0x90, 0x10, 0x8C,
 		0x56, 0x7C, 0xC1};
-	DDNetError err = DDNET_ERR_NONE;
-	DDNetPacket packet = ddnet_decode_packet(bytes, sizeof(bytes), &err);
-	EXPECT_STREQ(ddnet_error_str(err), ddnet_error_str(DDNetError::DDNET_ERR_NONE));
-	ddnet_free_packet(&packet);
+	DDProtoError err = DDPROTO_ERR_NONE;
+	DDProtoPacket packet = ddproto_decode_packet(bytes, sizeof(bytes), &err);
+	EXPECT_STREQ(ddproto_error_str(err), ddproto_error_str(DDProtoError::DDPROTO_ERR_NONE));
+	ddproto_free_packet(&packet);
 }

@@ -4,7 +4,7 @@
 #include <ddnet_protocol/message.h>
 #include <ddnet_protocol/packer.h>
 
-void ddnet_str_sanitize_cc(char *string) {
+void ddproto_str_sanitize_cc(char *string) {
 	uint8_t *str = (uint8_t *)string;
 	while(*str) {
 		if(*str < 32) {
@@ -14,7 +14,7 @@ void ddnet_str_sanitize_cc(char *string) {
 	}
 }
 
-void ddnet_str_sanitize(char *string) {
+void ddproto_str_sanitize(char *string) {
 	uint8_t *str = (uint8_t *)string;
 	while(*str) {
 		if(*str < 32 && !(*str == '\r') && !(*str == '\n') && !(*str == '\t')) {
@@ -24,7 +24,7 @@ void ddnet_str_sanitize(char *string) {
 	}
 }
 
-void ddnet_str_clean_whitespaces(char *string) {
+void ddproto_str_clean_whitespaces(char *string) {
 	char *read = string;
 	char *write = string;
 
@@ -53,190 +53,190 @@ void ddnet_str_clean_whitespaces(char *string) {
 	}
 }
 
-void ddnet_packer_init(DDNetPacker *packer) {
-	packer->err = DDNET_ERR_NONE;
+void ddproto_packer_init(DDProtoPacker *packer) {
+	packer->err = DDPROTO_ERR_NONE;
 	packer->current = packer->buf;
-	packer->end = packer->buf + (size_t)DDNET_PACKER_BUFFER_SIZE;
+	packer->end = packer->buf + (size_t)DDPROTO_PACKER_BUFFER_SIZE;
 }
 
-void ddnet_packer_init_msg(DDNetPacker *packer, DDNetMessageKind kind) {
-	ddnet_packer_init(packer);
+void ddproto_packer_init_msg(DDProtoPacker *packer, DDProtoMessageKind kind) {
+	ddproto_packer_init(packer);
 
-	DDNetMessageId msg_id;
-	DDNetMessageCategory msg_category;
+	DDProtoMessageId msg_id;
+	DDProtoMessageCategory msg_category;
 
 	switch(kind) {
-	case DDNET_MSG_KIND_UNKNOWN:
+	case DDPROTO_MSG_KIND_UNKNOWN:
 		return;
-	case DDNET_MSG_KIND_INFO:
-		msg_id = DDNET_MSG_INFO;
-		msg_category = DDNET_SYSTEM;
+	case DDPROTO_MSG_KIND_INFO:
+		msg_id = DDPROTO_MSG_INFO;
+		msg_category = DDPROTO_SYSTEM;
 		break;
-	case DDNET_MSG_KIND_MAP_CHANGE:
-		msg_id = DDNET_MSG_MAP_CHANGE;
-		msg_category = DDNET_SYSTEM;
+	case DDPROTO_MSG_KIND_MAP_CHANGE:
+		msg_id = DDPROTO_MSG_MAP_CHANGE;
+		msg_category = DDPROTO_SYSTEM;
 		break;
-	case DDNET_MSG_KIND_MAP_DATA:
-		msg_id = DDNET_MSG_MAP_DATA;
-		msg_category = DDNET_SYSTEM;
+	case DDPROTO_MSG_KIND_MAP_DATA:
+		msg_id = DDPROTO_MSG_MAP_DATA;
+		msg_category = DDPROTO_SYSTEM;
 		break;
-	case DDNET_MSG_KIND_CON_READY:
-		msg_id = DDNET_MSG_CON_READY;
-		msg_category = DDNET_SYSTEM;
+	case DDPROTO_MSG_KIND_CON_READY:
+		msg_id = DDPROTO_MSG_CON_READY;
+		msg_category = DDPROTO_SYSTEM;
 		break;
-	case DDNET_MSG_KIND_SNAP:
-		msg_id = DDNET_MSG_SNAP;
-		msg_category = DDNET_SYSTEM;
+	case DDPROTO_MSG_KIND_SNAP:
+		msg_id = DDPROTO_MSG_SNAP;
+		msg_category = DDPROTO_SYSTEM;
 		break;
-	case DDNET_MSG_KIND_SNAPEMPTY:
-		msg_id = DDNET_MSG_SNAPEMPTY;
-		msg_category = DDNET_SYSTEM;
+	case DDPROTO_MSG_KIND_SNAPEMPTY:
+		msg_id = DDPROTO_MSG_SNAPEMPTY;
+		msg_category = DDPROTO_SYSTEM;
 		break;
-	case DDNET_MSG_KIND_SNAPSINGLE:
-		msg_id = DDNET_MSG_SNAPSINGLE;
-		msg_category = DDNET_SYSTEM;
+	case DDPROTO_MSG_KIND_SNAPSINGLE:
+		msg_id = DDPROTO_MSG_SNAPSINGLE;
+		msg_category = DDPROTO_SYSTEM;
 		break;
-	case DDNET_MSG_KIND_SNAPSMALL:
-		msg_id = DDNET_MSG_SNAPSMALL;
-		msg_category = DDNET_SYSTEM;
+	case DDPROTO_MSG_KIND_SNAPSMALL:
+		msg_id = DDPROTO_MSG_SNAPSMALL;
+		msg_category = DDPROTO_SYSTEM;
 		break;
-	case DDNET_MSG_KIND_INPUTTIMING:
-		msg_id = DDNET_MSG_INPUTTIMING;
-		msg_category = DDNET_SYSTEM;
+	case DDPROTO_MSG_KIND_INPUTTIMING:
+		msg_id = DDPROTO_MSG_INPUTTIMING;
+		msg_category = DDPROTO_SYSTEM;
 		break;
-	case DDNET_MSG_KIND_RCON_AUTH_STATUS:
-		msg_id = DDNET_MSG_RCON_AUTH_STATUS;
-		msg_category = DDNET_SYSTEM;
+	case DDPROTO_MSG_KIND_RCON_AUTH_STATUS:
+		msg_id = DDPROTO_MSG_RCON_AUTH_STATUS;
+		msg_category = DDPROTO_SYSTEM;
 		break;
-	case DDNET_MSG_KIND_RCON_LINE:
-		msg_id = DDNET_MSG_RCON_LINE;
-		msg_category = DDNET_SYSTEM;
+	case DDPROTO_MSG_KIND_RCON_LINE:
+		msg_id = DDPROTO_MSG_RCON_LINE;
+		msg_category = DDPROTO_SYSTEM;
 		break;
-	case DDNET_MSG_KIND_READY:
-		msg_id = DDNET_MSG_READY;
-		msg_category = DDNET_SYSTEM;
+	case DDPROTO_MSG_KIND_READY:
+		msg_id = DDPROTO_MSG_READY;
+		msg_category = DDPROTO_SYSTEM;
 		break;
-	case DDNET_MSG_KIND_ENTERGAME:
-		msg_id = DDNET_MSG_ENTERGAME;
-		msg_category = DDNET_SYSTEM;
+	case DDPROTO_MSG_KIND_ENTERGAME:
+		msg_id = DDPROTO_MSG_ENTERGAME;
+		msg_category = DDPROTO_SYSTEM;
 		break;
-	case DDNET_MSG_KIND_INPUT:
-		msg_id = DDNET_MSG_INPUT;
-		msg_category = DDNET_SYSTEM;
+	case DDPROTO_MSG_KIND_INPUT:
+		msg_id = DDPROTO_MSG_INPUT;
+		msg_category = DDPROTO_SYSTEM;
 		break;
-	case DDNET_MSG_KIND_RCON_CMD:
-		msg_id = DDNET_MSG_RCON_CMD;
-		msg_category = DDNET_SYSTEM;
+	case DDPROTO_MSG_KIND_RCON_CMD:
+		msg_id = DDPROTO_MSG_RCON_CMD;
+		msg_category = DDPROTO_SYSTEM;
 		break;
-	case DDNET_MSG_KIND_RCON_AUTH:
-		msg_id = DDNET_MSG_RCON_AUTH;
-		msg_category = DDNET_SYSTEM;
+	case DDPROTO_MSG_KIND_RCON_AUTH:
+		msg_id = DDPROTO_MSG_RCON_AUTH;
+		msg_category = DDPROTO_SYSTEM;
 		break;
-	case DDNET_MSG_KIND_REQUEST_MAP_DATA:
-		msg_id = DDNET_MSG_REQUEST_MAP_DATA;
-		msg_category = DDNET_SYSTEM;
+	case DDPROTO_MSG_KIND_REQUEST_MAP_DATA:
+		msg_id = DDPROTO_MSG_REQUEST_MAP_DATA;
+		msg_category = DDPROTO_SYSTEM;
 		break;
-	case DDNET_MSG_KIND_PING:
-		msg_id = DDNET_MSG_PING;
-		msg_category = DDNET_SYSTEM;
+	case DDPROTO_MSG_KIND_PING:
+		msg_id = DDPROTO_MSG_PING;
+		msg_category = DDPROTO_SYSTEM;
 		break;
-	case DDNET_MSG_KIND_PING_REPLY:
-		msg_id = DDNET_MSG_PING_REPLY;
-		msg_category = DDNET_SYSTEM;
+	case DDPROTO_MSG_KIND_PING_REPLY:
+		msg_id = DDPROTO_MSG_PING_REPLY;
+		msg_category = DDPROTO_SYSTEM;
 		break;
-	case DDNET_MSG_KIND_RCON_CMD_ADD:
-		msg_id = DDNET_MSG_RCON_CMD_ADD;
-		msg_category = DDNET_SYSTEM;
+	case DDPROTO_MSG_KIND_RCON_CMD_ADD:
+		msg_id = DDPROTO_MSG_RCON_CMD_ADD;
+		msg_category = DDPROTO_SYSTEM;
 		break;
-	case DDNET_MSG_KIND_RCON_CMD_REM:
-		msg_id = DDNET_MSG_RCON_CMD_REM;
-		msg_category = DDNET_SYSTEM;
+	case DDPROTO_MSG_KIND_RCON_CMD_REM:
+		msg_id = DDPROTO_MSG_RCON_CMD_REM;
+		msg_category = DDPROTO_SYSTEM;
 		break;
-	case DDNET_MSG_KIND_SV_MOTD:
-		msg_id = DDNET_MSG_SV_MOTD;
-		msg_category = DDNET_GAME;
+	case DDPROTO_MSG_KIND_SV_MOTD:
+		msg_id = DDPROTO_MSG_SV_MOTD;
+		msg_category = DDPROTO_GAME;
 		break;
-	case DDNET_MSG_KIND_SV_BROADCAST:
-		msg_id = DDNET_MSG_SV_BROADCAST;
-		msg_category = DDNET_GAME;
+	case DDPROTO_MSG_KIND_SV_BROADCAST:
+		msg_id = DDPROTO_MSG_SV_BROADCAST;
+		msg_category = DDPROTO_GAME;
 		break;
-	case DDNET_MSG_KIND_SV_CHAT:
-		msg_id = DDNET_MSG_SV_CHAT;
-		msg_category = DDNET_GAME;
+	case DDPROTO_MSG_KIND_SV_CHAT:
+		msg_id = DDPROTO_MSG_SV_CHAT;
+		msg_category = DDPROTO_GAME;
 		break;
-	case DDNET_MSG_KIND_SV_KILLMSG:
-		msg_id = DDNET_MSG_SV_KILLMSG;
-		msg_category = DDNET_GAME;
+	case DDPROTO_MSG_KIND_SV_KILLMSG:
+		msg_id = DDPROTO_MSG_SV_KILLMSG;
+		msg_category = DDPROTO_GAME;
 		break;
-	case DDNET_MSG_KIND_SV_SOUNDGLOBAL:
-		msg_id = DDNET_MSG_SV_SOUNDGLOBAL;
-		msg_category = DDNET_GAME;
+	case DDPROTO_MSG_KIND_SV_SOUNDGLOBAL:
+		msg_id = DDPROTO_MSG_SV_SOUNDGLOBAL;
+		msg_category = DDPROTO_GAME;
 		break;
-	case DDNET_MSG_KIND_SV_TUNEPARAMS:
-		msg_id = DDNET_MSG_SV_TUNEPARAMS;
-		msg_category = DDNET_GAME;
+	case DDPROTO_MSG_KIND_SV_TUNEPARAMS:
+		msg_id = DDPROTO_MSG_SV_TUNEPARAMS;
+		msg_category = DDPROTO_GAME;
 		break;
-	case DDNET_MSG_KIND_SV_READYTOENTER:
-		msg_id = DDNET_MSG_SV_READYTOENTER;
-		msg_category = DDNET_GAME;
+	case DDPROTO_MSG_KIND_SV_READYTOENTER:
+		msg_id = DDPROTO_MSG_SV_READYTOENTER;
+		msg_category = DDPROTO_GAME;
 		break;
-	case DDNET_MSG_KIND_SV_WEAPONPICKUP:
-		msg_id = DDNET_MSG_SV_WEAPONPICKUP;
-		msg_category = DDNET_GAME;
+	case DDPROTO_MSG_KIND_SV_WEAPONPICKUP:
+		msg_id = DDPROTO_MSG_SV_WEAPONPICKUP;
+		msg_category = DDPROTO_GAME;
 		break;
-	case DDNET_MSG_KIND_SV_EMOTICON:
-		msg_id = DDNET_MSG_SV_EMOTICON;
-		msg_category = DDNET_GAME;
+	case DDPROTO_MSG_KIND_SV_EMOTICON:
+		msg_id = DDPROTO_MSG_SV_EMOTICON;
+		msg_category = DDPROTO_GAME;
 		break;
-	case DDNET_MSG_KIND_SV_VOTECLEAROPTIONS:
-		msg_id = DDNET_MSG_SV_VOTECLEAROPTIONS;
-		msg_category = DDNET_GAME;
+	case DDPROTO_MSG_KIND_SV_VOTECLEAROPTIONS:
+		msg_id = DDPROTO_MSG_SV_VOTECLEAROPTIONS;
+		msg_category = DDPROTO_GAME;
 		break;
-	case DDNET_MSG_KIND_SV_VOTEOPTIONLISTADD:
-		msg_id = DDNET_MSG_SV_VOTEOPTIONLISTADD;
-		msg_category = DDNET_GAME;
+	case DDPROTO_MSG_KIND_SV_VOTEOPTIONLISTADD:
+		msg_id = DDPROTO_MSG_SV_VOTEOPTIONLISTADD;
+		msg_category = DDPROTO_GAME;
 		break;
-	case DDNET_MSG_KIND_SV_VOTEOPTIONADD:
-		msg_id = DDNET_MSG_SV_VOTEOPTIONADD;
-		msg_category = DDNET_GAME;
+	case DDPROTO_MSG_KIND_SV_VOTEOPTIONADD:
+		msg_id = DDPROTO_MSG_SV_VOTEOPTIONADD;
+		msg_category = DDPROTO_GAME;
 		break;
-	case DDNET_MSG_KIND_SV_VOTEOPTIONREMOVE:
-		msg_id = DDNET_MSG_SV_VOTEOPTIONREMOVE;
-		msg_category = DDNET_GAME;
+	case DDPROTO_MSG_KIND_SV_VOTEOPTIONREMOVE:
+		msg_id = DDPROTO_MSG_SV_VOTEOPTIONREMOVE;
+		msg_category = DDPROTO_GAME;
 		break;
-	case DDNET_MSG_KIND_SV_VOTESET:
-		msg_id = DDNET_MSG_SV_VOTESET;
-		msg_category = DDNET_GAME;
+	case DDPROTO_MSG_KIND_SV_VOTESET:
+		msg_id = DDPROTO_MSG_SV_VOTESET;
+		msg_category = DDPROTO_GAME;
 		break;
-	case DDNET_MSG_KIND_CL_SAY:
-		msg_id = DDNET_MSG_CL_SAY;
-		msg_category = DDNET_GAME;
+	case DDPROTO_MSG_KIND_CL_SAY:
+		msg_id = DDPROTO_MSG_CL_SAY;
+		msg_category = DDPROTO_GAME;
 		break;
-	case DDNET_MSG_KIND_CL_STARTINFO:
-		msg_id = DDNET_MSG_CL_STARTINFO;
-		msg_category = DDNET_GAME;
+	case DDPROTO_MSG_KIND_CL_STARTINFO:
+		msg_id = DDPROTO_MSG_CL_STARTINFO;
+		msg_category = DDPROTO_GAME;
 		break;
 	}
 
-	ddnet_packer_add_int(packer, (int32_t)((msg_id << 1) | msg_category));
+	ddproto_packer_add_int(packer, (int32_t)((msg_id << 1) | msg_category));
 }
 
-size_t ddnet_packer_size(DDNetPacker *packer) {
+size_t ddproto_packer_size(DDProtoPacker *packer) {
 	return packer->current - packer->buf;
 }
 
-size_t ddnet_packer_remaining_size(DDNetPacker *packer) {
+size_t ddproto_packer_remaining_size(DDProtoPacker *packer) {
 	return packer->end - packer->current;
 }
 
-uint8_t *ddnet_packer_data(DDNetPacker *packer) {
+uint8_t *ddproto_packer_data(DDProtoPacker *packer) {
 	return packer->buf;
 }
 
-DDNetError ddnet_packer_add_int(DDNetPacker *packer, int32_t value) {
-	size_t space = ddnet_packer_remaining_size(packer);
+DDProtoError ddproto_packer_add_int(DDProtoPacker *packer, int32_t value) {
+	size_t space = ddproto_packer_remaining_size(packer);
 	if(space <= 0) {
-		return packer->err = DDNET_ERR_BUFFER_FULL;
+		return packer->err = DDPROTO_ERR_BUFFER_FULL;
 	}
 
 	space--;
@@ -255,7 +255,7 @@ DDNetError ddnet_packer_add_int(DDNetPacker *packer, int32_t value) {
 
 	while(value) {
 		if(space <= 0) {
-			return packer->err = DDNET_ERR_BUFFER_FULL;
+			return packer->err = DDPROTO_ERR_BUFFER_FULL;
 		}
 		// set extend bit
 		*packer->current |= 0x80;
@@ -268,43 +268,43 @@ DDNetError ddnet_packer_add_int(DDNetPacker *packer, int32_t value) {
 	}
 
 	packer->current++;
-	return DDNET_ERR_NONE;
+	return DDPROTO_ERR_NONE;
 }
 
-DDNetError ddnet_packer_add_string(DDNetPacker *packer, const char *value) {
+DDProtoError ddproto_packer_add_string(DDProtoPacker *packer, const char *value) {
 	size_t len = strlen(value) + 1;
-	if(ddnet_packer_remaining_size(packer) < len) {
-		return packer->err = DDNET_ERR_BUFFER_FULL;
+	if(ddproto_packer_remaining_size(packer) < len) {
+		return packer->err = DDPROTO_ERR_BUFFER_FULL;
 	}
 	strncpy((char *)packer->current, value, len);
 	packer->current += len;
 
-	return DDNET_ERR_NONE;
+	return DDPROTO_ERR_NONE;
 }
 
-DDNetError ddnet_packer_add_raw(DDNetPacker *packer, const uint8_t *data, size_t size) {
-	if(ddnet_packer_remaining_size(packer) < size) {
-		return packer->err = DDNET_ERR_BUFFER_FULL;
+DDProtoError ddproto_packer_add_raw(DDProtoPacker *packer, const uint8_t *data, size_t size) {
+	if(ddproto_packer_remaining_size(packer) < size) {
+		return packer->err = DDPROTO_ERR_BUFFER_FULL;
 	}
 	memcpy(packer->current, data, size);
 	packer->current += size;
-	return DDNET_ERR_NONE;
+	return DDPROTO_ERR_NONE;
 }
 
-void ddnet_unpacker_init(DDNetUnpacker *unpacker, const uint8_t *buf, size_t len) {
-	unpacker->err = DDNET_ERR_NONE;
+void ddproto_unpacker_init(DDProtoUnpacker *unpacker, const uint8_t *buf, size_t len) {
+	unpacker->err = DDPROTO_ERR_NONE;
 	unpacker->buf = buf;
 	unpacker->buf_end = buf + len;
 }
 
-size_t ddnet_unpacker_remaining_size(DDNetUnpacker *unpacker) {
+size_t ddproto_unpacker_remaining_size(DDProtoUnpacker *unpacker) {
 	return unpacker->buf_end - unpacker->buf;
 }
 
-int32_t ddnet_unpacker_get_int(DDNetUnpacker *unpacker) {
-	size_t space = ddnet_unpacker_remaining_size(unpacker);
+int32_t ddproto_unpacker_get_int(DDProtoUnpacker *unpacker) {
+	size_t space = ddproto_unpacker_remaining_size(unpacker);
 	if(space < 1) {
-		unpacker->err = DDNET_ERR_EMPTY_BUFFER;
+		unpacker->err = DDPROTO_ERR_EMPTY_BUFFER;
 		return 0;
 	}
 
@@ -316,7 +316,7 @@ int32_t ddnet_unpacker_get_int(DDNetUnpacker *unpacker) {
 			break;
 		}
 		if(--space <= 0) {
-			unpacker->err = DDNET_ERR_END_OF_BUFFER;
+			unpacker->err = DDPROTO_ERR_END_OF_BUFFER;
 			return 0;
 		}
 		unpacker->buf++;
@@ -326,7 +326,7 @@ int32_t ddnet_unpacker_get_int(DDNetUnpacker *unpacker) {
 			break;
 		}
 		if(--space <= 0) {
-			unpacker->err = DDNET_ERR_END_OF_BUFFER;
+			unpacker->err = DDPROTO_ERR_END_OF_BUFFER;
 			return 0;
 		}
 		unpacker->buf++;
@@ -336,7 +336,7 @@ int32_t ddnet_unpacker_get_int(DDNetUnpacker *unpacker) {
 			break;
 		}
 		if(--space <= 0) {
-			unpacker->err = DDNET_ERR_END_OF_BUFFER;
+			unpacker->err = DDPROTO_ERR_END_OF_BUFFER;
 			return 0;
 		}
 		unpacker->buf++;
@@ -346,7 +346,7 @@ int32_t ddnet_unpacker_get_int(DDNetUnpacker *unpacker) {
 			break;
 		}
 		if(--space <= 0) {
-			unpacker->err = DDNET_ERR_END_OF_BUFFER;
+			unpacker->err = DDPROTO_ERR_END_OF_BUFFER;
 			return 0;
 		}
 		unpacker->buf++;
@@ -358,8 +358,8 @@ int32_t ddnet_unpacker_get_int(DDNetUnpacker *unpacker) {
 	return value;
 }
 
-const char *ddnet_unpacker_get_string_sanitized(DDNetUnpacker *unpacker, DDNetStringSanitize sanitize) {
-	if(unpacker->err != DDNET_ERR_NONE) {
+const char *ddproto_unpacker_get_string_sanitized(DDProtoUnpacker *unpacker, DDProtoStringSanitize sanitize) {
+	if(unpacker->err != DDPROTO_ERR_NONE) {
 		return "";
 	}
 
@@ -368,38 +368,38 @@ const char *ddnet_unpacker_get_string_sanitized(DDNetUnpacker *unpacker, DDNetSt
 	{
 		unpacker->buf++;
 		if(unpacker->buf == unpacker->buf_end) {
-			unpacker->err = DDNET_ERR_STR_UNEXPECTED_EOF;
+			unpacker->err = DDPROTO_ERR_STR_UNEXPECTED_EOF;
 			return "";
 		}
 	}
 	unpacker->buf++;
 
-	if(sanitize & DDNET_STRING_SANITIZE) {
-		ddnet_str_sanitize(str);
-	} else if(sanitize & DDNET_STRING_SANITIZE_CC) {
-		ddnet_str_sanitize_cc(str);
+	if(sanitize & DDPROTO_STRING_SANITIZE) {
+		ddproto_str_sanitize(str);
+	} else if(sanitize & DDPROTO_STRING_SANITIZE_CC) {
+		ddproto_str_sanitize_cc(str);
 	}
-	if(sanitize & DDNET_STRING_SKIP_START_WHITESPACES) {
-		ddnet_str_clean_whitespaces(str);
+	if(sanitize & DDPROTO_STRING_SKIP_START_WHITESPACES) {
+		ddproto_str_clean_whitespaces(str);
 	}
 	return str;
 }
 
-const char *ddnet_unpacker_get_string(DDNetUnpacker *unpacker) {
-	return ddnet_unpacker_get_string_sanitized(unpacker, DDNET_STRING_SANITIZE);
+const char *ddproto_unpacker_get_string(DDProtoUnpacker *unpacker) {
+	return ddproto_unpacker_get_string_sanitized(unpacker, DDPROTO_STRING_SANITIZE);
 }
 
-bool ddnet_unpacker_get_bool(DDNetUnpacker *unpacker) {
-	int32_t val = ddnet_unpacker_get_int(unpacker);
+bool ddproto_unpacker_get_bool(DDProtoUnpacker *unpacker) {
+	int32_t val = ddproto_unpacker_get_int(unpacker);
 	if(val != 0 && val != 1) {
-		unpacker->err = DDNET_ERR_INVALID_BOOL;
+		unpacker->err = DDPROTO_ERR_INVALID_BOOL;
 	}
 	return val == 1;
 }
 
-const uint8_t *ddnet_unpacker_get_raw(DDNetUnpacker *unpacker, size_t len) {
-	if(ddnet_unpacker_remaining_size(unpacker) < len) {
-		unpacker->err = DDNET_ERR_END_OF_BUFFER;
+const uint8_t *ddproto_unpacker_get_raw(DDProtoUnpacker *unpacker, size_t len) {
+	if(ddproto_unpacker_remaining_size(unpacker) < len) {
+		unpacker->err = DDPROTO_ERR_END_OF_BUFFER;
 		return NULL;
 	}
 

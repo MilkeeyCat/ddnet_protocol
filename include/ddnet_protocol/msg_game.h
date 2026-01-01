@@ -6,37 +6,37 @@ extern "C" {
 
 #include "common.h"
 
-// Possible values of the team field in the chat message sent by the server.
+/// Possible values of the team field in the chat message sent by the server.
 typedef enum {
-	// Chat message sent to public chat.
+	/// Chat message sent to public chat.
 	DDPROTO_CHAT_PUBLIC,
 
-	// Chat message sent to team chat. This can be scoped to TEAM_RED, TEAM_BLUE
-	// and TEAM_SPECTATORS based on which team the sender is in but it can also
-	// be scoped to ddrace teams.
+	/// Chat message sent to team chat. This can be scoped to `TEAM_RED`,
+	/// `TEAM_BLUE` and `TEAM_SPECTATORS` based on which team the sender
+	/// is in but it can also be scoped to ddrace teams.
 	DDPROTO_CHAT_TEAM,
 
-	// This value is a ddnet extension. This is sent from the server to the
-	// client to display an outgoing ddnet whisper message. In this case the
-	// client_id field on the `DDProtoMsgSvChat` struct is the recipient not the
-	// sender. Because the sender knows his own name.
+	/// This value is a ddnet extension. This is sent from the server to the
+	/// client to display an outgoing ddnet whisper message. In this case @ref
+	/// DDProtoMsgSvChat.client_id is the recipient not the sender. Because the
+	/// sender knows his own name.
 	DDPROTO_CHAT_WHISPER_SEND,
 
-	// This value is a ddnet extension. This is sent from the server to the
-	// client to display received whisper messages differently in the chat.
+	/// This value is a ddnet extension. This is sent from the server to the
+	/// client to display received whisper messages differently in the chat.
 	DDPROTO_CHAT_WHISPER_RECEIVE,
 } DDProtoChatTeam;
 
-// Regular and special weapons. See also `DDProtoPickupWeapon` for regular weapons
-// only.
+/// Regular and special weapons. See also @ref DDProtoPickupWeapon for regular
+/// weapons only.
 typedef enum {
-	// Team switching and similar.
+	/// Team switching and similar.
 	DDPROTO_WEAPON_GAME = -3,
 
-	// Console kill command (not self damage).
+	/// Console kill command (not self damage).
 	DDPROTO_WEAPON_SELF = -2,
 
-	// Kill tiles or out of world.
+	/// Kill tiles or out of world.
 	DDPROTO_WEAPON_WORLD = -1,
 
 	DDPROTO_WEAPON_HAMMER = 0,
@@ -47,8 +47,8 @@ typedef enum {
 	DDPROTO_WEAPON_NINJA = 5,
 } DDProtoWeapon;
 
-// Regular weapons only. See also `DDProtoWeapon` for special weapons. These
-// weapons can be picked up. Kill messages can contain more weapons.
+/// Regular weapons only. See also @ref DDProtoWeapon for special weapons. These
+/// weapons can be picked up. Kill messages can contain more weapons.
 typedef enum {
 	DDPROTO_PICKUP_WEAPON_HAMMER = 0,
 	DDPROTO_PICKUP_WEAPON_GUN = 1,
@@ -58,7 +58,7 @@ typedef enum {
 	DDPROTO_PICKUP_WEAPON_NINJA = 5,
 } DDProtoPickupWeapon;
 
-// Emoticons are displayed above the tee.
+/// Emoticons are displayed above the tee.
 typedef enum {
 	DDPROTO_EMOTICON_OOP,
 	DDPROTO_EMOTICON_EXCLAMATION,
@@ -78,13 +78,13 @@ typedef enum {
 	DDPROTO_EMOTICON_QUESTION,
 } DDProtoEmoticon;
 
-// Message of the day. Sent by the server and displayed in the middle of the
-// screen with transparent background on the client side.
+/// Message of the day. Sent by the server and displayed in the middle of the
+/// screen with transparent background on the client side.
 typedef struct {
 	const char *message;
 } DDProtoMsgSvMotd;
 
-// Sent by the server and displayed in the middle of the screen as white text.
+/// Sent by the server and displayed in the middle of the screen as white text.
 typedef struct {
 	const char *message;
 } DDProtoMsgSvBroadcast;
@@ -93,27 +93,27 @@ typedef struct {
 typedef struct {
 	DDProtoChatTeam team;
 
-	// Client id of the message author. Can be -1 if the message was sent by the
-	// server can be the message recipient if the team is
-	// `DDPROTO_CHAT_WHISPER_SEND`.
+	/// Client id of the message author. Can be -1 if the message was sent by
+	/// the server can be the message recipient if the team is @ref
+	/// DDPROTO_CHAT_WHISPER_SEND.
 	int32_t client_id;
 
-	// Chat message.
+	/// Chat message.
 	const char *message;
 } DDProtoMsgSvChat;
 
 // sent by the server
 typedef struct {
-	// Client id of the player that caused the kill can be the same as the
-	// victim_id on suicide.
+	/// Client id of the player that caused the kill can be the same as the
+	/// victim_id on suicide.
 	int32_t killer_id;
 
-	// Client id of the player that got killed.
+	/// Client id of the player that got killed.
 	int32_t victim_id;
 
 	DDProtoWeapon weapon;
 
-	// Set to 1 if the victim had the flag in a ctf gametype.
+	/// Set to 1 if the victim had the flag in a ctf gametype.
 	int32_t mode_special;
 } DDProtoMsgSvKillMsg;
 
@@ -166,24 +166,27 @@ typedef struct {
 
 // sent by the server
 typedef struct {
-	// Id of the player that the emoticon is attached to.
+	/// Id of the player that the emoticon is attached to.
 	int32_t client_id;
 	DDProtoEmoticon emoticon;
 } DDProtoMsgSvEmoticon;
 
 // sent by the server
 typedef struct {
-	// The next field `descriptions` has a fixed size of 14 but not all strings
-	// might be set. So `num_options` determines how many values starting from
-	// index 0 are valid in `descriptions`.
+	/// @ref DDProtoMsgSvVoteOptionListAdd.descriptions has a fixed size of 14
+	/// but not all strings might be set. So @ref
+	/// DDProtoMsgSvVoteOptionListAdd.num_options determines how many values
+	/// starting from index 0 are valid in @ref
+	/// DDProtoMsgSvVoteOptionListAdd.descriptions.
 	int32_t num_options;
 
-	// Only access index 0-num_options.
+	/// Only access index 0-num_options.
 	const char *descriptions[14];
 } DDProtoMsgSvVoteOptionListAdd;
 
 // sent by the server
-// See also `DDProtoMsgSvVoteOptionListAdd` for multiple vote options at once.
+/// See also @ref DDProtoMsgSvVoteOptionListAdd for multiple vote options at
+/// once.
 typedef struct {
 	const char *description;
 } DDProtoMsgSvVoteOptionAdd;

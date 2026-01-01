@@ -1,4 +1,5 @@
 [default]
 extend-ignore-re = [
     '"ba   r"',
+    'PN'
 ]

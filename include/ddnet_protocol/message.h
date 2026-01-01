@@ -7,7 +7,7 @@ extern "C" {
 #include "chunk.h"
 #include "errors.h"
 
-// Message id of system and game net messages that is sent over the network.
+/// Message id of system and game net messages that is sent over the network.
 typedef enum {
 	// used for ddnet extensions
 	DDPROTO_MSG_NULL = 0,
@@ -60,34 +60,32 @@ typedef enum {
 	DDPROTO_MSG_CL_STARTINFO = 20,
 } DDProtoMessageId;
 
-// Every chunk contains either a system or game message. This type is set as a
-// bit flag in the first byte of the chunk payload.
+/// Every chunk contains either a system or game message. This type is set as a
+/// bit flag in the first byte of the chunk payload.
 typedef enum {
 	DDPROTO_GAME = 0,
 	DDPROTO_SYSTEM = 1,
 } DDProtoMessageCategory;
 
-// The given chunk has to have a correct header set and its `msg` will be filled
-// based on the content of `buf` which has to point to the beginning of the
-// chunk payload.
-//
-// This function could also be called `ddproto_decode_chunk_payload()`.
+/// The given chunk has to have a correct header set and its `msg` will be
+/// filled based on the content of `buf` which has to point to the beginning of
+/// the chunk payload.
 DDProtoError ddproto_decode_message(DDProtoChunk *chunk, const uint8_t *buf);
 
 size_t ddproto_encode_message(DDProtoChunk *chunk, uint8_t *buf, DDProtoError *err);
 
 DDProtoMessage ddproto_build_msg_info(const char *password);
 
-// Initializes a new packer struct.
-// And already packs the message id and message kind flag.
-//
-// See also `ddproto_packer_init()` if you need an empty packer.
-//
-// ```C
-// DDProtoPacker packer;
-// ddproto_packer_init_msg(&packer, DDPROTO_MSG_KIND_RCON_CMD);
-// ddproto_packer_add_string(&packer, "say hello");
-// ```
+/// Initializes a new packer struct. And already packs the message id and
+/// message kind flag.
+///
+/// See also @ref ddproto_packer_init if you need an empty packer.
+///
+/// ```C
+/// DDProtoPacker packer;
+/// ddproto_packer_init_msg(&packer, DDPROTO_MSG_KIND_RCON_CMD);
+/// ddproto_packer_add_string(&packer, "say hello");
+/// ```
 void ddproto_packer_init_msg(DDProtoPacker *packer, DDProtoMessageKind kind);
 
 #ifdef __cplusplus

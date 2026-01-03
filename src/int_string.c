@@ -37,7 +37,8 @@ DDProtoError ddproto_str_to_ints(uint32_t *ints, size_t num_ints, const char *st
 	}
 
 	for(size_t i = 0; i < num_ints; i++) {
-		// copy to temporary buffer to ensure we don't read past the end of the input string
+		// copy to temporary buffer to ensure we don't read past the end of the
+		// input string
 		char buf[sizeof(uint32_t)] = {0, 0, 0, 0};
 		for(size_t buf_idx = 0; buf_idx < sizeof(uint32_t) && (i * sizeof(uint32_t)) + buf_idx < str_len; buf_idx++) {
 			buf[buf_idx] = str[(i * sizeof(uint32_t)) + buf_idx];

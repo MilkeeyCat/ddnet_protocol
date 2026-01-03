@@ -1,0 +1,29 @@
+name: Deploy docs
+
+on:
+  push:
+    branches:
+      - master
+
+permissions:
+  pages: write
+  id-token: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build static files using Doxygen
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y doxygen graphviz
+          doxygen
+
+      - name: Upload static files as artifact
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: docs/html
+
+      - uses: actions/deploy-pages@v4

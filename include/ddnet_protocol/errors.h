@@ -23,15 +23,15 @@ extern "C" {
 	X(DDPROTO_ERR_MESSAGE_ID_OUT_OF_BOUNDS) \
 	X(DDPROTO_ERR_ACK_OUT_OF_BOUNDS)
 
-// Generic error enum, holds all kinds of errors returned by different
-// functions.
+/// Generic error enum, holds all kinds of errors returned by different
+/// functions.
 typedef enum {
 #define X(err) err,
 	DDPROTO_ERRORS
 #undef X
 } DDProtoError;
 
-// Turns error enum into human readable string.
+/// Turns error enum into human readable string.
 const char *ddproto_error_str(DDProtoError err);
 
 #ifdef __cplusplus

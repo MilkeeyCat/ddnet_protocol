@@ -9,7 +9,7 @@ extern "C" {
 #include "packer.h"
 #include "snap_items.h"
 
-// Be careful this is not the snap item id that is sent over the network!
+/// @attention This is not the snap item id that is sent over the network.
 typedef enum {
 	// objects
 	DDPROTO_ITEM_KIND_UNKNOWN,
@@ -34,13 +34,10 @@ typedef enum {
 	DDPROTO_ITEM_KIND_DAMAGE_INDICATOR,
 } DDProtoSnapItemKind;
 
-// The type id that is used in the snapshot payload to identify the type of an
-// item.
+/// The type id that is used in the snapshot payload to identify the type of an
+/// item.
 typedef enum {
-	/**
-	 * objects
-	 */
-
+	// objects
 	DDPROTO_ITEM_PROJECTILE = 2,
 	DDPROTO_ITEM_LASER = 3,
 	DDPROTO_ITEM_PICKUP = 4,
@@ -52,13 +49,10 @@ typedef enum {
 	DDPROTO_ITEM_CLIENT_INFO = 11,
 	DDPROTO_ITEM_SPECTATOR_INFO = 12,
 
-	/**
-	 * events
-	 */
-
-	// This type id is unused. Event common is a meta event. That builds the
-	// base of all events. Event common as is will never be placed alone in the
-	// snapshot so type id 13 is unused.
+	// events
+	/// This type id is unused. Event common is a meta event. That builds the
+	/// base of all events. Event common as is will never be placed alone in the
+	/// snapshot so type id 13 is unused.
 	DDPROTO_ITEM_EVENT_COMMON = 13,
 	DDPROTO_ITEM_EXPLOSION = 14,
 	DDPROTO_ITEM_SPAWN = 15,
@@ -69,17 +63,14 @@ typedef enum {
 	DDPROTO_ITEM_DAMAGE_INDICATOR = 20,
 } DDProtoSnapItemTypeId;
 
-// Union abstracting away any kind of game or system message. Check the
-// `DDProtoMessageKind` to know which one to use.
+/// Union abstracting away any kind of game or system message. Check the @ref
+/// DDProtoMessageKind to know which one to use.
 typedef union {
-	// ddnet_protocol specific item to represent a unknown snapshot item. This
-	// item kind does not exist in the reference implementation.
+	/// ddnet_protocol specific item to represent a unknown snapshot item. This
+	/// item kind does not exist in the reference implementation.
 	DDProtoObjUnknown unknown;
 
-	/**
-	 * objects
-	 */
-
+	// objects
 	DDProtoObjProjectile projectile;
 	DDProtoObjLaser laser;
 	DDProtoObjPickup pickup;
@@ -91,11 +82,8 @@ typedef union {
 	DDProtoObjClientInfo client_info;
 	DDProtoObjSpectatorInfo spectator_info;
 
-	/**
-	 * events
-	 */
-
-	// Meta event that is never sent as is.
+	// events
+	/// Meta event that is never sent as is.
 	DDProtoEventCommon common;
 	DDProtoEventExplosion explosion;
 	DDProtoEventSpawn spawn;
@@ -106,8 +94,8 @@ typedef union {
 	DDProtoEventDamageIndicator damage_indicator;
 } DDProtoGenericSnapItem;
 
-// To access the item struct check the `kind` and access the `item` union
-// accordingly.
+/// To access the item struct check the @ref DDProtoSnapItem.kind and access the
+/// @ref DDProtoSnapItem.item union accordingly.
 typedef struct {
 	DDProtoSnapItemKind kind;
 	DDProtoGenericSnapItem item;
@@ -129,24 +117,25 @@ typedef struct {
 	} items;
 } DDProtoSnapshot;
 
-// Consumes data from the unpacker and writes the parsed item to the output
-// parameter `item`.
+/// Consumes data from the unpacker and writes the parsed item to the output
+/// parameter `item`.
 DDProtoError ddproto_decode_snap_item(DDProtoUnpacker *unpacker, DDProtoSnapItem *item);
 
-// Frees the memory allocated for the snap items.
+/// Frees the memory allocated for the snap items.
 void ddproto_free_snapshot(DDProtoSnapshot *snap);
 
-// Given a unpacker holding data beginning with a snapshot payload this parses
-// the snapshot header and item deltas. Beginning of snapshot payload is defined
-// as the data field of the system net message that holds the snap. So the first
-// byte of the unpackers data is the start of the amount of removed items.
-//
-// It writes the parsed snapshot to the `snap` output parameter. And reads from
-// the `unpacker` by consuming its data.
-//
-// This function allocates memory for the snap items. You need to free it by
-// calling `ddproto_free_snapshot()`. You do not need to free it if the snapshot
-// is part of a packet and you already call `ddproto_free_packet()`.
+/// Given a unpacker holding data beginning with a snapshot payload this parses
+/// the snapshot header and item deltas. Beginning of snapshot payload is
+/// defined as the data field of the system net message that holds the snap. So
+/// the first byte of the unpackers data is the start of the amount of removed
+/// items.
+///
+/// It writes the parsed snapshot to the `snap` output parameter. And reads from
+/// the `unpacker` by consuming its data.
+///
+/// This function allocates memory for the snap items. You need to free it by
+/// calling @ref ddproto_free_snapshot. You do not need to free it if the
+/// snapshot is part of a packet and you already call @ref ddproto_free_packet.
 DDProtoError ddproto_decode_snapshot(DDProtoUnpacker *unpacker, DDProtoSnapshot *snap);
 
 #ifdef __cplusplus

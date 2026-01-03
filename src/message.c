@@ -1,6 +1,7 @@
+#include <ddnet_protocol/message.h>
+
 #include <ddnet_protocol/chunk.h>
 #include <ddnet_protocol/errors.h>
-#include <ddnet_protocol/message.h>
 #include <ddnet_protocol/msg_system.h>
 #include <ddnet_protocol/packer.h>
 #include <ddnet_protocol/snapshot.h>

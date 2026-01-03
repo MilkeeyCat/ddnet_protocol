@@ -1,8 +1,9 @@
+#include <ddnet_protocol/packer.h>
+
 #include <ddnet_protocol/chunk.h>
 #include <ddnet_protocol/common.h>
 #include <ddnet_protocol/errors.h>
 #include <ddnet_protocol/message.h>
-#include <ddnet_protocol/packer.h>
 
 void ddproto_str_sanitize_cc(char *string) {
 	uint8_t *str = (uint8_t *)string;

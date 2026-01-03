@@ -1,6 +1,6 @@
-#include <gtest/gtest.h>
-
 #include <ddnet_protocol/packet.h>
+
+#include <gtest/gtest.h>
 
 TEST(PacketHeader, NormalNoFlags) {
 	uint8_t bytes[] = {0x00, 0x06, 0x02};

@@ -1,7 +1,8 @@
+#include <ddnet_protocol/snapshot.h>
+
 #include <ddnet_protocol/errors.h>
 #include <ddnet_protocol/int_string.h>
 #include <ddnet_protocol/packer.h>
-#include <ddnet_protocol/snapshot.h>
 
 DDProtoError ddproto_unpack_int_array_as_str(DDProtoUnpacker *unpacker, size_t num_ints, char *str, size_t str_len) {
 	uint32_t ints[6] = {};

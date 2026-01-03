@@ -1,5 +1,6 @@
-#include <ddnet_protocol/errors.h>
 #include <ddnet_protocol/int_string.h>
+
+#include <ddnet_protocol/errors.h>
 
 size_t ddproto_str_length(const char *str) {
 	size_t len = 0;

@@ -1,4 +1,5 @@
 #include <ddnet_protocol/control_message.h>
+
 #include <ddnet_protocol/packer.h>
 #include <ddnet_protocol/packet.h>
 #include <ddnet_protocol/token.h>

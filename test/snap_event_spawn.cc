@@ -1,7 +1,7 @@
-#include <gtest/gtest.h>
-
 #include <ddnet_protocol/errors.h>
 #include <ddnet_protocol/packet.h>
+
+#include <gtest/gtest.h>
 
 TEST(SnapSinglePacket, SnapWithEventSpawn) {
 	// same test as this one:

@@ -1,10 +1,10 @@
-#include <cstring>
-#include <gtest/gtest.h>
-
 #include <ddnet_protocol/chunk.h>
 #include <ddnet_protocol/errors.h>
 #include <ddnet_protocol/message.h>
 #include <ddnet_protocol/packer.h>
+
+#include <cstring>
+#include <gtest/gtest.h>
 
 TEST(MessagePacker, Rcon) {
 	DDProtoPacker packer;

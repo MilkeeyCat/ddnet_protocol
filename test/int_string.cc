@@ -1,7 +1,7 @@
-#include <gtest/gtest.h>
-
 #include <ddnet_protocol/errors.h>
 #include <ddnet_protocol/int_string.h>
+
+#include <gtest/gtest.h>
 
 TEST(IntString, StrLength) {
 	EXPECT_EQ(ddproto_str_length(""), 0);

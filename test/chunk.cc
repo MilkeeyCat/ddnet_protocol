@@ -1,13 +1,13 @@
-#include <cstddef>
-#include <cstdint>
-#include <cstring>
-#include <gtest/gtest.h>
-
 #include <ddnet_protocol/chunk.h>
 #include <ddnet_protocol/errors.h>
 #include <ddnet_protocol/fetch_chunks.h>
 #include <ddnet_protocol/message.h>
 #include <ddnet_protocol/packet.h>
+
+#include <cstddef>
+#include <cstdint>
+#include <cstring>
+#include <gtest/gtest.h>
 
 TEST(Chunk, HeaderVital) {
 	uint8_t bytes[] = {0x44, 0x04, 0x01, 0x00};

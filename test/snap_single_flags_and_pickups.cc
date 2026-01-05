@@ -84,11 +84,11 @@ TEST(SnapSinglePacket, SnapWithFlagsAndPickups) {
 		0x23, 0x90, 0x10, 0x01, 0x05, 0x00, 0x90, 0x22,
 		0x90, 0x10, 0x00, 0x6B, 0x66, 0x92, 0x11};
 
-	DDProtoError err = DDProtoError::DDPROTO_ERR_NONE;
+	DDProtoError err = DDPROTO_ERR_NONE;
 	DDProtoPacket packet = ddproto_decode_packet(bytes, sizeof(bytes), &err);
 
-	ASSERT_EQ(err, DDProtoError::DDPROTO_ERR_NONE);
-	EXPECT_EQ(packet.kind, DDProtoPacketKind::DDPROTO_PACKET_NORMAL);
+	ASSERT_EQ(err, DDPROTO_ERR_NONE);
+	EXPECT_EQ(packet.kind, DDPROTO_PACKET_NORMAL);
 
 	DDProtoMsgSnapSingle snap_single = packet.chunks.data[0].payload.msg.snap_single;
 	EXPECT_EQ(snap_single.game_tick, 7990);

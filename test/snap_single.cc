@@ -60,11 +60,11 @@ TEST(SnapSinglePacket, FirstFullSnap) {
 		0x4d, 0xa5, 0x5f, 0x49, 0x49, 0x76, 0x9a, 0x32,
 		0xa9, 0x5a, 0x71, 0x03};
 
-	DDProtoError err = DDProtoError::DDPROTO_ERR_NONE;
+	DDProtoError err = DDPROTO_ERR_NONE;
 	DDProtoPacket packet = ddproto_decode_packet(bytes, sizeof(bytes), &err);
 
-	ASSERT_EQ(err, DDProtoError::DDPROTO_ERR_NONE);
-	EXPECT_EQ(packet.kind, DDProtoPacketKind::DDPROTO_PACKET_NORMAL);
+	ASSERT_EQ(err, DDPROTO_ERR_NONE);
+	EXPECT_EQ(packet.kind, DDPROTO_PACKET_NORMAL);
 	EXPECT_EQ(packet.header.flags, DDPROTO_PACKET_FLAG_COMPRESSION);
 	EXPECT_EQ(packet.header.num_chunks, 1);
 	EXPECT_EQ(packet.header.ack, 6);

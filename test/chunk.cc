@@ -56,10 +56,10 @@ TEST(Chunk, PackVitalHeader) {
 }
 
 namespace {
-typedef struct {
+struct Context {
 	DDProtoChunk *chunks;
 	size_t len;
-} Context;
+};
 
 void on_chunk(void *ctx, DDProtoChunk *chunk) {
 	Context *context = (Context *)ctx;

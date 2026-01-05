@@ -26,11 +26,11 @@ TEST(SnapSinglePacket, DeltaWithRemovedKeys) {
 		0xff, 0xf3, 0x2e, 0x3b, 0x4d, 0x99, 0x54, 0xad,
 		0xb8, 0x01};
 
-	DDProtoError err = DDProtoError::DDPROTO_ERR_NONE;
+	DDProtoError err = DDPROTO_ERR_NONE;
 	DDProtoPacket packet = ddproto_decode_packet(bytes, sizeof(bytes), &err);
 
-	ASSERT_EQ(err, DDProtoError::DDPROTO_ERR_NONE);
-	EXPECT_EQ(packet.kind, DDProtoPacketKind::DDPROTO_PACKET_NORMAL);
+	ASSERT_EQ(err, DDPROTO_ERR_NONE);
+	EXPECT_EQ(packet.kind, DDPROTO_PACKET_NORMAL);
 	EXPECT_EQ(packet.header.flags, DDPROTO_PACKET_FLAG_COMPRESSION);
 	EXPECT_EQ(packet.header.num_chunks, 1);
 	EXPECT_EQ(packet.header.ack, 12);

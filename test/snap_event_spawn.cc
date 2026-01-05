@@ -162,6 +162,6 @@ TEST(SnapSinglePacket, SnapWithEventSpawn) {
 		0x56, 0x7C, 0xC1};
 	DDProtoError err = DDPROTO_ERR_NONE;
 	DDProtoPacket packet = ddproto_decode_packet(bytes, sizeof(bytes), &err);
-	EXPECT_STREQ(ddproto_error_str(err), ddproto_error_str(DDProtoError::DDPROTO_ERR_NONE));
+	EXPECT_STREQ(ddproto_error_str(err), ddproto_error_str(DDPROTO_ERR_NONE));
 	ddproto_free_packet(&packet);
 }

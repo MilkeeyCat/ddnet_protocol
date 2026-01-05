@@ -41,11 +41,11 @@ TEST(NormalPacket, Info) {
 		0x34, 0x64, 0x34, 0x00, 0x00, 0x3d, 0xe3, 0x94,
 		0x8d};
 
-	DDProtoError err = DDProtoError::DDPROTO_ERR_NONE;
+	DDProtoError err = DDPROTO_ERR_NONE;
 	DDProtoPacket packet = ddproto_decode_packet(bytes, sizeof(bytes), &err);
 
-	EXPECT_EQ(err, DDProtoError::DDPROTO_ERR_NONE);
-	EXPECT_EQ(packet.kind, DDProtoPacketKind::DDPROTO_PACKET_NORMAL);
+	EXPECT_EQ(err, DDPROTO_ERR_NONE);
+	EXPECT_EQ(packet.kind, DDPROTO_PACKET_NORMAL);
 	EXPECT_EQ(packet.header.flags, 0);
 	EXPECT_EQ(packet.header.num_chunks, 1);
 	EXPECT_EQ(packet.header.ack, 0);
@@ -144,11 +144,11 @@ TEST(NormalPacket, StartInfoAndRconCmd) {
 		0x72, 0x61, 0x73, 0x68, 0x6d, 0x65, 0x70, 0x6c,
 		0x78, 0x00, 0x3d, 0xe3, 0x94, 0x8d};
 
-	DDProtoError err = DDProtoError::DDPROTO_ERR_NONE;
+	DDProtoError err = DDPROTO_ERR_NONE;
 	DDProtoPacket packet = ddproto_decode_packet(bytes, sizeof(bytes), &err);
 
-	EXPECT_EQ(err, DDProtoError::DDPROTO_ERR_NONE);
-	EXPECT_EQ(packet.kind, DDProtoPacketKind::DDPROTO_PACKET_NORMAL);
+	EXPECT_EQ(err, DDPROTO_ERR_NONE);
+	EXPECT_EQ(packet.kind, DDPROTO_PACKET_NORMAL);
 	EXPECT_EQ(packet.header.flags, 0);
 	EXPECT_EQ(packet.header.num_chunks, 2);
 	EXPECT_EQ(packet.header.ack, 6);
@@ -177,7 +177,7 @@ TEST(NormalPacket, GameMotdAndSysConReady) {
 	DDProtoError err = DDPROTO_ERR_NONE;
 	DDProtoPacket packet = ddproto_decode_packet(bytes, sizeof(bytes), &err);
 	EXPECT_EQ(err, DDPROTO_ERR_NONE);
-	EXPECT_EQ(packet.kind, DDProtoPacketKind::DDPROTO_PACKET_NORMAL);
+	EXPECT_EQ(packet.kind, DDPROTO_PACKET_NORMAL);
 	EXPECT_EQ(packet.header.flags, 0);
 	EXPECT_EQ(packet.header.num_chunks, 2);
 	EXPECT_EQ(packet.header.ack, 4);
@@ -210,7 +210,7 @@ TEST(NormalPacket, UnknownFakeMessage) {
 	DDProtoError err = DDPROTO_ERR_NONE;
 	DDProtoPacket packet = ddproto_decode_packet(bytes, sizeof(bytes), &err);
 	EXPECT_EQ(err, DDPROTO_ERR_NONE);
-	EXPECT_EQ(packet.kind, DDProtoPacketKind::DDPROTO_PACKET_NORMAL);
+	EXPECT_EQ(packet.kind, DDPROTO_PACKET_NORMAL);
 	EXPECT_EQ(packet.header.flags, 0);
 	EXPECT_EQ(packet.header.num_chunks, 1);
 	EXPECT_EQ(packet.header.ack, 0);
@@ -239,7 +239,7 @@ TEST(NormalPacket, UnknownFakeMessage) {
 }
 
 TEST(NormalPacket, PackEmpty) {
-	DDProtoPacket packet = {.kind = DDProtoPacketKind::DDPROTO_PACKET_NORMAL};
+	DDProtoPacket packet = {.kind = DDPROTO_PACKET_NORMAL};
 	uint8_t bytes[DDPROTO_MAX_PACKET_SIZE];
 	DDProtoError err = DDPROTO_ERR_NONE;
 	size_t size = ddproto_encode_packet(&packet, bytes, sizeof(bytes), &err);
@@ -250,7 +250,7 @@ TEST(NormalPacket, PackEmpty) {
 }
 
 TEST(NormalPacket, PackEmptyWithAck) {
-	DDProtoPacket packet = {.kind = DDProtoPacketKind::DDPROTO_PACKET_NORMAL};
+	DDProtoPacket packet = {.kind = DDPROTO_PACKET_NORMAL};
 	packet.header.ack = 2;
 	uint8_t bytes[DDPROTO_MAX_PACKET_SIZE];
 	DDProtoError err = DDPROTO_ERR_NONE;
@@ -264,11 +264,11 @@ TEST(NormalPacket, PackEmptyWithAck) {
 TEST(NormalPacket, EmptyResendRequest) {
 	uint8_t bytes[] = {0x40, 0x00, 0x00, 0x3d, 0xe3, 0x94, 0x8d};
 
-	DDProtoError err = DDProtoError::DDPROTO_ERR_NONE;
+	DDProtoError err = DDPROTO_ERR_NONE;
 	DDProtoPacket packet = ddproto_decode_packet(bytes, sizeof(bytes), &err);
 
-	EXPECT_EQ(err, DDProtoError::DDPROTO_ERR_NONE);
-	EXPECT_EQ(packet.kind, DDProtoPacketKind::DDPROTO_PACKET_NORMAL);
+	EXPECT_EQ(err, DDPROTO_ERR_NONE);
+	EXPECT_EQ(packet.kind, DDPROTO_PACKET_NORMAL);
 	EXPECT_NE(packet.header.flags & DDPROTO_PACKET_FLAG_RESEND, 0);
 	EXPECT_EQ(packet.header.num_chunks, 0);
 	EXPECT_EQ(packet.header.ack, 0);

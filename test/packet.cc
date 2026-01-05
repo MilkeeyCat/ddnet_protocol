@@ -6,7 +6,7 @@ TEST(DDProtoPacket, Header) {
 	uint8_t bytes[] = {0x80, 0x02, 0x05};
 	DDProtoPacketHeader header = ddproto_decode_packet_header(bytes);
 
-	EXPECT_EQ(header.flags, DDProtoPacketFlag::DDPROTO_PACKET_FLAG_COMPRESSION);
+	EXPECT_EQ(header.flags, DDPROTO_PACKET_FLAG_COMPRESSION);
 	EXPECT_EQ(header.ack, 0x02);
 	EXPECT_EQ(header.num_chunks, 0x05);
 }

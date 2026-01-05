@@ -175,11 +175,11 @@ TEST(NormalPacket, TuneParams) {
 		0x90, 0x22, 0x90, 0x10, 0x00, 0x0F, 0x00, 0xB0,
 		0x1B, 0x90, 0x10, 0xFC, 0x58, 0xC5, 0x0A};
 
-	DDProtoError err = DDProtoError::DDPROTO_ERR_NONE;
+	DDProtoError err = DDPROTO_ERR_NONE;
 	DDProtoPacket packet = ddproto_decode_packet(bytes, sizeof(bytes), &err);
 
-	ASSERT_EQ(err, DDProtoError::DDPROTO_ERR_NONE);
-	EXPECT_EQ(packet.kind, DDProtoPacketKind::DDPROTO_PACKET_NORMAL);
+	ASSERT_EQ(err, DDPROTO_ERR_NONE);
+	EXPECT_EQ(packet.kind, DDPROTO_PACKET_NORMAL);
 	EXPECT_EQ(packet.header.flags, 0);
 	EXPECT_EQ(packet.header.num_chunks, 12);
 	EXPECT_EQ(packet.header.ack, 4);

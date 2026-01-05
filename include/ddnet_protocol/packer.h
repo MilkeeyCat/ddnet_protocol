@@ -94,7 +94,7 @@ DDProtoError ddproto_packer_add_raw(DDProtoPacker *packer, const uint8_t *data, 
 /// ddproto_unpacker_get_int(&unpacker); // => 5
 /// ddproto_unpacker_get_int(&unpacker); // => 1
 /// ddproto_unpacker_get_int(&unpacker); // => 2
-/// unpacker.err; // => DDProtoError::DDPROTO_ERR_NONE
+/// unpacker.err; // => DDPROTO_ERR_NONE
 /// ```
 void ddproto_unpacker_init(DDProtoUnpacker *unpacker, const uint8_t *buf, size_t len);
 
@@ -111,7 +111,7 @@ size_t ddproto_unpacker_remaining_size(DDProtoUnpacker *unpacker);
 /// DDProtoUnpacker unpacker;
 /// ddproto_unpacker_init(&unpacker, bytes, sizeof(bytes));
 /// ddproto_unpacker_get_int(&unpacker); // => 5
-/// unpacker.err; // => DDProtoError::DDPROTO_ERR_NONE
+/// unpacker.err; // => DDPROTO_ERR_NONE
 /// ```
 int32_t ddproto_unpacker_get_int(DDProtoUnpacker *unpacker);
 
@@ -142,7 +142,7 @@ const char *ddproto_unpacker_get_string(DDProtoUnpacker *unpacker);
 /// ddproto_unpacker_init(&unpacker, bytes, sizeof(bytes));
 ///
 /// ddproto_unpacker_get_string_sanitized(&unpacker, DDPROTO_STRING_SANITIZE_CC); // => foo
-/// unpacker.err; // =>  DDProtoError::DDPROTO_ERR_NONE
+/// unpacker.err; // =>  DDPROTO_ERR_NONE
 /// ```
 const char *ddproto_unpacker_get_string_sanitized(DDProtoUnpacker *unpacker, DDProtoStringSanitize sanitize);
 
@@ -161,7 +161,7 @@ const char *ddproto_unpacker_get_string_sanitized(DDProtoUnpacker *unpacker, DDP
 /// ddproto_unpacker_get_bool(&unpacker); // => false
 /// ddproto_unpacker_get_bool(&unpacker); // => true
 /// ddproto_unpacker_get_bool(&unpacker); // => false (invalid boolean)
-/// unpacker.err; // => DDProtoError::DDPROTO_ERR_INVALID_BOOL
+/// unpacker.err; // => DDPROTO_ERR_INVALID_BOOL
 /// ```
 bool ddproto_unpacker_get_bool(DDProtoUnpacker *unpacker);
 
@@ -175,7 +175,7 @@ bool ddproto_unpacker_get_bool(DDProtoUnpacker *unpacker);
 /// DDProtoUnpacker unpacker;
 /// ddproto_unpacker_init(&unpacker, bytes, sizeof(bytes));
 /// ddproto_unpacker_get_raw(&unpacker, 1); // => 0x05
-/// unpacker.err; // => DDProtoError::DDPROTO_ERR_NONE
+/// unpacker.err; // => DDPROTO_ERR_NONE
 /// ```
 const uint8_t *ddproto_unpacker_get_raw(DDProtoUnpacker *unpacker, size_t len);
 

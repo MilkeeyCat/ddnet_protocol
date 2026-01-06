@@ -191,8 +191,12 @@ DDProtoError ddproto_free_packet(DDProtoPacket *packet) {
 			}
 		}
 		free(packet->chunks.data);
+		packet->chunks.data = NULL;
+		packet->chunks.len = 0;
 	}
 	free(packet->payload);
+	packet->payload = NULL;
+	packet->payload_len = 0;
 
 	return DDPROTO_ERR_NONE;
 }

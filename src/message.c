@@ -5,6 +5,7 @@
 #include <ddnet_protocol/msg_system.h>
 #include <ddnet_protocol/packer.h>
 #include <ddnet_protocol/snapshot.h>
+#include <ddnet_protocol/version.h>
 
 static DDProtoError decode_game_message(DDProtoChunk *chunk, DDProtoMessageId msg_id, DDProtoUnpacker *unpacker) {
 	DDProtoGenericMessage *msg = &chunk->payload.msg;
@@ -281,9 +282,11 @@ size_t ddproto_encode_message(DDProtoChunk *chunk, uint8_t *buf, DDProtoError *e
 		ddproto_packer_add_int(&packer, msg->map_data.chunk_size);
 		ddproto_packer_add_raw(&packer, msg->map_data.data, msg->map_data.chunk_size);
 		break;
+	case DDPROTO_MSG_KIND_ENTERGAME:
+		ddproto_packer_add_string(&packer, "ddnet_protocol " DDPROTO_BUILDINFO);
+		break;
 	case DDPROTO_MSG_KIND_CON_READY:
 	case DDPROTO_MSG_KIND_READY:
-	case DDPROTO_MSG_KIND_ENTERGAME:
 	case DDPROTO_MSG_KIND_SV_READYTOENTER:
 	case DDPROTO_MSG_KIND_SV_VOTECLEAROPTIONS:
 		break;

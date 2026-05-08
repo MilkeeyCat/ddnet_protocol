@@ -9,6 +9,12 @@ extern "C" {
 #include "packer.h"
 #include "snap_items.h"
 
+#define DDPROTO_SNAPSHOT_MAX_TYPE 0x7fff
+#define DDPROTO_SNAPSHOT_MAX_ID 0xffff
+#define DDPROTO_SNAPSHOT_MAX_PARTS 64
+#define DDPROTO_SNAPSHOT_MAX_SIZE (DDPROTO_SNAPSHOT_MAX_PARTS * 1024)
+#define DDPROTO_SNAPSHOT_MAX_ITEMS 1024
+
 /// @attention This is not the snap item id that is sent over the network.
 typedef enum {
 	// objects
@@ -117,12 +123,27 @@ typedef struct {
 	} items;
 } DDProtoSnapshotDelta;
 
+typedef struct {
+	struct {
+		// should be either `NULL` or point to memory of size
+		// `items.len * sizeof(DDProtoSnapItem)`
+		DDProtoSnapItem *data;
+
+		// should be either `0` or match the allocated size of `items.data` in
+		// `sizeof(DDProtoSnapItem)` otherwise you might run into segfaults
+		size_t len;
+	} items;
+} DDProtoSnapshot;
+
 /// Consumes data from the unpacker and writes the parsed item to the output
 /// parameter `item`.
 DDProtoError ddproto_decode_snap_item(DDProtoUnpacker *unpacker, DDProtoSnapItem *item);
 
 /// Frees the memory allocated for the snap items.
 void ddproto_free_snapshot_delta(DDProtoSnapshotDelta *snap);
+
+/// Frees the memory allocated for the snap items.
+void ddproto_free_snapshot(DDProtoSnapshot *snap);
 
 /// Given a unpacker holding data beginning with a snapshot payload this parses
 /// the snapshot header and item deltas. Beginning of snapshot payload is

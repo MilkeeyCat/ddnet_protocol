@@ -208,6 +208,17 @@ void ddproto_free_snapshot_delta(DDProtoSnapshotDelta *snap) {
 	snap->removed_keys.len = 0;
 }
 
+void ddproto_free_snapshot(DDProtoSnapshot *snap) {
+	for(int32_t i = 0; i < snap->items.len; i++) {
+		if(snap->items.data[i].kind == DDPROTO_ITEM_KIND_UNKNOWN) {
+			free(snap->items.data[i].item.unknown.data);
+		}
+	}
+	free(snap->items.data);
+	snap->items.data = NULL;
+	snap->items.len = 0;
+}
+
 DDProtoError ddproto_decode_snapshot_delta(DDProtoUnpacker *unpacker, DDProtoSnapshotDelta *snap) {
 	snap->removed_keys.len = ddproto_unpacker_get_int(unpacker);
 	if(!snap->removed_keys.len) {

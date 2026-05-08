@@ -183,7 +183,8 @@ TEST(NormalPacket, GameMotdAndSysConReady) {
 	EXPECT_EQ(packet.header.ack, 4);
 	EXPECT_EQ(packet.header.token, 0xb6ea1783);
 
-	// TODO: check msg 0 once motd is supported
+	EXPECT_EQ(packet.chunks.data[0].payload.kind, DDPROTO_MSG_KIND_SV_MOTD);
+	EXPECT_STREQ(packet.chunks.data[0].payload.msg.motd.message, "");
 
 	EXPECT_EQ(packet.chunks.data[1].payload.kind, DDPROTO_MSG_KIND_CON_READY);
 

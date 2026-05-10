@@ -32,7 +32,20 @@ int32_t ddproto_snap_builder_finish(DDProtoSnapBuilder *builder, DDProtoSnapshot
 	return 0;
 }
 
+// bro idk
+
+// void ddproto_snap_add_item(DDProtoSnapshot *snap, DDProtoSnapItem *item) {
+// 	snap->items.data[snap->items.len++] = *item;
+// }
+
+// void foo(void) {
+// 	DDProtoSnapshot snap = {};
+// 	snap.items.data[0].item.flag
+// }
+
 // // copy sorted items
+//
+//
 // int OffsetCur = 0;
 // for(int i = 0; i < NumItems; i++)
 // {

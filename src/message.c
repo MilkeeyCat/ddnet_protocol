@@ -156,7 +156,7 @@ static DDProtoError decode_system_message(DDProtoChunk *chunk, DDProtoMessageId 
 		msg->snap_single.delta_tick = ddproto_unpacker_get_int(unpacker);
 		msg->snap_single.crc = ddproto_unpacker_get_int(unpacker);
 		msg->snap_single.part_size = ddproto_unpacker_get_int(unpacker);
-		DDProtoError err = ddproto_decode_snapshot(unpacker, &msg->snap_single.snapshot);
+		DDProtoError err = ddproto_decode_snapshot_delta(unpacker, &msg->snap_single.snapshot);
 		if(err != DDPROTO_ERR_NONE) {
 			return err;
 		}

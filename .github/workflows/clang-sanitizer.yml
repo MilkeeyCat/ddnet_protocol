@@ -18,6 +18,7 @@ jobs:
       run: |
         sudo apt-get update -y
         sudo apt-get install -y pkg-config cmake cmake build-essential clang
+        cargo install cbindgen
 
     - name: Build with ASan and UBSan
       run: |

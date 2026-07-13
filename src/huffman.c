@@ -15,7 +15,7 @@ static const uint32_t FREQUENCY_TABLE[256 + 1] = {
 	136, 53, 180, 57, 142, 57, 158, 61, 166, 112, 152, 92, 26, 22, 21, 28, 20, 26, 30, 21,
 	32, 27, 20, 17, 23, 21, 30, 22, 22, 21, 27, 25, 17, 27, 23, 18, 39, 26, 15, 21,
 	12, 18, 18, 27, 20, 18, 15, 19, 11, 17, 33, 12, 18, 15, 19, 18, 16, 26, 17, 18,
-	9, 10, 25, 22, 22, 17, 20, 16, 6, 16, 15, 20, 14, 18, 24, 335, 1517};
+	9, 10, 25, 22, 22, 17, 20, 16, 6, 16, 15, 20, 14, 18, 24, 335, 1};
 
 typedef struct HuffmanConstructNode {
 	uint16_t node_id;
@@ -49,7 +49,7 @@ static Node nodes[HUFFMAN_MAX_NODES];
 static Node *decode_luts[HUFFMAN_LUTSIZE];
 static Node *start_node;
 static int32_t num_nodes;
-bool huffman_initialized = false;
+static bool huffman_initialized = false;
 
 static void bubble_sort_nodes(HuffmanConstructNode **list, int32_t size) {
 	uint8_t changed = 1;
@@ -69,12 +69,12 @@ static void bubble_sort_nodes(HuffmanConstructNode **list, int32_t size) {
 	}
 }
 
-static void setbits_r(Node *node, int32_t bits, uint32_t depth) {
+static void set_bits_recursive(Node *node, int32_t bits, uint32_t depth) {
 	if(node->leaves[1] != 0xffff) {
-		setbits_r(&nodes[node->leaves[1]], bits | (1 << depth), depth + 1);
+		set_bits_recursive(&nodes[node->leaves[1]], bits | (1 << depth), depth + 1);
 	}
 	if(node->leaves[0] != 0xffff) {
-		setbits_r(&nodes[node->leaves[0]], bits, depth + 1);
+		set_bits_recursive(&nodes[node->leaves[0]], bits, depth + 1);
 	}
 
 	if(node->num_bits) {
@@ -95,11 +95,7 @@ static void construct_tree(const uint32_t *frequencies) {
 		nodes[i].leaves[0] = 0xffff;
 		nodes[i].leaves[1] = 0xffff;
 
-		if(i == HUFFMAN_EOF_SYMBOL) {
-			nodes_left_storage[i].frequency = 1;
-		} else {
-			nodes_left_storage[i].frequency = frequencies[i];
-		}
+		nodes_left_storage[i].frequency = frequencies[i];
 		nodes_left_storage[i].node_id = i;
 		nodes_left[i] = &nodes_left_storage[i];
 	}
@@ -124,14 +120,14 @@ static void construct_tree(const uint32_t *frequencies) {
 	start_node = &nodes[num_nodes - 1];
 
 	// build symbol bits
-	setbits_r(start_node, 0, 0);
+	set_bits_recursive(start_node, 0, 0);
 }
 
 static void huffman_init(void) {
 	if(huffman_initialized) {
 		return;
 	}
-	huffman_initialized = 1;
+	huffman_initialized = true;
 	const uint32_t *frequencies = FREQUENCY_TABLE;
 
 	// make sure to cleanout every thing
@@ -152,10 +148,6 @@ static void huffman_init(void) {
 		for(counter = 0; counter < HUFFMAN_LUTBITS; counter++) {
 			node = &nodes[node->leaves[bits & 1]];
 			bits >>= 1;
-
-			if(!node) {
-				break;
-			}
 
 			if(node->num_bits) {
 				decode_luts[i] = node;
@@ -179,11 +171,11 @@ size_t ddproto_huffman_compress(const uint8_t *input, size_t input_len, uint8_t 
 	// this macro writes the symbol stored in bits and bitcount to the dst pointer
 #define HUFFMAN_MACRO_WRITE() \
 	while(bitcount >= 8) { \
-		*dst++ = (uint8_t)(bits & 0xff); \
 		if(dst == dstend) { \
 			*err = DDPROTO_ERR_BUFFER_FULL; \
 			return -1; \
 		} \
+		*dst++ = (uint8_t)(bits & 0xff); \
 		bits >>= 8; \
 		bitcount -= 8; \
 	}
@@ -223,8 +215,14 @@ size_t ddproto_huffman_compress(const uint8_t *input, size_t input_len, uint8_t 
 	HUFFMAN_MACRO_LOADSYMBOL(HUFFMAN_EOF_SYMBOL)
 	HUFFMAN_MACRO_WRITE()
 
-	// write out the last bits
-	*dst++ = bits;
+	// write out the last bits if we have any
+	if(bitcount != 0) {
+		if(dst == dstend) {
+			*err = DDPROTO_ERR_BUFFER_FULL;
+			return -1;
+		}
+		*dst++ = bits;
+	}
 
 	// return the size of the output
 	return (dst - (const uint8_t *)output);
@@ -237,10 +235,10 @@ size_t ddproto_huffman_compress(const uint8_t *input, size_t input_len, uint8_t 
 size_t ddproto_huffman_decompress(const uint8_t *input, size_t input_len, uint8_t *output, size_t output_len, DDProtoError *err) {
 	huffman_init();
 	// setup buffer pointers
-	uint8_t *dst = output;
 	const uint8_t *src = input;
-	uint8_t *dstend = dst + output_len;
 	const uint8_t *srcend = src + input_len;
+	uint8_t *dst = output;
+	uint8_t *dstend = dst + output_len;
 
 	uint32_t bits = 0;
 	uint32_t bitcount = 0;
@@ -249,13 +247,13 @@ size_t ddproto_huffman_decompress(const uint8_t *input, size_t input_len, uint8_
 	Node *node = 0;
 
 	while(1) {
-		// {a} try to load a node now, this will reduce dependency at location {d}
+		// {A} try to load a node now, this will reduce dependency at location {D}
 		node = 0;
 		if(bitcount >= HUFFMAN_LUTBITS) {
 			node = decode_luts[bits & HUFFMAN_LUTMASK];
 		}
 
-		// {b} fill with new bits
+		// {B} fill with new bits
 		while(bitcount < 24 && src != srcend) {
 			bits |= (*src++) << bitcount;
 			bitcount += 8;
@@ -271,12 +269,22 @@ size_t ddproto_huffman_decompress(const uint8_t *input, size_t input_len, uint8_
 			return -1;
 		}
 
-		// {d} check if we hit a symbol already
+		// {D} check if we hit a symbol already
 		if(node->num_bits) {
 			// remove the bits for that symbol
+			if(bitcount < node->num_bits) {
+				*err = DDPROTO_ERR_HUFFMAN_DECOMPRESSION_NODE_LOOKUP_INSUFFICIENT_BITS;
+				return -1;
+			}
+
 			bits >>= node->num_bits;
 			bitcount -= node->num_bits;
 		} else {
+			if(bitcount < HUFFMAN_LUTBITS) {
+				*err = DDPROTO_ERR_HUFFMAN_DECOMPRESSION_TABLE_LOOKUP_INSUFFICIENT_BITS;
+				return -1;
+			}
+
 			// remove the bits that the lut checked up for us
 			bits >>= HUFFMAN_LUTBITS;
 			bitcount -= HUFFMAN_LUTBITS;

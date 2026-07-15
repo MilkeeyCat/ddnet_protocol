@@ -52,17 +52,17 @@ static int32_t num_nodes;
 static bool huffman_initialized = false;
 
 static void bubble_sort_nodes(HuffmanConstructNode **list, int32_t size) {
-	uint8_t changed = 1;
+	bool changed = true;
 	HuffmanConstructNode *temp;
 
 	while(changed) {
-		changed = 0;
+		changed = false;
 		for(int32_t i = 0; i < size - 1; i++) {
 			if(list[i]->frequency < list[i + 1]->frequency) {
 				temp = list[i];
 				list[i] = list[i + 1];
 				list[i + 1] = temp;
-				changed = 1;
+				changed = true;
 			}
 		}
 		size--;
@@ -173,7 +173,7 @@ size_t ddproto_huffman_compress(const uint8_t *input, size_t input_len, uint8_t 
 	while(bitcount >= 8) { \
 		if(dst == dstend) { \
 			*err = DDPROTO_ERR_BUFFER_FULL; \
-			return -1; \
+			return 0; \
 		} \
 		*dst++ = (uint8_t)(bits & 0xff); \
 		bits >>= 8; \
@@ -219,7 +219,7 @@ size_t ddproto_huffman_compress(const uint8_t *input, size_t input_len, uint8_t 
 	if(bitcount != 0) {
 		if(dst == dstend) {
 			*err = DDPROTO_ERR_BUFFER_FULL;
-			return -1;
+			return 0;
 		}
 		*dst++ = bits;
 	}
@@ -244,11 +244,11 @@ size_t ddproto_huffman_decompress(const uint8_t *input, size_t input_len, uint8_
 	uint32_t bitcount = 0;
 
 	Node *eof = &nodes[HUFFMAN_EOF_SYMBOL];
-	Node *node = 0;
+	Node *node = NULL;
 
 	while(1) {
 		// {A} try to load a node now, this will reduce dependency at location {D}
-		node = 0;
+		node = NULL;
 		if(bitcount >= HUFFMAN_LUTBITS) {
 			node = decode_luts[bits & HUFFMAN_LUTMASK];
 		}
@@ -266,7 +266,7 @@ size_t ddproto_huffman_decompress(const uint8_t *input, size_t input_len, uint8_
 
 		if(!node) {
 			*err = DDPROTO_ERR_HUFFMAN_NODE_NULL;
-			return -1;
+			return 0;
 		}
 
 		// {D} check if we hit a symbol already
@@ -274,7 +274,7 @@ size_t ddproto_huffman_decompress(const uint8_t *input, size_t input_len, uint8_
 			// remove the bits for that symbol
 			if(bitcount < node->num_bits) {
 				*err = DDPROTO_ERR_HUFFMAN_DECOMPRESSION_NODE_LOOKUP_INSUFFICIENT_BITS;
-				return -1;
+				return 0;
 			}
 
 			bits >>= node->num_bits;
@@ -282,7 +282,7 @@ size_t ddproto_huffman_decompress(const uint8_t *input, size_t input_len, uint8_
 		} else {
 			if(bitcount < HUFFMAN_LUTBITS) {
 				*err = DDPROTO_ERR_HUFFMAN_DECOMPRESSION_TABLE_LOOKUP_INSUFFICIENT_BITS;
-				return -1;
+				return 0;
 			}
 
 			// remove the bits that the lut checked up for us
@@ -306,7 +306,7 @@ size_t ddproto_huffman_decompress(const uint8_t *input, size_t input_len, uint8_
 				// no more bits, decoding error
 				if(bitcount == 0) {
 					*err = DDPROTO_ERR_END_OF_BUFFER;
-					return -1;
+					return 0;
 				}
 			}
 		}
@@ -319,7 +319,7 @@ size_t ddproto_huffman_decompress(const uint8_t *input, size_t input_len, uint8_
 		// output character
 		if(dst == dstend) {
 			*err = DDPROTO_ERR_BUFFER_FULL;
-			return -1;
+			return 0;
 		}
 		*dst++ = node->symbol;
 	}

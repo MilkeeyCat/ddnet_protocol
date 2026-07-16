@@ -29,12 +29,18 @@ if(CMAKE_TESTING_ENABLED)
     FILE(GLOB TEST_SOURCES test/*.cc)
     add_executable(${TARGET_TESTRUNNER} EXCLUDE_FROM_ALL ${TEST_SOURCES})
 
-    target_link_libraries(${TARGET_TESTRUNNER}
-        ddnet_protocol
-    )
-
     include(FetchContent)
-        FetchContent_Declare(
+
+    FetchContent_Declare(
+        corpus_runner_source
+        GIT_REPOSITORY "https://github.com/ddnet-corpus/runner"
+        SOURCE_DIR "corpus_runner"
+    )
+    FetchContent_MakeAvailable(corpus_runner_source)
+
+    add_subdirectory("${CMAKE_BINARY_DIR}/corpus_runner/cxx")
+
+    FetchContent_Declare(
         googletest
         URL https://github.com/google/googletest/archive/3d73dee972d0db344bda9b659836612aba6a3564.zip
     )
@@ -46,6 +52,8 @@ if(CMAKE_TESTING_ENABLED)
     target_link_libraries(
         ${TARGET_TESTRUNNER}
         GTest::gtest_main
+        ddnet_protocol
+        corpus_runner
     )
 
     include(GoogleTest)

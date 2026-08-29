@@ -115,14 +115,14 @@ typedef struct {
 		// `sizeof(DDProtoSnapItem)` otherwise you might run into segfaults
 		size_t len;
 	} items;
-} DDProtoSnapshot;
+} DDProtoSnapshotDelta;
 
 /// Consumes data from the unpacker and writes the parsed item to the output
 /// parameter `item`.
 DDProtoError ddproto_decode_snap_item(DDProtoUnpacker *unpacker, DDProtoSnapItem *item);
 
 /// Frees the memory allocated for the snap items.
-void ddproto_free_snapshot(DDProtoSnapshot *snap);
+void ddproto_free_snapshot_delta(DDProtoSnapshotDelta *snap);
 
 /// Given a unpacker holding data beginning with a snapshot payload this parses
 /// the snapshot header and item deltas. Beginning of snapshot payload is
@@ -136,7 +136,7 @@ void ddproto_free_snapshot(DDProtoSnapshot *snap);
 /// This function allocates memory for the snap items. You need to free it by
 /// calling @ref ddproto_free_snapshot. You do not need to free it if the
 /// snapshot is part of a packet and you already call @ref ddproto_free_packet.
-DDProtoError ddproto_decode_snapshot(DDProtoUnpacker *unpacker, DDProtoSnapshot *snap);
+DDProtoError ddproto_decode_snapshot_delta(DDProtoUnpacker *unpacker, DDProtoSnapshotDelta *snap);
 
 #ifdef __cplusplus
 }

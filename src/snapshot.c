@@ -199,7 +199,7 @@ DDProtoError ddproto_decode_snap_item(DDProtoUnpacker *unpacker, DDProtoSnapItem
 	return DDPROTO_ERR_NONE;
 }
 
-void ddproto_free_snapshot(DDProtoSnapshot *snap) {
+void ddproto_free_snapshot_delta(DDProtoSnapshotDelta *snap) {
 	free(snap->items.data);
 	free(snap->removed_keys.data);
 	snap->items.data = NULL;
@@ -208,7 +208,7 @@ void ddproto_free_snapshot(DDProtoSnapshot *snap) {
 	snap->removed_keys.len = 0;
 }
 
-DDProtoError ddproto_decode_snapshot(DDProtoUnpacker *unpacker, DDProtoSnapshot *snap) {
+DDProtoError ddproto_decode_snapshot_delta(DDProtoUnpacker *unpacker, DDProtoSnapshotDelta *snap) {
 	snap->removed_keys.len = ddproto_unpacker_get_int(unpacker);
 	if(!snap->removed_keys.len) {
 		snap->removed_keys.data = NULL;

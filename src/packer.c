@@ -236,7 +236,7 @@ uint8_t *ddproto_packer_data(DDProtoPacker *packer) {
 
 DDProtoError ddproto_packer_add_int(DDProtoPacker *packer, int32_t value) {
 	size_t space = ddproto_packer_remaining_size(packer);
-	if(space <= 0) {
+	if(space == 0) {
 		return packer->err = DDPROTO_ERR_BUFFER_FULL;
 	}
 
@@ -255,7 +255,7 @@ DDProtoError ddproto_packer_add_int(DDProtoPacker *packer, int32_t value) {
 	value >>= 6;
 
 	while(value) {
-		if(space <= 0) {
+		if(space == 0) {
 			return packer->err = DDPROTO_ERR_BUFFER_FULL;
 		}
 		// set extend bit
@@ -304,7 +304,7 @@ size_t ddproto_unpacker_remaining_size(DDProtoUnpacker *unpacker) {
 
 int32_t ddproto_unpacker_get_int(DDProtoUnpacker *unpacker) {
 	size_t space = ddproto_unpacker_remaining_size(unpacker);
-	if(space < 1) {
+	if(space == 0) {
 		unpacker->err = DDPROTO_ERR_EMPTY_BUFFER;
 		return 0;
 	}
@@ -316,7 +316,7 @@ int32_t ddproto_unpacker_get_int(DDProtoUnpacker *unpacker) {
 		if(!(*unpacker->buf & 0x80)) {
 			break;
 		}
-		if(--space <= 0) {
+		if(--space == 0) {
 			unpacker->err = DDPROTO_ERR_END_OF_BUFFER;
 			return 0;
 		}
@@ -326,7 +326,7 @@ int32_t ddproto_unpacker_get_int(DDProtoUnpacker *unpacker) {
 		if(!(*unpacker->buf & 0x80)) {
 			break;
 		}
-		if(--space <= 0) {
+		if(--space == 0) {
 			unpacker->err = DDPROTO_ERR_END_OF_BUFFER;
 			return 0;
 		}
@@ -336,7 +336,7 @@ int32_t ddproto_unpacker_get_int(DDProtoUnpacker *unpacker) {
 		if(!(*unpacker->buf & 0x80)) {
 			break;
 		}
-		if(--space <= 0) {
+		if(--space == 0) {
 			unpacker->err = DDPROTO_ERR_END_OF_BUFFER;
 			return 0;
 		}
@@ -346,7 +346,7 @@ int32_t ddproto_unpacker_get_int(DDProtoUnpacker *unpacker) {
 		if(!(*unpacker->buf & 0x80)) {
 			break;
 		}
-		if(--space <= 0) {
+		if(--space == 0) {
 			unpacker->err = DDPROTO_ERR_END_OF_BUFFER;
 			return 0;
 		}

@@ -173,7 +173,7 @@ typedef struct {
 
 // sent by the server
 typedef struct {
-	/// @ref DDProtoMsgSvVoteOptionListAdd.descriptions has a fixed size of 14
+	/// @ref DDProtoMsgSvVoteOptionListAdd.descriptions has a fixed size of 15
 	/// but not all strings might be set. So @ref
 	/// DDProtoMsgSvVoteOptionListAdd.num_options determines how many values
 	/// starting from index 0 are valid in @ref
@@ -181,7 +181,7 @@ typedef struct {
 	int32_t num_options;
 
 	/// Only access index 0-num_options.
-	const char *descriptions[14];
+	const char *descriptions[15];
 } DDProtoMsgSvVoteOptionListAdd;
 
 // sent by the server

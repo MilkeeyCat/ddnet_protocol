@@ -86,14 +86,21 @@ static DDProtoError decode_game_message(DDProtoChunk *chunk, DDProtoMessageId ms
 	case DDPROTO_MSG_SV_VOTECLEAROPTIONS:
 		chunk->payload.kind = DDPROTO_MSG_KIND_SV_VOTECLEAROPTIONS;
 		break;
-	case DDPROTO_MSG_SV_VOTEOPTIONLISTADD:
+	case DDPROTO_MSG_SV_VOTEOPTIONLISTADD: {
+		int32_t num_options = ddproto_unpacker_get_int(unpacker);
+
+		if(num_options < 1 || num_options > 15) {
+			return DDPROTO_ERR_INVALID_MESSAGE;
+		}
+
 		chunk->payload.kind = DDPROTO_MSG_KIND_SV_VOTEOPTIONLISTADD;
-		msg->vote_option_list_add.num_options = ddproto_unpacker_get_int(unpacker);
+		msg->vote_option_list_add.num_options = num_options;
 		memset((void *)msg->vote_option_list_add.descriptions, 0, sizeof(msg->vote_option_list_add.descriptions));
 		for(int32_t i = 0; i < msg->vote_option_list_add.num_options; i++) {
 			msg->vote_option_list_add.descriptions[i] = ddproto_unpacker_get_string(unpacker);
 		}
 		break;
+	}
 	case DDPROTO_MSG_SV_VOTEOPTIONADD:
 		chunk->payload.kind = DDPROTO_MSG_KIND_SV_VOTEOPTIONADD;
 		msg->vote_option_add.description = ddproto_unpacker_get_string(unpacker);

@@ -364,6 +364,11 @@ const char *ddproto_unpacker_get_string_sanitized(DDProtoUnpacker *unpacker, DDP
 		return "";
 	}
 
+	if(unpacker->buf >= unpacker->buf_end) {
+		unpacker->err = DDPROTO_ERR_STR_UNEXPECTED_EOF;
+		return "";
+	}
+
 	char *str = (char *)unpacker->buf;
 	while(*unpacker->buf) // skip the string
 	{

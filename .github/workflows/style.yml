@@ -31,3 +31,5 @@ jobs:
       run: scripts/check_standard_headers.sh
     - name: Check extern C annotation
       run: scripts/check_public_headers.sh
+    - name: Check comment casing
+      run: scripts/check_comments.sh

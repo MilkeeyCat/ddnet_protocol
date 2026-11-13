@@ -157,7 +157,7 @@ static DDProtoError decode_system_message(DDProtoChunk *chunk, DDProtoMessageId 
 		msg->map_data.chunk = ddproto_unpacker_get_int(unpacker);
 		msg->map_data.chunk_size = ddproto_unpacker_get_int(unpacker);
 		msg->map_data.data = ddproto_unpacker_get_raw(unpacker, msg->map_data.chunk_size);
-		chunk->payload.kind = DDPROTO_MSG_KIND_MAP_CHANGE;
+		chunk->payload.kind = DDPROTO_MSG_KIND_MAP_DATA;
 		break;
 	case DDPROTO_MSG_SNAPSINGLE:
 		msg->snap_single.game_tick = ddproto_unpacker_get_int(unpacker);

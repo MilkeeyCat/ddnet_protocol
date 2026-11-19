@@ -42,7 +42,7 @@ typedef struct {
 	int32_t delta_tick;
 	int32_t crc;
 	int32_t part_size;
-	DDProtoSnapshot snapshot;
+	DDProtoSnapshotDelta snapshot;
 } DDProtoMsgSnapSingle;
 
 // sent by the client

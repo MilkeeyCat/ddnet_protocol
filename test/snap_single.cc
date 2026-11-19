@@ -82,7 +82,7 @@ TEST(SnapSinglePacket, FirstFullSnap) {
 	EXPECT_EQ(snap_single.crc, -1521333639);
 	EXPECT_EQ(snap_single.part_size, 322);
 
-	DDProtoSnapshot snap = snap_single.snapshot;
+	DDProtoSnapshotDelta snap = snap_single.snapshot;
 	EXPECT_EQ(snap.removed_keys.len, 0);
 	EXPECT_EQ(snap.removed_keys.data, nullptr);
 

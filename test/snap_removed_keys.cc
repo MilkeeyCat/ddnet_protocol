@@ -45,7 +45,7 @@ TEST(SnapSinglePacket, DeltaWithRemovedKeys) {
 	EXPECT_EQ(snap_single.crc, 217322961);
 	EXPECT_EQ(snap_single.part_size, 65);
 
-	DDProtoSnapshot snap = snap_single.snapshot;
+	DDProtoSnapshotDelta snap = snap_single.snapshot;
 	EXPECT_EQ(snap.removed_keys.len, 3);
 	ASSERT_NE(snap.removed_keys.data, nullptr);
 	EXPECT_EQ(snap.removed_keys.data[0], 2147090437);

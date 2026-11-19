@@ -186,8 +186,8 @@ DDProtoError ddproto_free_packet(DDProtoPacket *packet) {
 		for(size_t i = 0; i < packet->chunks.len; i++) {
 			DDProtoChunk *chunk = &packet->chunks.data[i];
 			if(chunk->payload.kind == DDPROTO_MSG_KIND_SNAPSINGLE) {
-				DDProtoSnapshot *snap = &chunk->payload.msg.snap_single.snapshot;
-				ddproto_free_snapshot(snap);
+				DDProtoSnapshotDelta *snap = &chunk->payload.msg.snap_single.snapshot;
+				ddproto_free_snapshot_delta(snap);
 			}
 		}
 		free(packet->chunks.data);

@@ -59,8 +59,7 @@ void twclient_init_udp(TwClient *client) {
 	client->socket = socket(AF_INET, SOCK_DGRAM, 0);
 	client->addr.sin_family = AF_INET;
 	client->addr.sin_port = 0;
-	uint8_t own_ip[4] = {127, 0, 0, 1};
-	memcpy(&client->addr.sin_addr.s_addr, own_ip, 4);
+	client->addr.sin_addr.s_addr = htonl(INADDR_ANY);
 	int32_t err = bind(client->socket, (struct sockaddr *)&client->addr, sizeof(client->addr));
 	if(err) {
 		fprintf(stderr, "failed to bind network socket: %s\n", strerror(errno));

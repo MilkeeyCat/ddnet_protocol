@@ -14,6 +14,7 @@ Checks: >
   -modernize-macro-to-enum,
   performance-*,
   portability-*,
+  -portability-avoid-pragma-once,
   readability-*,
   -readability-magic-numbers,
   -readability-else-after-return,

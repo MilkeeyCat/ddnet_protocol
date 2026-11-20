@@ -20,7 +20,7 @@ set_target_properties(ddnet_protocol PROPERTIES PUBLIC_HEADER "${LIB_PUBLIC_HEAD
 
 set(CODE_SPACE USER_SPACE CACHE STRING "Specifies where the code will be run, kernel or user space.")
 
-add_compile_definitions(CODE_SPACE=${CODE_SPACE})
+target_compile_definitions(ddnet_protocol PUBLIC CODE_SPACE=${CODE_SPACE})
 
 if(CMAKE_TESTING_ENABLED)
     set(INSTALL_GTEST OFF)

@@ -61,7 +61,7 @@ if(CMAKE_TESTING_ENABLED)
 
     add_custom_target(run_tests
         COMMAND $<TARGET_FILE:${TARGET_TESTRUNNER}> ${TESTRUNNER_ARGS}
-        COMMENT Running unit tests
+        COMMENT "Running unit tests"
         DEPENDS ${TARGET_TESTRUNNER}
         USES_TERMINAL
     )

@@ -21,7 +21,7 @@ DDProtoError ddproto_encode_packet_header(const DDProtoPacketHeader *header, uin
 	if(header->ack >= DDPROTO_MAX_SEQUENCE) {
 		return DDPROTO_ERR_ACK_OUT_OF_BOUNDS;
 	}
-	buf[0] = ((header->flags << 2) & 0xfc | ((header->ack >> 8)) & 0x3);
+	buf[0] = ((header->flags << 2) & 0xfc) | (((header->ack >> 8)) & 0x3);
 	buf[1] = header->ack & 0xff;
 	buf[2] = header->num_chunks;
 	return DDPROTO_ERR_NONE;

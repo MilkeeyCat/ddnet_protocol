@@ -47,7 +47,17 @@ if(CMAKE_TESTING_ENABLED)
 
     # For Windows: Prevent overriding the parent project's compiler/linker settings
     set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+    # googletest uses `include_directories` which CMake 4.5 doesn't like
+    # TODO: remove this target directive ignore once this issue is resolved
+    #       https://github.com/google/googletest/issues/5176
+    if(CMAKE_VERSION VERSION_GREATER_EQUAL 4.5)
+        cmake_diagnostic(PUSH)
+        cmake_diagnostic(SET CMD_NON_TARGET_DIRECTIVE IGNORE)
+    endif()
     FetchContent_MakeAvailable(googletest)
+    if(CMAKE_VERSION VERSION_GREATER_EQUAL 4.5)
+        cmake_diagnostic(POP)
+    endif()
 
     target_link_libraries(
         ${TARGET_TESTRUNNER}

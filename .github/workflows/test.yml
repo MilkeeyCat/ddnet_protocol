@@ -14,14 +14,16 @@ jobs:
         os: [ubuntu-latest, macOS-latest, ubuntu-22.04]
         include:
         - os: ubuntu-latest
-          cmake-args: -DCMAKE_TESTING_ENABLED=ON
+          # TODO: remove -Wno-error=non-target-directive once this is resolved
+          #       https://github.com/google/googletest/issues/5176
+          cmake-args: -DCMAKE_TESTING_ENABLED=ON -Wno-error=non-target-directive
           cmake-init-env: CXXFLAGS=-Werror
         - os: ubuntu-22.04
-          cmake-args: -DCMAKE_TESTING_ENABLED=ON
+          cmake-args: -DCMAKE_TESTING_ENABLED=ON -Wno-error=non-target-directive
           cmake-path: /usr/bin/
           cmake-init-env: CXXFLAGS=-Werror
         - os: macOS-latest
-          cmake-args: -DCMAKE_TESTING_ENABLED=ON
+          cmake-args: -DCMAKE_TESTING_ENABLED=ON -Wno-error=non-target-directive
           cmake-init-env: CXXFLAGS=-Werror
 
     steps:

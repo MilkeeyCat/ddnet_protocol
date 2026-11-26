@@ -4,7 +4,7 @@
 #include <ddnet_protocol/int_string.h>
 #include <ddnet_protocol/packer.h>
 
-DDProtoError ddproto_unpack_int_array_as_str(DDProtoUnpacker *unpacker, size_t num_ints, char *str, size_t str_len) {
+static DDProtoError ddproto_unpack_int_array_as_str(DDProtoUnpacker *unpacker, size_t num_ints, char *str, size_t str_len) {
 	uint32_t ints[6] = {};
 	for(size_t i = 0; i < num_ints; i++) {
 		ints[i] = ddproto_unpacker_get_int(unpacker);

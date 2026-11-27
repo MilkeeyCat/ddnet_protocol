@@ -19,7 +19,7 @@ size_t ddproto_decode_chunk_header(const uint8_t *buf, DDProtoChunkHeader *heade
 }
 
 size_t ddproto_encode_chunk_header(const DDProtoChunkHeader *header, uint8_t *buf) {
-	buf[0] = header->flags & 0b11000000 | ((header->size >> 4) & 0b00111111);
+	buf[0] = (header->flags & 0b11000000) | ((header->size >> 4) & 0b00111111);
 	buf[1] = (header->size & 0b00001111);
 	if(header->flags & DDPROTO_CHUNK_FLAG_VITAL) {
 		buf[1] |= (header->sequence >> 2) & 0b11110000;
